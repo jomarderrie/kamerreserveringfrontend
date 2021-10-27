@@ -1,9 +1,36 @@
-import React from 'react'
+import React,{useEffect, useState} from 'react'
+import NieuweKamerForm from '../../components/kamer/NieuweKamerForm'
+import { FlexBox } from '../../styled/styles'
+import { getSingleKamer } from '../../functions/kamers';
 
-export default function EditSingleKamer() {
+
+export default function EditSingleKamer({ match }) {
+    const { naam } = match.params;
+    const [loading, setLoading] = useState(false);
+    const [kamer, setKamer] = useState({});
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setLoading(true)
+        getSingleKamer(naam).then((res, err) => {
+            if (err) {
+                setLoading(false);
+                setError(err)
+            } else {
+                setLoading(false);
+                setKamer(res.data)
+                console.log(res.data);
+            }
+        });
+    }, [])
+
+
     return (
-        <div>
-            edit single kamer
-        </div>
+        <FlexBox z={"column"}>
+             <h2>Verander kamer met de naam {naam}</h2>
+            {(loading)?<div>Loading...</div>:    
+            <NieuweKamerForm kamer={kamer} />}
+       
+        </FlexBox>
     )
 }

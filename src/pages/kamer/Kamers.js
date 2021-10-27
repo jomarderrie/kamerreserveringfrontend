@@ -4,6 +4,8 @@ import {set} from "react-hook-form";
 import {FlexBox} from "../../styled/styles";
 import KamerCard from "../../components/kamer/KamerCard";
 import { Link, useHistory } from 'react-router-dom'
+import { toast } from "react-toastify";
+import { deleteKamer } from '../../functions/kamers';
 
 function Kamers() {
     const [kamers, setKamers] = useState([]);
@@ -19,8 +21,23 @@ function Kamers() {
         })
     }, []);
 
-    const handleDateTimeChange = (e) =>{
-        console.log(e)
+    
+
+    const deleteKamerOnClick = async (e) =>{
+        console.log(e.target.value);
+        await deleteKamer(e.target.value).then((res,err) =>{
+            if(err){
+                console.log(err);
+                toast.error("Error met het toevoegen van een kamer")
+            }else{
+                setKamers(prevKamer =>{
+                    return prevKamer.filter((kamer) =>{
+                        return kamer.naam !== e.target.value
+                    })
+                })
+                toast.success(`Delete kamer met naam ${e.target.value}`)
+            }
+        })
     }
 
     return (
@@ -42,7 +59,7 @@ function Kamers() {
             <FlexBox>
                 {kamers.map((kamer) => {
                     return <div key={kamer.id}>
-                        <KamerCard kamer={kamer} handleDateTimeChange={handleDateTimeChange}/>
+                        <KamerCard kamer={kamer} deleteKamer={deleteKamerOnClick}/>
                     </div>
                 })}
             </FlexBox>

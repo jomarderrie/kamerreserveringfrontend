@@ -4,9 +4,12 @@ import DatePicker from "react-datepicker";
 import { AuthContext } from '../../context/AuthContext';
 import { Link } from "react-router-dom";
 
-const KamerCard = ({ kamer }) => {
+
+
+const KamerCard = ({ kamer, deleteKamer }) => {
     const { user } = useContext(AuthContext)
 
+  
 
     return (
         <FlexBox z={"column"}>
@@ -22,7 +25,7 @@ const KamerCard = ({ kamer }) => {
                 Edit
             </Link>
 
-            <button>delete</button>
+            <button onClick={(e) =>deleteKamer(e)} value={kamer.naam}>delete</button>
         </FlexBox>
     )
 }
