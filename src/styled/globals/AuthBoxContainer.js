@@ -4,7 +4,7 @@ import {FlexBox} from "../styles";
 
 export const FlexBoxContainerInput = styled(FlexBox)`
   width: 640px;
-  padding: 10px;
+  padding-left: 10px;
   .checkbox {
     padding-left: 20px;
   }

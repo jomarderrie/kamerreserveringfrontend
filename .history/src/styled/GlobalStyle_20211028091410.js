@@ -1,12 +1,12 @@
 import {createGlobalStyle} from 'styled-components';
-import {setColor, setFont, setRem} from "./styles"
+import {setColor, setFont} from "./styles"
 
 export const GlobalsStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Courgette&family=Lato:wght@700&display=swap');
 
   * {
-    margin: 0;
-    padding: 0;
+    　　margin: 0;
+    　　padding: 0;
     box-sizing: border-box;
   }
 
@@ -15,7 +15,7 @@ export const GlobalsStyle = createGlobalStyle`
     color: ${setColor.mainBlack};
     background: #${setColor.mainWhite};
     ${setFont.main};
-   margin:0px;
+
   }
 
   h1 {

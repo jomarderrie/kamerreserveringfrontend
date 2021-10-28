@@ -6,7 +6,7 @@ export const GlobalsStyle = createGlobalStyle`
 
   * {
     margin: 0;
-    padding: 0;
+    　　padding: 0;
     box-sizing: border-box;
   }
 
@@ -15,7 +15,7 @@ export const GlobalsStyle = createGlobalStyle`
     color: ${setColor.mainBlack};
     background: #${setColor.mainWhite};
     ${setFont.main};
-   margin:0px;
+    margin:0px;
   }
 
   h1 {

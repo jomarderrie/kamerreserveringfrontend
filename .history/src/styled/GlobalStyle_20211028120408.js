@@ -15,7 +15,7 @@ export const GlobalsStyle = createGlobalStyle`
     color: ${setColor.mainBlack};
     background: #${setColor.mainWhite};
     ${setFont.main};
-   margin:0px;
+    margin:set
   }
 
   h1 {

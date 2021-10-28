@@ -1,0 +1,7 @@
+{
+    "task.quickOpen.history": 10,
+    "files.autoSave": "afterDelay",
+    "editor.codeActionsOnSave": null,
+    "local-history.maxDisplay": 0,
+    "local-history.saveDelay": 150
+}

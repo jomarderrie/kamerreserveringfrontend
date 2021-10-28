@@ -10,7 +10,7 @@ const Navbar = () => {
     return (
         <StyledFlexBoxContainer className="link-box-container" x="space-between">
             <StyledRouterLink  to={"/"}>
-            <Image logo={Logo} width={52} height={48}/>
+            <Image logo={Logo} width={64} height={52}/>
                 Kamer reservering
             </StyledRouterLink>
             <LinkFlexBoxContainer>

@@ -6,11 +6,12 @@ import {Link} from "react-router-dom";
 import styled from "styled-components"
 import {StyledRouterLink} from '../../styled/globals/StyledRouterLink';
 import { LinkFlexBoxContainer, StyledFlexBoxContainer } from '../../styled/globals/StyledFlexBoxContainer';
+LinkFlexBoxContainer
 const Navbar = () => {
     return (
         <StyledFlexBoxContainer className="link-box-container" x="space-between">
             <StyledRouterLink  to={"/"}>
-            <Image logo={Logo} width={52} height={48}/>
+            <Image logo={Logo} width={64} height={52}/>
                 Kamer reservering
             </StyledRouterLink>
             <LinkFlexBoxContainer>

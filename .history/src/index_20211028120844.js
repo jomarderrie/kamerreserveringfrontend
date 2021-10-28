@@ -11,7 +11,6 @@ ReactDOM.render(
     <KamerProvider>
         <AuthProvider>
             <Router>
-                <GlobalsStyle></GlobalsStyle>
                 <App />
             </Router>
         </AuthProvider>

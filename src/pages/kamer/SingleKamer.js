@@ -12,6 +12,10 @@ export default function SingleKamer({ match }) {
     const [loading, setLoading] = useState(false);
     const [kamer, setKamer] = useState({});
     const [error, setError] = useState(null);
+    const [date, setReserveringDate] = useState({
+        startDate:new Date(),
+        eindDate : new Date()
+    })
 
     useEffect(() => {
         setLoading(true)
@@ -82,12 +86,18 @@ export default function SingleKamer({ match }) {
                             De openingstijd is van: 
                         </div>
                         <FlexBox style={{paddingLeft:"3px"}}>
-                            {!isEmpty(kamer.startTijd) ? new Date(kamer.startTijd).toLocaleString() : <div>...Loading</div>}
+                            {!isEmpty(kamer.startTijd) ? new Date(kamer.startTijd).toLocaleDateString('nl-NL') : <div>...Loading</div>}
                             <span style={{padding:"5px"}}>
                                 tot
                             </span>
-                            {!isEmpty(kamer.sluitTijd) ? new Date(kamer.sluitTijd).toLocaleString() : <div>...Loading</div>}
+                            {!isEmpty(kamer.sluitTijd) ? new Date(kamer.sluitTijd).toLocaleDateString('nl-NL') : <div>...Loading</div>}
+                            <br></br>
                             {/* {kamer.startTijd.toLocaleTimeString()} tot {kamer.sluitTijd} */}
+                        </FlexBox>
+                        <FlexBox>
+
+
+                            Van 
                         </FlexBox>
                     </FlexBox>
                     <div>

@@ -5,13 +5,12 @@ import App from './App';
 import { AuthProvider } from "./context/AuthContext";
 import { BrowserRouter as Router } from 'react-router-dom';
 import KamerProvider from './context/KamersContext';
-import { GlobalsStyle } from './styled/GlobalStyle'; 
+GLobalStyle
 
 ReactDOM.render(
     <KamerProvider>
         <AuthProvider>
             <Router>
-                <GlobalsStyle></GlobalsStyle>
                 <App />
             </Router>
         </AuthProvider>
