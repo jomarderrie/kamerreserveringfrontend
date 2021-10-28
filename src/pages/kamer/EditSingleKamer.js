@@ -27,7 +27,7 @@ export default function EditSingleKamer({ match }) {
 
     return (
         <FlexBox z={"column"}>
-             <h2>Verander kamer met de naam {naam}</h2>
+             <h2 style={{paddingTop:'100px'}}>Verander kamer met de naam {naam}</h2>
             {(loading)?<div>Loading...</div>:    
             <NieuweKamerForm kamer={kamer} />}
        

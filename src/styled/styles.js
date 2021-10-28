@@ -99,3 +99,20 @@ export const setShadow = {
     darkest: 'box-shadow: 10px 10px 5px 0px rgba(0,0,0,0.75)'
 };
 
+
+export const LinkFlexBoxContainer = (props) => {
+    console.log(props);
+    return (<div className={props.className}>
+            <FlexBox x={props.x}>
+            {props.children}
+            </FlexBox>
+        </div>
+    )
+}
+
+export const StyledFlexBoxContainer = styled(LinkFlexBoxContainer)`
+    padding-top:10px;
+    padding-right: 20px;
+    border-bottom-color: rgba(140, 130, 115, 0.12);
+    border-bottom: 2px solid;
+`

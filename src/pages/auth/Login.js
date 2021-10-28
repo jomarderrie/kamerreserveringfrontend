@@ -9,7 +9,7 @@ export default function Login() {
 
     return (
         <FlexBox z={"column"}>
-            <h2>Login</h2>
+            <h2 style={{paddingTop:"100px"}}>Login</h2>
             <LoginForm />
         </FlexBox>
     )
