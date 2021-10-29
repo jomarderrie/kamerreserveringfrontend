@@ -5,6 +5,8 @@ import moment from 'moment';
 import { FlexBox, setRem } from '../../styled/styles';
 import KamerImage from "../../images/neudebieb.png"
 import { Image } from '../../styled/Image';
+import TimeRange from 'react-timeline-range-slider'  
+import { endOfToday, set } from 'date-fns' 
 import { isEmpty } from '../../helpers/IsEmpty';
 import addMonths from 'date-fns/addMonths';
 import DatePicker, { ReactDatePicker } from 'react-datepicker'
@@ -18,6 +20,8 @@ export default function SingleKamer({ match }) {
     // const [dateRange, setDateRange] = useState([null, null]);
     // const [startDate, endDate] = dateRange;
     const [startDate, setStartDate] = useState(null);
+
+
     useEffect(() => {
         setLoading(true)
         getSingleKamer(naam).then((res, err) => {
@@ -31,16 +35,9 @@ export default function SingleKamer({ match }) {
             }
         });
     }, [])
-    useEffect(() => {
-        console.log(kamer);
-        if (!isEmpty(kamer)) {
-            let sluitTijd = new Date(kamer.sluitTijd)
-            console.log(sluitTijd.toLocaleTimeString());
-            console.log(sluitTijd.toLocaleString());
-        }
 
-        // showTime()
-    }, [kamer])
+
+
 
 
     const showTime = () => {
@@ -82,13 +79,21 @@ export default function SingleKamer({ match }) {
     };
 
     const setStartDateLimit = (date) => {
-        let vandaag =new Date();
+        let vandaag = new Date();
+        let kamerStartTijd = new Date(kamer.startTijd)
+        if(kamerStartTijd.getTime()>vandaag.getTime()){
+            return new Date();
+        }else{
+            return kamerStartTijd
+        }
         // if(vandaag.)
-        return new Date();
     }
     const sameDay = (d1, d2) => {
         return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
-      };
+    };
+
+   
+      
 
     return (
         <FlexBox x={"start"}>
@@ -102,7 +107,7 @@ export default function SingleKamer({ match }) {
                     </div>
                     <FlexBox>
                         <div>
-                            De openingstijd is van:
+                            De openings data van de ruimte is van:
                         </div>
                         <FlexBox style={{ paddingLeft: "3px" }}>
                             {!isEmpty(kamer.startTijd) ? new Date(kamer.startTijd).toLocaleDateString('nl-NL') : <div>...Loading</div>}
@@ -131,7 +136,8 @@ export default function SingleKamer({ match }) {
                     </div>
                     <form onSubmit={(e) => handleSubmit(e, startDate)}>
 
-                        <DatePicker
+                         <DatePicker
+                
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
                             // minDate={() => setStartDateLimit(kamer.startDate))}
@@ -148,7 +154,7 @@ export default function SingleKamer({ match }) {
                             timeIntervals={60}
                             showTimeSelect
                             showDisabledMonthNavigation
-                        />
+                        /> 
                         <button type="submit">submit</button>
                     </form>
 
@@ -165,6 +171,7 @@ export default function SingleKamer({ match }) {
                         isClearable={true}
                     /> */}
                     <div>
+                      
                     </div>
                 </div>
             }
