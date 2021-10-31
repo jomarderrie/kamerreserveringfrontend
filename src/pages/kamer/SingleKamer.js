@@ -5,21 +5,31 @@ import moment from 'moment';
 import { FlexBox, setRem } from '../../styled/styles';
 import KamerImage from "../../images/neudebieb.png"
 import { Image } from '../../styled/Image';
-import TimeRange from 'react-timeline-range-slider'  
-import { endOfToday, set } from 'date-fns' 
+import TimeRange from 'react-timeline-range-slider'
+import { endOfToday, set } from 'date-fns'
 import { isEmpty } from '../../helpers/IsEmpty';
 import addMonths from 'date-fns/addMonths';
 import DatePicker, { ReactDatePicker } from 'react-datepicker'
 
+const GetDate = (hour, minutes) => {
+    return set(new Date(), {
+        seconds: 0,
+        hours: hour,
+        milliseconds: 0,
+        minutes: minutes
+    });
+};
 export default function SingleKamer({ match }) {
     const { naam } = match.params;
     const [loading, setLoading] = useState(false);
     const [kamer, setKamer] = useState({});
-    const [error, setError] = useState(null);
+    const [errorTimeRange, setTimeRangeError] = useState(null);
 
-    // const [dateRange, setDateRange] = useState([null, null]);
+    const [error, setError] = useState(null);
+    const [dateRange, setDateRange] = useState([null, null]);
     // const [startDate, endDate] = dateRange;
     const [startDate, setStartDate] = useState(null);
+
 
 
     useEffect(() => {
@@ -30,14 +40,80 @@ export default function SingleKamer({ match }) {
                 setError(err)
             } else {
                 setKamer(res.data)
-                setLoading(false);
                 console.log(res.data);
+                let startDate = new Date(res.data.startTijd);
+                // console.log(res.data);
+                let eindDate = new Date(res.data.sluitTijd);
+                // console.log(startDate.getHours());
+                // console.log(startDate, "startDate");
+                // console.log(startDate.getTime());
+                setDateRange([startDate, eindDate])
+                console.log(startDate, "startDate");
+                console.log(eindDate.getHours(), "eindate");
+                setLimite2([GetDate(startDate.getHours(), 0), GetDate(eindDate.getHours(), 0)])
+                // console.log(date.getHours(), "hourss");
+                setLoading(false);
+                // console.log(new Date(kamer.sluitTijd), "sluittijd");
+                // console.log(res.data);
+
             }
         });
     }, [])
 
 
+    const [am, setAm] = React.useState([GetDate(9, 0), GetDate(12, 30)]);
+    const [pm, setPm] = React.useState([GetDate(14, 0), GetDate(19, 30)]);
+    const [limite2, setLimite2] = useState([GetDate(7, 0), GetDate(17, 0)])
+    const limite = [GetDate(7, 0), GetDate(22, 0)];
+    const [disabledIntervals2, setDisabledIntervals2] = useState([{}]);
+    const [errorAm, setErrorAm] = React.useState(false);
+    const [errorPm, setErrorPm] = React.useState(false);
+    const timeRangeSlider = () => {
+        return (
+            <TimeRange
+                step={900000}
+                error={errorAm}
+                ticksNumber={36}
+                selectedInterval={am}
+                onChangeCallback={setAm}
+                timelineInterval={limite2}
+                onUpdateCallback={(value) => setErrorAm(value.error)}
+                disabledIntervals={[
+                    {
+                        end: moment(pm[1]).toDate(),
+                        start: moment(pm[0]).toDate()
+                    }
+                ]}
+            />
+        )
+    }
+    useEffect(() => {
+        calculateDisabledIntervalsAndOpenInterval()
+    }, [disabledIntervals2])
 
+    const calculateDisabledIntervalsAndOpenInterval = () => {
+        let reserveringListObj = [];
+        moment(new Date('2021-10-29T08:00:00').getHours()).toDate();
+        kamer.reserveringList.map((item, key) => {
+            console.log(item);
+            reserveringListObj.push({
+                start: moment(new Date(item.startTijdReservering).getHours()).toDate(),
+                end: moment(new Date(item.eindTijdReservering).getHours()).toDate()
+            })
+        })
+
+        console.log(reserveringListObj, "disabledIntervals");
+        //  new Date(item.startTijdReservering), 
+        console.log(reserveringListObj, "reserverObj");
+        // setDisabledIntervals2(reserveringListObj)
+        // setDisabledIntervals2(reserveringListObj)
+        // console.log(kamer.reserveringList);
+        // kamer.reserveringList[0]
+        // console.log(kamer.reserveringList[0]);
+        // .map((item) => {
+        // console.log(item);
+        // })
+    }
 
 
     const showTime = () => {
@@ -78,22 +154,24 @@ export default function SingleKamer({ match }) {
         return currentDate.getTime() < selectedDate.getTime();
     };
 
-    const setStartDateLimit = (date) => {
+    const setStartDateLimit = () => {
         let vandaag = new Date();
-        let kamerStartTijd = new Date(kamer.startTijd)
-        if(kamerStartTijd.getTime()>vandaag.getTime()){
+        let kamerStartTijd = dateRange[0]
+        console.log(dateRange[0], "daterange");
+        if (kamerStartTijd.getTime() > vandaag.getTime()) {
             return new Date();
-        }else{
+        } else {
             return kamerStartTijd
         }
         // if(vandaag.)
     }
+
     const sameDay = (d1, d2) => {
         return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
     };
 
-   
-      
+
+
 
     return (
         <FlexBox x={"start"}>
@@ -107,7 +185,7 @@ export default function SingleKamer({ match }) {
                     </div>
                     <FlexBox>
                         <div>
-                            De openings data van de ruimte is van:
+                            De ruimte is te reserveren vanaf
                         </div>
                         <FlexBox style={{ paddingLeft: "3px" }}>
                             {!isEmpty(kamer.startTijd) ? new Date(kamer.startTijd).toLocaleDateString('nl-NL') : <div>...Loading</div>}
@@ -127,7 +205,6 @@ export default function SingleKamer({ match }) {
                         </FlexBox>
                     </FlexBox>
                     <div>
-
                         <h3>Openings tijden</h3>
                         {showTime()}
                         {/* {kamer.reserveringList((item) =>{
@@ -135,14 +212,13 @@ export default function SingleKamer({ match }) {
                         })} */}
                     </div>
                     <form onSubmit={(e) => handleSubmit(e, startDate)}>
+                        <DatePicker
 
-                         <DatePicker
-                
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
-                            // minDate={() => setStartDateLimit(kamer.startDate))}
-                            minDate={setStartDateLimit(kamer.startDate)}
-                            maxDate={new Date(kamer.eindTijd)}
+                            minDate={() => setStartDateLimit()}
+                            minDate={() => setStartDateLimit(kamer.startDate)}
+                            maxDate={dateRange[1]}
                             showMinute={false}
                             showSecond={false}
                             timeFormat="HH:mm"
@@ -154,11 +230,12 @@ export default function SingleKamer({ match }) {
                             timeIntervals={60}
                             showTimeSelect
                             showDisabledMonthNavigation
-                        /> 
+                        />
+                        {timeRangeSlider()}
                         <button type="submit">submit</button>
                     </form>
 
-
+                    
                     {/* <DatePicker
                      timeInputLabel="Time:"
                         selectsRange={true}
@@ -171,7 +248,7 @@ export default function SingleKamer({ match }) {
                         isClearable={true}
                     /> */}
                     <div>
-                      
+
                     </div>
                 </div>
             }
