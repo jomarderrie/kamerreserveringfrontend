@@ -19,16 +19,16 @@ const Navbar = () => {
             </StyledRouterLink>
 
             <LinkFlexBoxContainer>
-                <StyledRouterLink to={"/register"} active={"active"}>
+                <StyledRouterLink to={"/register"} active={"active"}  p={"hover"}>
                     register
                 </StyledRouterLink>
-                <StyledRouterLink to={"/login"}>
+                <StyledRouterLink to={"/login"}  p={"hover"}>
                     login
                 </StyledRouterLink>
-                <StyledRouterLink to={"/kamers"}>
+                <StyledRouterLink to={"/kamers"}  p={"hover"}>
                     kamers
                 </StyledRouterLink>
-                <StyledRouterLink to={"/gebruikers"}>
+                <StyledRouterLink to={"/gebruikers"}  p={"hover"}>
                     gebruikers
                 </StyledRouterLink>
             </LinkFlexBoxContainer>
