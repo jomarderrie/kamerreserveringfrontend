@@ -135,10 +135,16 @@ export default function SingleKamer({ match }) {
   };
 
   const getOverLap = (startDate, eindDate) => {
-      console.log(startDate, eindDate, "dates");
+    //   console.log(startDate, eindDate, "dates");
+    // console.log(new Date(kamer.reserveringList[0].start), "reserverinlist[0]");
+    
+    
     for (let index = 0; index < kamer.reserveringList.length; index++) {
-      if (startDate < kamer.reserveringList[index].end && eindDate > kamer.reserveringList[index].start) {
-        //   console.log(startDate, eindDate, "dates");
+        let startReserveringDate = new Date(kamer.reserveringList[index].start);
+        let eindReserveringDate = new Date(kamer.reserveringList[index].end);
+        // console.log(kamer.reserveringList[index], index);
+        if (!(startDate.getTime() < eindReserveringDate.getTime()  && eindDate.getTime()  > startReserveringDate.getTime())) {
+          console.log(startDate, eindDate, "dates");
       }
       //   const element = array[index];
       //   console.log(kamer.reserveringList[index], "index123");
