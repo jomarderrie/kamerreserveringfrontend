@@ -5,7 +5,6 @@ import { Link, NavLink } from "react-router-dom";
 import { setRem } from "../styles";
 
 export const StyledRouterLink = (props) => {
-  console.log(props);
   let { p, to, linkName, children, activeClassName } = props;
 
     return ( <

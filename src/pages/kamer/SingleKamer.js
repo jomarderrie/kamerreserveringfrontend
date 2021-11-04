@@ -10,263 +10,257 @@ import { isEmpty } from "../../helpers/IsEmpty";
 import addMonths from "date-fns/addMonths";
 import DatePicker, { ReactDatePicker } from "react-datepicker";
 
-const GetDate = (hour, minutes) => {
-  return set(new Date(), {
-    seconds: 0,
-    hours: hour,
-    milliseconds: 0,
-    minutes: minutes,
-  });
-};
-export default function SingleKamer({ match }) {
-  const { naam } = match.params;
-  const [loading, setLoading] = useState(false);
-  const [kamer, setKamer] = useState({});
-  const [errorTimeRange, setTimeRangeError] = useState(null);
-
-  const [error, setError] = useState(null);
-  const [dateRange, setDateRange] = useState([null, null]);
-  // const [startDate, endDate] = dateRange;
-  const [startDate, setStartDate] = useState(null);
-
-  useEffect(() => {
-    setLoading(true);
-    getSingleKamer(naam).then((res, err) => {
-      if (err) {
-        setLoading(false);
-        setError(err);
-      } else {
-        setKamer(res.data);
-        console.log(res.data);
-        let startDate = new Date(res.data.startTijd);
-        // console.log(res.data);
-        let eindDate = new Date(res.data.sluitTijd);
-        // console.log(startDate.getHours());
-        // console.log(startDate, "startDate");
-        // console.log(startDate.getTime());
-        setDateRange([startDate, eindDate]);
-        setLimite2([
-          GetDate(startDate.getHours(), 0),
-          GetDate(eindDate.getHours(), 0),
-        ]);
-        // console.log(date.getHours(), "hourss");
-        setLoading(false);
-        // console.log(new Date(kamer.sluitTijd), "sluittijd");
-        // console.log(res.data);
-      }
-    });
-  }, []);
-
-  const [am, setAm] = React.useState([GetDate(9, 0), GetDate(12, 30)]);
-  const [pm, setPm] = React.useState([GetDate(14, 0), GetDate(19, 30)]);
-  const [limite2, setLimite2] = useState([GetDate(7, 0), GetDate(17, 0)]);
-  const limite = [GetDate(7, 0), GetDate(22, 0)];
-  const [disabledIntervals2, setDisabledIntervals2] = useState([{}]);
-  const [errorAm, setErrorAm] = React.useState(false);
-  const [errorPm, setErrorPm] = React.useState(false);
-  const timeRangeSlider = () => {
-    console.log(disabledIntervals2, "disabledints");
-
-    return (
-      <TimeRange
-        step={900000}
-        error={errorAm}
-        ticksNumber={36}
-        selectedInterval={am}
-        onChangeCallback={setAm}
-        timelineInterval={limite2}
-        onUpdateCallback={(value) => setErrorAm(value.error)}
-        disabledIntervals={[
-          {
-            end: moment(pm[1]).toDate(),
-            start: moment(pm[0]).toDate(),
-          },
-        ]}
-      />
-    );
-  };
-  useEffect(() => {
-    // console.log(disabledIntervals2, "disabledintervals2");
-  }, [disabledIntervals2]);
-  useEffect(() => {
-    if (!isEmpty(kamer)) {
-      calculateDisabledIntervalsAndOpenInterval();
-    }
-  }, [kamer]);
-
-  const calculateDisabledIntervalsAndOpenInterval = () => {
-    let reserveringListObj = [];
-    // console.log(kamer.reserveringList, "reservering");
-    let o = [];
-    console.log(kamer);
-    
-    if (kamer.reserveringList.length !== 0) {
-        console.log(kamer.reserveringList.values(), " ok")
-        console.log(Object.entries(kamer.reserveringList), "l");
-        
-        
-      kamer.reserveringList.map((item, index) => {
-        // o = [...o,{
-            // start: moment(new Date(item.startTijdReservering)).toDate(),
-            // end: moment(new Date(item.eindTijdReservering)).toDate(),
-        // }
-        // ];
-        reserveringListObj[reserveringListObj.length] = {
-          start: moment(new Date(item.startTijdReservering)).toDate(),
-          end: moment(new Date(item.eindTijdReservering)).toDate(),
-        };
-      });
-
-      // let bitchassobject1 = reserveringListObj.map((item2) =>{
-      //     let obj = {start:item2.start, end:item2.end};
-      //     return {start:item2.start, end:item2.end};
-      // })
-      // console.log(bitchassobject1, "disabled");
-    }
-
-    //  new Date(item.startTijdReservering),
-    setDisabledIntervals2(reserveringListObj);
-    // setDisabledIntervals2(reserveringListObj)
-    // console.log(kamer.reserveringList);
-    // kamer.reserveringList[0]
-    // console.log(kamer.reserveringList[0]);
-    // .map((item) => {
-    // console.log(item);
-    // })
-  };
-
-  const showTime = () => {
-    let results = [];
-    let startTijd = new Date(kamer.startTijd);
-    let endTijd = new Date(kamer.sluitTijd);
-    const interval = 60 * 60000; //1 uur
-
-    // console.log(  new Date(startTijd.getTime()));
-    console.log(startTijd.getHours());
-    // while (startTijd.getTime() <= endTijd.getTime() - interval) {
-
-    //     console.log(new Date(startTijd.getTime()).toLocaleTimeString())
-    //     results.push({ "startTijd": new Date(startTijd.getTime()).toLocaleTimeString(), "eindTijd": new Date(startTijd.getTime() + interval).toLocaleTimeString() })
-    //     startTijd = new Date(startTijd.getTime() + interval);
-    // }
-    console.log(results);
-
-    return results.map((item, index) => {
-      return (
-        <div key={index}>
-          <p>
-            {item.startTijd} - {item.eindTijd}
-          </p>
-        </div>
-      );
-    });
-  };
-
-  const handleSubmit = (e, startDate) => {
-    e.preventDefault();
-    console.log(startDate);
-  };
-  const filterPassedTime = (time) => {
-    const currentDate = new Date();
-    const selectedDate = new Date(time);
-
-    return currentDate.getTime() < selectedDate.getTime();
-  };
-
-  const setStartDateLimit = () => {
-    let vandaag = new Date();
-    let kamerStartTijd = dateRange[0];
-    console.log(dateRange[0], "daterange");
-    if (kamerStartTijd.getTime() > vandaag.getTime()) {
-      return new Date();
+const GetDate = (hour, date) => {
+    if (date !== undefined) {
+        console.log(date, "date213");
+        return set(date, {
+            seconds: 0,
+            hours: date.getHours(),
+            milliseconds: 0,
+            minutes: 0,
+        });
     } else {
-      return kamerStartTijd;
+        return set(new Date(), {
+            seconds: 0,
+            hours: hour,
+            milliseconds: 0,
+            minutes: 0,
+        });
     }
-    // if(vandaag.)
-  };
+};
 
-  const sameDay = (d1, d2) => {
+
+export default function SingleKamer({ match }) {
+    const { naam } = match.params;
+    const [loading, setLoading] = useState(false);
+    const [kamer, setKamer] = useState({});
+    const [errorTimeRange, setTimeRangeError] = useState(null);
+
+    const [error, setError] = useState(null);
+    const [dateRange, setDateRange] = useState([null, null]);
+    // const [startDate, endDate] = dateRange;
+    const [startDate, setStartDate] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+        getSingleKamer(naam).then((res, err) => {
+            if (err) {
+                setLoading(false);
+                setError(err);
+            } else {
+                setKamer(res.data);
+                console.log(res.data, "data123");
+                let startDate = new Date(res.data.startTijd);
+                // console.log(res.data);
+                let eindDate = new Date(res.data.sluitTijd);
+                // console.log(startDate.getHours());
+                // console.log(startDate, "startDate");
+                // console.log(startDate.getTime());
+                setDateRange([startDate, eindDate]);
+                setLimite2([
+                    GetDate(startDate.getHours()),
+                    GetDate(eindDate.getHours()),
+                ]);
+                // console.log(date.getHours(), "hourss");
+                setLoading(false);
+                // console.log(new Date(kamer.sluitTijd), "sluittijd");
+                // console.log(res.data);
+            }
+        });
+    }, []);
+
+    const [am, setAm] = React.useState([GetDate(9), GetDate(12)]);
+    const [pm, setPm] = React.useState([GetDate(14), GetDate(19)]);
+    const [limite2, setLimite2] = useState([GetDate(7), GetDate(17)]);
+    const limite = [GetDate(7), GetDate(22)];
+    const [disabledIntervals2, setDisabledIntervals2] = useState([]);
+    const [errorAm, setErrorAm] = React.useState(false);
+    const [errorPm, setErrorPm] = React.useState(false);
+    const timeRangeSlider = () => {
+
+            return (
+                <TimeRange
+                    step={900000}
+                    error={errorAm}
+                    ticksNumber={36}
+                    selectedInterval={am}
+                    onChangeCallback={setAm}
+                    timelineInterval={limite2}
+                    onUpdateCallback={(value) => setErrorAm(value.error)}
+                    disabledIntervals={
+                        disabledIntervals2
+                    }
+                />
+            );
+        
+    };
+
+    //   
+
+    useEffect(() => {
+        // console.log(, "disabledintervals2");
+    }, [disabledIntervals2]);
+    useEffect(() => {
+        if (!isEmpty(kamer)) {
+            calculateDisabledIntervalsAndOpenInterval();
+        }
+    }, [kamer]);
+
+    const calculateDisabledIntervalsAndOpenInterval = () => {
+        let reserveringListObj = [];
+        if (kamer.reserveringList.length !== 0) {
+            kamer.reserveringList.map((item, index) => {
+                reserveringListObj.push({
+                    start: moment(GetDate(0, new Date(item.start))).toDate(),
+                    end: moment(GetDate(0, new Date(item.end))).toDate(),
+                });
+            });
+        }
+        
+        setDisabledIntervals2(reserveringListObj);
+    };
+
+    const showTime = () => {
+        let results = [];
+        let startTijd = new Date(kamer.startTijd);
+        let endTijd = new Date(kamer.sluitTijd);
+        const interval = 60 * 60000; //1 uur
+
+        // console.log(  new Date(startTijd.getTime()));
+        console.log(startTijd.getHours());
+        // while (startTijd.getTime() <= endTijd.getTime() - interval) {
+
+        //     console.log(new Date(startTijd.getTime()).toLocaleTimeString())
+        //     results.push({ "startTijd": new Date(startTijd.getTime()).toLocaleTimeString(), "eindTijd": new Date(startTijd.getTime() + interval).toLocaleTimeString() })
+        //     startTijd = new Date(startTijd.getTime() + interval);
+        // }
+        console.log(results);
+
+        return results.map((item, index) => {
+            return (
+                <div key={index}>
+                    <p>
+                        {item.startTijd} - {item.eindTijd}
+                    </p>
+                </div>
+            );
+        });
+    };
+
+    const checkDisabledInterval = () => {
+        console.log(disabledIntervals2,);
+        if (!disabledIntervals2 === {}) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    const handleSubmit = (e, startDate) => {
+        e.preventDefault();
+        console.log(startDate);
+    };
+    const filterPassedTime = (time) => {
+        const currentDate = new Date();
+        const selectedDate = new Date(time);
+
+        return currentDate.getTime() < selectedDate.getTime();
+    };
+
+    const setStartDateLimit = () => {
+        let vandaag = new Date();
+        let kamerStartTijd = dateRange[0];
+        console.log(dateRange[0], "daterange");
+        if (kamerStartTijd.getTime() > vandaag.getTime()) {
+            return new Date();
+        } else {
+            return kamerStartTijd;
+        }
+        // if(vandaag.)
+    };
+
+    const sameDay = (d1, d2) => {
+        return (
+            d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate()
+        );
+    };
+
     return (
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate()
-    );
-  };
-
-  return (
-    <FlexBox x={"start"}>
-      {isEmpty(kamer) ? (
-        <div>Loading...</div>
-      ) : (
-        <div>
-          <div>
-            <h1>{kamer.naam}</h1>
-            <Image logo={KamerImage} />
-          </div>
-          <FlexBox>
-            <div>De ruimte is te reserveren vanaf</div>
-            <FlexBox style={{ paddingLeft: "3px" }}>
-              {!isEmpty(kamer.startTijd) ? (
-                new Date(kamer.startTijd).toLocaleDateString("nl-NL")
-              ) : (
-                <div>...Loading</div>
-              )}
-              <span style={{ padding: "5px" }}>tot</span>
-              {!isEmpty(kamer.sluitTijd) ? (
-                new Date(kamer.sluitTijd).toLocaleDateString("nl-NL")
-              ) : (
-                <div>...Loading</div>
-              )}
-              <br></br>
-              {/* {kamer.startTijd.toLocaleTimeString()} tot {kamer.sluitTijd} */}
-            </FlexBox>
-            <FlexBox>
-              {" "}
-              &nbsp; en openingstijden van &nbsp;
-              {!isEmpty(kamer.startTijd) ? (
-                new Date(kamer.startTijd).toLocaleTimeString("nl-NL")
-              ) : (
-                <div>...Loading</div>
-              )}
-              &nbsp; tot &nbsp;
-              {!isEmpty(kamer.sluitTijd) ? (
-                new Date(kamer.sluitTijd).toLocaleTimeString("nl-NL")
-              ) : (
-                <div>...Loading</div>
-              )}
-            </FlexBox>
-          </FlexBox>
-          <div>
-            <h3>Openings tijden</h3>
-            {showTime()}
-            {/* {kamer.reserveringList((item) =>{
+        <FlexBox x={"start"}>
+            {isEmpty(kamer) ? (
+                <div>Loading...</div>
+            ) : (
+                <div>
+                    <div>
+                        <h1>{kamer.naam}</h1>
+                        <Image logo={KamerImage} />
+                    </div>
+                    <FlexBox>
+                        <div>De ruimte is te reserveren vanaf</div>
+                        <FlexBox style={{ paddingLeft: "3px" }}>
+                            {!isEmpty(kamer.startTijd) ? (
+                                new Date(kamer.startTijd).toLocaleDateString("nl-NL")
+                            ) : (
+                                <div>...Loading</div>
+                            )}
+                            <span style={{ padding: "5px" }}>tot</span>
+                            {!isEmpty(kamer.sluitTijd) ? (
+                                new Date(kamer.sluitTijd).toLocaleDateString("nl-NL")
+                            ) : (
+                                <div>...Loading</div>
+                            )}
+                            <br></br>
+                            {/* {kamer.startTijd.toLocaleTimeString()} tot {kamer.sluitTijd} */}
+                        </FlexBox>
+                        <FlexBox>
+                            {" "}
+                            &nbsp; en openingstijden van &nbsp;
+                            {!isEmpty(kamer.startTijd) ? (
+                                new Date(kamer.startTijd).toLocaleTimeString("nl-NL")
+                            ) : (
+                                <div>...Loading</div>
+                            )}
+                            &nbsp; tot &nbsp;
+                            {!isEmpty(kamer.sluitTijd) ? (
+                                new Date(kamer.sluitTijd).toLocaleTimeString("nl-NL")
+                            ) : (
+                                <div>...Loading</div>
+                            )}
+                        </FlexBox>
+                    </FlexBox>
+                    <div>
+                        <h3>Openings tijden</h3>
+                        {showTime()}
+                        {/* {kamer.reserveringList((item) =>{
 
                         })} */}
-          </div>
-          <form onSubmit={(e) => handleSubmit(e, startDate)}>
-            <DatePicker
-              selected={startDate}
-              onChange={(date) => setStartDate(date)}
-              minDate={() => setStartDateLimit()}
-              minDate={() => setStartDateLimit(kamer.startDate)}
-              maxDate={dateRange[1]}
-              showMinute={false}
-              showSecond={false}
-              timeFormat="HH:mm"
-              filterTime={filterPassedTime}
-              dateFormat="dd/MM/yyyy h:mm aa"
-              dateFormat="Pp"
-              timeFormat="p"
-              locale="nl-NL"
-              timeIntervals={60}
-              showTimeSelect
-              showDisabledMonthNavigation
-            />
-            {!isEmpty(disabledIntervals2) && timeRangeSlider()}
-            <button type="submit">submit</button>
-          </form>
+                    </div>
+                    <form onSubmit={(e) => handleSubmit(e, startDate)}>
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            minDate={() => setStartDateLimit()}
+                            minDate={() => setStartDateLimit(kamer.startDate)}
+                            maxDate={dateRange[1]}
+                            showMinute={false}
+                            showSecond={false}
+                            timeFormat="HH:mm"
+                            filterTime={filterPassedTime}
+                            dateFormat="dd/MM/yyyy h:mm aa"
+                            dateFormat="Pp"
+                            timeFormat="p"
+                            locale="nl-NL"
+                            timeIntervals={60}
+                            showTimeSelect
+                            showDisabledMonthNavigation
+                        />
+                        {(!(disabledIntervals2 === [])) && timeRangeSlider()}
+                        <button type="submit">submit</button>
+                    </form>
 
-          {/* <DatePicker
+                    {/* <DatePicker
                      timeInputLabel="Time:"
                         selectsRange={true}
                         startDate={startDate}
@@ -277,9 +271,8 @@ export default function SingleKamer({ match }) {
                         }}
                         isClearable={true}
                     /> */}
-          <div></div>
-        </div>
-      )}
-    </FlexBox>
-  );
+                </div>
+            )}
+        </FlexBox>
+    );
 }
