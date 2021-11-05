@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { getSingleKamer } from "../../functions/kamers";
+import { getSingleKamer, maakNieuweReservatie } from "../../functions/kamers";
 import moment from "moment";
 import { FlexBox, setRem } from "../../styled/styles";
 import KamerImage from "../../images/neudebieb.png";
 import { Image } from "../../styled/Image";
 import TimeRange from "react-timeline-range-slider";
 import { endOfToday, set } from "date-fns";
+import { toast } from "react-toastify";
 import { isEmpty } from "../../helpers/IsEmpty";
 import addMonths from "date-fns/addMonths";
 import DatePicker, { ReactDatePicker } from "react-datepicker";
@@ -71,7 +72,6 @@ export default function SingleKamer({ match }) {
   const limite = [GetDate(7), GetDate(22)];
   const [disabledIntervals2, setDisabledIntervals2] = useState([]);
   const [errorAm, setErrorAm] = React.useState(false);
-  const [errorPm, setErrorPm] = React.useState(false);
   const [alReservatie, setAlReservatie] = React.useState(false);
   const timeRangeSlider = () => {
     if (disabledIntervals2 !== []) {
@@ -136,10 +136,6 @@ export default function SingleKamer({ match }) {
   };
 
   const getOverLap = (startDate, eindDate) => {
-    console.log(alReservatie, "alreserveratie");
-    //   console.log(startDate, eindDate, "dates");
-    // console.log(new Date(kamer.reserveringList[0].start), "reserverinlist[0]");
-    let beginEnEindTijd = [];
     for (let index = 0; index < kamer.reserveringList.length; index++) {
       let startReserveringDate = new Date(kamer.reserveringList[index].start);
       let eindReserveringDate = new Date(kamer.reserveringList[index].end);
@@ -148,14 +144,10 @@ export default function SingleKamer({ match }) {
         eindDate.getTime() > startReserveringDate.getTime()
       ) {
         return false;
-      
-      } else {
-        beginEnEindTijd = [GetDate(0, startDate), GetDate(0, eindDate)];
-        setAlReservatie(true)
-        setAm(beginEnEindTijd)
-        console.log(beginEnEindTijd, "bg");
-      }
+      } 
     }
+    setAm([GetDate(0,startDate), GetDate(0,eindDate)])
+    return true;
   };
 
   const showTime = () => {
@@ -183,8 +175,18 @@ export default function SingleKamer({ match }) {
     });
   };
 
-  const handleSubmit = (e, startDate) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+    if(!errorAm){
+        console.log(am);
+        console.log(am[0], "0");
+        console.log(am[1], "1");
+        maakNieuweReservatie(kamer.naam, am[0], am[1])
+    }else{
+      toast.error("Niet een open interval")
+    }
+    console.log(am, "interval");
+    console.log(errorAm, "error");
   };
   const filterPassedTime = (time) => {
     const currentDate = new Date();
@@ -262,7 +264,7 @@ export default function SingleKamer({ match }) {
 
                         })} */}
           </div>
-          <form onSubmit={(e) => handleSubmit(e, startDate)}>
+          <form onSubmit={(e) => handleSubmit(e)}>
             <DatePicker
               selected={startDate}
               onChange={(date) => setStartDate(date)}
