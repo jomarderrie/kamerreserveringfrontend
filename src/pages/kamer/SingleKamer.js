@@ -187,16 +187,19 @@ export default function SingleKamer({ match }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!errorAm) {
+    if (errorAm) {
       console.log(am);
       console.log(am[0], "0");
       console.log(am[1], "1");
-      maakNieuweReservatie(kamer.naam, am[0], am[1]);
-    } else {
-      toast.error("Niet een open interval");
+      maakNieuweReservatie(kamer.naam, am[0], am[1]).then((res,err) =>{
+      
+        toast.success("Succesvol nieuwe reservering aangemaakt.")
+      }).catch((error) =>  {
+        toast.error(error.response.data.message);
+        return Promise.reject(error);
+      });
     }
-    console.log(am, "interval");
-    console.log(errorAm, "error");
+
   };
   const filterPassedTime = (time) => {
     const currentDate = new Date();
