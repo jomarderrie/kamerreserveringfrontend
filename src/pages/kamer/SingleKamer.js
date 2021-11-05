@@ -96,9 +96,9 @@ export default function SingleKamer({ match }) {
     }
   }, [kamer]);
 
-  useEffect(() =>{
-      console.log(alReservatie, " alreservatie");
-  }, [alReservatie])
+  useEffect(() => {
+    console.log(alReservatie, " alreservatie");
+  }, [alReservatie]);
 
   const calculateDisabledIntervalsAndOpenInterval = () => {
     let reserveringListObj = [];
@@ -123,16 +123,24 @@ export default function SingleKamer({ match }) {
     let endTijd = new Date(kamer.sluitTijd);
     const interval = 60 * 60000;
     let intervalFound = false;
+    let alReservatieInterval = false;
     while (
-      (startTijd.getTime() <= endTijd.getTime() - interval) && (!alReservatie)
-      ) {
-      
-      getOverLap(
+      startTijd.getTime() <= endTijd.getTime() - interval &&
+      !alReservatieInterval
+    ) {
+      alReservatieInterval = getOverLap(
         new Date(startTijd.getTime()),
         new Date(startTijd.getTime() + interval)
       );
       startTijd = new Date(startTijd.getTime() + interval);
+      if( (!(startTijd.getTime() <= endTijd.getTime()-interval)) &&
+      !alReservatieInterval){
+        setAm(null,null)
+      }
     }
+    // if(!alReservatie){}
+    console.log(alReservatie, "alres");
+   
   };
 
   const getOverLap = (startDate, eindDate) => {
@@ -144,9 +152,11 @@ export default function SingleKamer({ match }) {
         eindDate.getTime() > startReserveringDate.getTime()
       ) {
         return false;
-      } 
+      }
     }
-    setAm([GetDate(0,startDate), GetDate(0,eindDate)])
+    setAm([GetDate(0, startDate), GetDate(0, eindDate)]);
+    // console.log(am, "am123");
+    setAlReservatie(true);
     return true;
   };
 
@@ -177,13 +187,13 @@ export default function SingleKamer({ match }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(!errorAm){
-        console.log(am);
-        console.log(am[0], "0");
-        console.log(am[1], "1");
-        maakNieuweReservatie(kamer.naam, am[0], am[1])
-    }else{
-      toast.error("Niet een open interval")
+    if (!errorAm) {
+      console.log(am);
+      console.log(am[0], "0");
+      console.log(am[1], "1");
+      maakNieuweReservatie(kamer.naam, am[0], am[1]);
+    } else {
+      toast.error("Niet een open interval");
     }
     console.log(am, "interval");
     console.log(errorAm, "error");
