@@ -72,6 +72,7 @@ export default function SingleKamer({ match }) {
   const [disabledIntervals2, setDisabledIntervals2] = useState([]);
   const [errorAm, setErrorAm] = React.useState(false);
   const [errorPm, setErrorPm] = React.useState(false);
+  const [alReservatie, setAlReservatie] = React.useState(false);
   const timeRangeSlider = () => {
     if (disabledIntervals2 !== []) {
       return (
@@ -94,6 +95,10 @@ export default function SingleKamer({ match }) {
       calculateDisabledIntervalsAndOpenInterval();
     }
   }, [kamer]);
+
+  useEffect(() =>{
+      console.log(alReservatie, " alreservatie");
+  }, [alReservatie])
 
   const calculateDisabledIntervalsAndOpenInterval = () => {
     let reserveringListObj = [];
@@ -118,14 +123,10 @@ export default function SingleKamer({ match }) {
     let endTijd = new Date(kamer.sluitTijd);
     const interval = 60 * 60000;
     let intervalFound = false;
-    while (startTijd.getTime() <= endTijd.getTime() - interval) {
-        // console.log(startTijd);
-      // getOverLap()
-      //   console.log(new Date(startTijd.getTime()).toLocaleTimeString());
-      //   results.push({
-      //     startTijd: new Date(startTijd.getTime()).toLocaleTimeString(),
-      //     eindTijd: new Date(startTijd.getTime() + interval).toLocaleTimeString(),
-      //   });
+    while (
+      (startTijd.getTime() <= endTijd.getTime() - interval) && (!alReservatie)
+      ) {
+      
       getOverLap(
         new Date(startTijd.getTime()),
         new Date(startTijd.getTime() + interval)
@@ -135,32 +136,26 @@ export default function SingleKamer({ match }) {
   };
 
   const getOverLap = (startDate, eindDate) => {
+    console.log(alReservatie, "alreserveratie");
     //   console.log(startDate, eindDate, "dates");
     // console.log(new Date(kamer.reserveringList[0].start), "reserverinlist[0]");
-    
-    
+    let beginEnEindTijd = [];
     for (let index = 0; index < kamer.reserveringList.length; index++) {
-        let startReserveringDate = new Date(kamer.reserveringList[index].start);
-        let eindReserveringDate = new Date(kamer.reserveringList[index].end);
-        // console.log(kamer.reserveringList[index], index);
-        if (!(startDate.getTime() < eindReserveringDate.getTime()  && eindDate.getTime()  > startReserveringDate.getTime())) {
-          console.log(startDate, eindDate, "dates");
+      let startReserveringDate = new Date(kamer.reserveringList[index].start);
+      let eindReserveringDate = new Date(kamer.reserveringList[index].end);
+      if (
+        startDate.getTime() < eindReserveringDate.getTime() &&
+        eindDate.getTime() > startReserveringDate.getTime()
+      ) {
+        return false;
+      
+      } else {
+        beginEnEindTijd = [GetDate(0, startDate), GetDate(0, eindDate)];
+        setAlReservatie(true)
+        setAm(beginEnEindTijd)
+        console.log(beginEnEindTijd, "bg");
       }
-      //   const element = array[index];
-      //   console.log(kamer.reserveringList[index], "index123");
     }
-    //   kamer.reserveringList.f
-    // kamer.reserveringList.map((item) => {
-    //     if((startDate<item.end) && eindDate>item.start){
-
-    //     }
-    //   console.log(item, "item123");
-    // });
-    // console.log(kamer);
-
-    // if(reserver !== []){
-
-    // }
   };
 
   const showTime = () => {
