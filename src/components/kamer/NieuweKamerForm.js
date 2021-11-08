@@ -1,250 +1,316 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { FlexBoxContainerInput } from '../../styled/globals/AuthBoxContainer';
+import React, { useState, useContext, useEffect } from "react";
+import {
+  FlexBoxContainerInput,
+  FlexContainerFileInput,
+} from "../../styled/globals/AuthBoxContainer";
 import { Controller, useForm, ErrorMessage } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import DatePicker, { ReactDatePicker } from 'react-datepicker'
+import DatePicker, { ReactDatePicker } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import 'rc-time-picker/assets/index.css';
-import TimePicker from 'rc-time-picker';
-import { editKamer, maakNieuweKamer } from '../../functions/kamers';
-import moment from 'moment';
-import {isEmpty} from '../../helpers/IsEmpty';
+import "rc-time-picker/assets/index.css";
+import TimePicker from "rc-time-picker";
+import { editKamer, maakNieuweKamer } from "../../functions/kamers";
+import moment from "moment";
+import { isEmpty } from "../../helpers/IsEmpty";
 
-export default function NieuweKamerForm({ kamer }) {
-    const [submitting, setSubmitting] = useState(false);
-    const [serverErrors, setServerErrors] = useState([]);
-    const [selected, onChange] = useState(new Date())
-    const [loading, setLoading] = useState(true)
-    let history = useHistory();
+export default function NieuweKamerForm({ kamer, loading, naam }) {
+  const [submitting, setSubmitting] = useState(false);
+  const [serverErrors, setServerErrors] = useState([]);
+  const [selected, onChange] = useState(new Date());
+  const [image, setImage] = useState(undefined);
+  const [geladenKamer, setGeladenKamer] = useState(false);
+  //   const { naam } = match.params;
 
-   
+  let history = useHistory();
 
-    const {
-        register,
-        handleSubmit,
-        control,
-        setValue,
-        data,
-        reset,
-        value,
-        // defaultValues: {"startTijd":moment().hour(0).minute(0).seconds(0)},
-        formState: { errors }
-    } = useForm();
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    data,
+    reset,
+    value,
+    // defaultValues: {"startTijd":moment().hour(0).minute(0).seconds(0)},
+    formState: { errors },
+  } = useForm();
 
-    useEffect(() => {
-        console.log(kamer)
-        // "naam", kamer.naam
-  
+  // moment().hour(7).minute(0).seconds(0)
+  useEffect(() => {
+    // console.log(kamer, "kek123");
+    // console.log(isEmpty(kamer), kamer, " k1 ");
+    // "naam", kamer.naam
+    // !isEmpty(kamer)
+    //   ? console.log( moment()
+    //       .hour(new Date(kamer.startDatum).getHours())
+    //       .minute(0)
+    //       .seconds(0), "oef")
+    //   : console.log(moment.hour(17).minute(0).seconds(0));
+
+    // console.log(isEmpty(kamer), "kamer123");
+    // setGeladenKamer(false);
+    if (!isEmpty(kamer)) {
+      //   console.log();
+      //   moment().hour(new Date(kamer.startDatum).getHours());
+      let eindTijdDate = new Date(kamer.sluitTijd);
+      let startTijdDate = new Date(kamer.startTijd);
+      // register({'startTijd': moment().hour(0).minute(0).seconds(0)})
+      setValue("naam", kamer.naam);
+      setValue("eindDatum", eindTijdDate);
+      setValue("startDatum", startTijdDate);
+      //   setValue("s")
+      //   reset({"startTijd":moment().hour(7).minute(0).seconds(0)});
+      let startTijd = moment().hour(7).minute(0).seconds(0);
+      //   startTijd._i= "16:51:51"
+      startTijd._f = "HH::mm:ss";
+      // setValue("startTijd",);
+      //   setValue("sluitTijd", new Date().getHours())
+      //   let a = moment().hour(eindTijdDate.getHours()).minute(0).seconds(0)
+      //   console.log(a, "");
+      //   setValue("startTijd", moment().hour(0).minute(0).seconds(0));
+      // console.log( moment().subtract(2, 'hours'));`
+      console.log(startTijd, "starttijd");
+      setValue("startTijd", startTijd);
+      //   console.log(eindTijdDate, "eind");
+      // reset({naam:kamer.naam, startTijd: moment().hour(0).minute(0).seconds(0) })
+      // reset({naam:kamer.naam})
+      // console.log(setValue);
+      // startTijd
+      // console.log(a);
+      setGeladenKamer(true);
+    }
+  }, [kamer]);
+
+  useEffect(() => {
+    console.log(geladenKamer, "dog");
+  }, [geladenKamer]);
+
+  const getStartTijd = () => {
+    // if (loading) {
+    //   return moment().hour(new Date(kamer.startTijd).getHours());
+    // } else {
+    return moment().hour(7).minute(0).seconds(0);
+    // }
+  };
+  //   const getSluitTijd = () => {
+  //     if (!loading) {
+  //       return moment().hour(new Date(kamer.sluitTijd).getHours());
+  //     } else {
+  //       return moment().hour(17).minute(0).seconds(0);
+  //     }
+  //   };
+
+  return (
+    <form
+      onSubmit={handleSubmit(async (data) => {
+        setSubmitting(true);
+        // if (event.target.files.length === 0) {
+        // return;
+        //   }
+        //   const file = event.target.files[0];
+        //   let reader = new FileReader();
+        //   reader.onloadend = () => {
+        //     dispatch({ type: 'select-file', payload: reader.result });
+        //   };
+        //   reader.readAsDataURL(file);
+        console.log(data);
+        //creeer datum van object
+        let startDatumObj = new Date(data.startDatum);
+
+        let eindDatumObj = new Date(data.eindDatum);
+
+        //set tijd van
+        if (data.startTijd === undefined) {
+          startDatumObj.setHours(17);
+        } else {
+          startDatumObj.setHours(data.startTijd.hours() + 2);
+        }
+
+        startDatumObj.setMinutes(0);
+        startDatumObj.setSeconds(0);
+        startDatumObj.setMilliseconds(0);
+        if (data.startTijd === undefined) {
+          startDatumObj.setHours(7);
+        } else {
+          eindDatumObj.setHours(data.sluitTijd.hours() + 2);
+        }
+        eindDatumObj.setMinutes(0);
+        eindDatumObj.setSeconds(0);
+        eindDatumObj.setMilliseconds(0);
         if (!isEmpty(kamer)) {
-            let eindTijdDate = new Date(kamer.sluitTijd);
-            let startTijdDate = new Date(kamer.startTijd);
-            // register({'startTijd': moment().hour(0).minute(0).seconds(0)})
-            setValue("naam", kamer.naam,)
-            setValue("eindDatum", eindTijdDate)
-            setValue("startDatum", startTijdDate)
-            setLoading(false)
-            // let a = moment().hour(eindTijdDate.getHours()).minute(0).seconds(0)
-            // setValue("startTijd", moment().hour(0).minute(0).seconds(0))
-            // console.log( moment().subtract(2, 'hours'));
-            // setValue("startTijd", 3)
-            console.log(data);
-            // reset({naam:kamer.naam, startTijd: moment().hour(0).minute(0).seconds(0) })
-            // reset({naam:kamer.naam})
-            // console.log(setValue);
-            // startTijd
-            // console.log(a);
-        }
-
-    }, [kamer])
-
-
-    const getStartTijd = () => {
-        if (!loading) {
-            return moment().hour(new Date(kamer.startTijd).getHours())
-        } else {
-            return moment().hour(7).minute(0)
-        }
-    }
-    const getSluitTijd = () => {
-        if (!loading) {
-            return moment().hour(new Date(kamer.sluitTijd).getHours())
-        } else {
-            return moment().hour(17).minute(0)
-        }
-    }
-
-    return (
-        <form onSubmit={handleSubmit(async (data) => {
-            setSubmitting(true);
-            console.log(data);
-            //creeer datum van object
-            let startDatumObj = new Date(data.startDatum);
-
-            let eindDatumObj = new Date(data.eindDatum)
-
-            console.log(startDatumObj, eindDatumObj)
-
-            //set tijd van 
-            if (data.startTijd === undefined) {
-                startDatumObj.setHours(17)
-            } else {
-                startDatumObj.setHours(data.startTijd.hours() + 2)
-            }
-
-            startDatumObj.setMinutes(0)
-            startDatumObj.setSeconds(0);
-            startDatumObj.setMilliseconds(0)
-            if (data.startTijd === undefined) {
-                startDatumObj.setHours(7)
-            } else {
-                eindDatumObj.setHours(data.sluitTijd.hours() + 2)
-            }
-            eindDatumObj.setMinutes(0)
-            eindDatumObj.setSeconds(0);
-            eindDatumObj.setMilliseconds(0)
-            if(!isEmpty(kamer)){
-                await editKamer(kamer.naam,data.naam,eindDatumObj, startDatumObj ).then((res,err) =>{
-                    if (err) {
-                        console.log(err);
-                        toast.error("Error met het editen van een kamer")
-                    } else {
-                        toast.success(`Succesvol kamer veranderd`)
-                        setSubmitting(false)
-                        // toast.error(err)
-                    }
-                })
-            }else{
-                await maakNieuweKamer(data.naam, eindDatumObj, startDatumObj).then((res, err) => {
-                if (err) {
-                    console.log(err);
-                    toast.error("Error met het toevoegen van een kamer")
-                } else {
-                    toast.success(`Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`)
-                    setSubmitting(false)
-                    // toast.error(err)
-                }
+          await editKamer(kamer.naam, data.naam, eindDatumObj, startDatumObj)
+            .then((res, err) => {
+              if (err) {
+                console.log(err);
+                toast.error("Error met het editen van een kamer");
+              } else {
+                toast.success(`Succesvol kamer veranderd`);
+                setSubmitting(false);
+                // toast.error(err)
+              }
             })
-            }
-            history.push("/kamers")
+            .catch((err) => {
+              toast.error(err.response.data.message);
+              return Promise.reject(err);
+            });
+        } else {
+          await maakNieuweKamer(data.naam, eindDatumObj, startDatumObj)
+            .then((res, err) => {
+              if (err) {
+                console.log(err);
+                toast.error("Error met het toevoegen van een kamer");
+              } else {
+                toast.success(
+                  `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
+                );
+                setSubmitting(false);
+                // toast.error(err)
+              }
+            })
+            .catch((err) => {
+              toast.error(err.response.data.message);
+              return Promise.reject(err);
+            });
+        }
+        history.push("/kamers");
+      })}
+    >
+      <FlexBoxContainerInput>
+        {serverErrors && (
+          <ul>
+            {serverErrors.map((error) => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
+      </FlexBoxContainerInput>
+      <FlexBoxContainerInput z={"column"} y={"none"}>
+        <label htmlFor="naam">Naam van kamer</label>
 
+        <input
+          {...register("naam", {
+            // required: "Vul alstublieft in",
+          })}
+        />
+        {errors.naam && <p>{errors.naam.message}</p>}
+      </FlexBoxContainerInput>
 
-        })}>
-            <FlexBoxContainerInput>
-                {serverErrors && (
-                    <ul>
-                        {serverErrors.map((error) => (
-                            <li key={error}>{error}</li>
-                        ))}
-                    </ul>
-                )}
-            </FlexBoxContainerInput>
-            <FlexBoxContainerInput z={"column"} y={"none"}>
+      <FlexBoxContainerInput z={"column"} y={"none"}>
+        <label htmlFor="startDatum">Start datum</label>
+        <Controller
+          name={"startDatum"}
+          control={control}
+          defaultValue={new Date()}
+          render={({ field: { onChange, value } }) => {
+            return (
+              <DatePicker
+                onChange={onChange}
+                dateFormat="dd/MM/yyyy"
+                selected={value}
+              />
+            );
+          }}
+        />
+        {errors.StartDatum && <p>{errors.StartDatum.message}</p>}
+      </FlexBoxContainerInput>
+      <FlexBoxContainerInput z={"column"} y={"none"}>
+        <label htmlFor="eindDatum">Eind datum</label>
+        <Controller
+          name={"eindDatum"}
+          control={control}
+          render={({ field: { onChange, value } }) => {
+            return (
+              <DatePicker
+                dateFormat="dd/MM/yyyy"
+                onChange={onChange}
+                selected={value}
+              />
+            );
+          }}
+        />
+        {errors.eindDatum && <p>{errors.eindDatum.message}</p>}
+      </FlexBoxContainerInput>
 
-                <label htmlFor="naam">Naam van kamer</label>
+      {
+        <FlexBoxContainerInput z={"column"} y={"none"}>
+          <label htmlFor="startTijd">Start tijd</label>
+          <Controller
+            // {...register("startTijd", {
+            //   // required: "Vul alstublieft in",
+            // })}
+            // value={startTijd}
+            name={"startTijd"}
+            control={control}
+            render={({ field: { onChange, value }, ref }) => {
+              return (
+                <TimePicker
+                  inputRef={ref}
+                  {...register("startTijd", {
+                    // required: "Vul alstublieft in",
+                  })}
+                  onChange={onChange}
+                  //   defaultValue={
+                  //     geladenKamer
+                  //       ? moment().hour(new Date(kamer.startTijd).getHours())
+                  //       : moment().hour(7).minute(0).seconds(0)
+                  //   }
+                  //   defaultValue={moment().hour(17).minute(0)}
+                  //   defaultValue={
 
-                <input
-                    {...register("naam", {
-                        // required: "Vul alstublieft in",
-                    })}
+                  //   }
+                  selected={value}
+                  showMinute={false}
+                  showSecond={false}
                 />
-                {errors.naam && <p>{errors.naam.message}</p>}
-            </FlexBoxContainerInput>
+              );
+            }}
+          />
+          {errors.startTijd && <p>{errors.startTijd.message}</p>}
+        </FlexBoxContainerInput>
+      }
+      {/* {kamer==={}||kamer===undefined?<div>hey</div>:<div>hey123</div>} */}
+      {/* {kamer!=={}?<div>hey</div>:div>not hey</div>} */}
+      {/* {} */}
 
-            <FlexBoxContainerInput z={"column"} y={"none"}>
-                <label htmlFor="startDatum">Start datum</label>
-                <Controller
-                    name={"startDatum"}
-                    control={control}
-                    defaultValue={new Date()}
+      <FlexBoxContainerInput z={"column"} y={"none"}>
+        <label htmlFor="sluitTijd">Sluit tijd</label>
+        <Controller
+          name={"sluitTijd"}
+          control={control}
+          render={({ field: { onChange, value } }) => {
+            return (
+              <TimePicker
+                onChange={onChange}
+                selected={value}
+                // defaultValue={() =>getSluitTijd()}
+                showMinute={false}
+                showSecond={false}
+              />
+            );
+          }}
+        />
+        {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
+      </FlexBoxContainerInput>
 
-                    render={({ field: { onChange, value } }) => {
-                        return (
-                            <DatePicker
-                                onChange={onChange}
-                                selected={value}
+      <FlexContainerFileInput z={"column"} y={"none"}>
+        <label htmlFor="kamer_fotos">Kamer foto's</label>
+        <input
+          {...register("kamer_fotos")}
+          type="file"
+          name="kamer_fotos"
+          className={"kamer_foto"}
+          multiple
+          accept="image/png, image/jpeg"
+        ></input>
+        {errors.kamer_fotos && <p>{errors.kamer_fotos.message}</p>}
+      </FlexContainerFileInput>
 
-                            />
-                        );
-                    }}
-                />
-                {errors.StartDatum && <p>{errors.StartDatum.message}</p>}
-
-            </FlexBoxContainerInput>
-
-            <FlexBoxContainerInput z={"column"} y={"none"}>
-                <label htmlFor="eindDatum">Eind datum</label>
-                <Controller
-                    name={"eindDatum"}
-                    control={control}
-
-                    render={({ field: { onChange, value } }) => {
-                        return (
-                            <DatePicker
-                                onChange={onChange}
-                                selected={value}
-
-                            />
-                        );
-                    }}
-                />
-                {errors.eindDatum && <p>{errors.eindDatum.message}</p>}
-            </FlexBoxContainerInput>
-
-
-            {
-                <FlexBoxContainerInput z={"column"} y={"none"}>
-                    <label htmlFor="startTijd">Start tijd</label>
-                    <Controller
-                        name={"startTijd"}
-                        control={control}
-                        render={({ field: { onChange, value } }) => {
-                            return (
-                                <TimePicker
-                                    onChange={onChange}
-                                    // defaultValue={() => getStartTijd()}
-                                    selected={value}
-                                    showMinute={false}
-                                    showSecond={false}
-                                />
-                            );
-                        }}
-                    />
-                    {errors.startTijd && <p>{errors.startTijd.message}</p>}
-                </FlexBoxContainerInput>
-            }
-
-
-            <FlexBoxContainerInput z={"column"} y={"none"}>
-                <label htmlFor="sluitTijd">Sluit tijd</label>
-                <Controller
-                    name={"sluitTijd"}
-                    control={control}
-
-                    render={({ field: { onChange, value } }) => {
-                        return (
-                            <TimePicker
-                                onChange={onChange}
-                                selected={value}
-                                // defaultValue={() =>getSluitTijd()}
-                                showMinute={false}
-                                showSecond={false}
-                            />
-                        );
-                    }}
-                />
-                {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
-            </FlexBoxContainerInput>
-
-
-
-
-
-            <FlexBoxContainerInput z={"column"}>
-                <button type="submit" className={"submit-auth-btn"}>
-                    Submit
-                </button>
-            </FlexBoxContainerInput>
-        </form>
-    )
+      <FlexBoxContainerInput z={"column"}>
+        <button type="submit" className={"submit-auth-btn"}>
+          Submit
+        </button>
+      </FlexBoxContainerInput>
+    </form>
+  );
 }
