@@ -19,7 +19,6 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
   const [serverErrors, setServerErrors] = useState([]);
   const [selected, onChange] = useState(new Date());
   const [image, setImage] = useState(undefined);
-  const [geladenKamer, setGeladenKamer] = useState(false);
   //   const { naam } = match.params;
 
   let history = useHistory();
@@ -49,7 +48,6 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
     //   : console.log(moment.hour(17).minute(0).seconds(0));
 
     // console.log(isEmpty(kamer), "kamer123");
-    // setGeladenKamer(false);
     if (!isEmpty(kamer)) {
       //   console.log();
       //   moment().hour(new Date(kamer.startDatum).getHours());
@@ -61,30 +59,45 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
       setValue("startDatum", startTijdDate);
       //   setValue("s")
       //   reset({"startTijd":moment().hour(7).minute(0).seconds(0)});
-      let startTijd = moment().hour(7).minute(0).seconds(0);
       //   startTijd._i= "16:51:51"
-      startTijd._f = "HH::mm:ss";
+      //   let g = moment().hour(new Date(kamer.startTijd).getHours()).seconds(0).minutes(0)
+      //   console.log(g, "geez");
+      console.log(
+        kamer === undefined
+          ? moment.hour(17).seconds(0).minute(0)
+          : kamer !== {} ?<div>Loading...</div>:
+              moment()
+                .hour(new Date(kamer.sluitTijd).getHours())
+                .seconds(0)
+                .minutes(0),
+      );
+      console.log(
+        kamer === undefined ? (
+          moment.hour(7).seconds(0).minute(0)
+        ) : kamer === {} ? (
+          <div>Loading...</div>
+        ) : (
+          moment()
+            .hour(new Date(kamer.startTijd).getHours())
+            .seconds(0)
+            .minutes(0)
+        ),
+        "kek"
+      );
       // setValue("startTijd",);
       //   setValue("sluitTijd", new Date().getHours())
       //   let a = moment().hour(eindTijdDate.getHours()).minute(0).seconds(0)
       //   console.log(a, "");
       //   setValue("startTijd", moment().hour(0).minute(0).seconds(0));
       // console.log( moment().subtract(2, 'hours'));`
-      console.log(startTijd, "starttijd");
-      setValue("startTijd", startTijd);
       //   console.log(eindTijdDate, "eind");
       // reset({naam:kamer.naam, startTijd: moment().hour(0).minute(0).seconds(0) })
       // reset({naam:kamer.naam})
       // console.log(setValue);
       // startTijd
       // console.log(a);
-      setGeladenKamer(true);
     }
   }, [kamer]);
-
-  useEffect(() => {
-    console.log(geladenKamer, "dog");
-  }, [geladenKamer]);
 
   const getStartTijd = () => {
     // if (loading) {
@@ -249,16 +262,19 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
                   {...register("startTijd", {
                     // required: "Vul alstublieft in",
                   })}
+                  defaultValue={
+                    kamer === undefined ? (
+                      moment().hour(7).seconds(0).minute(0)
+                    ) : kamer === {} ? (
+                      <div>Loading...</div>
+                    ) : (
+                      moment()
+                        .hour(new Date(kamer.startTijd).getHours())
+                        .seconds(0)
+                        .minutes(0)
+                    )
+                  }
                   onChange={onChange}
-                  //   defaultValue={
-                  //     geladenKamer
-                  //       ? moment().hour(new Date(kamer.startTijd).getHours())
-                  //       : moment().hour(7).minute(0).seconds(0)
-                  //   }
-                  //   defaultValue={moment().hour(17).minute(0)}
-                  //   defaultValue={
-
-                  //   }
                   selected={value}
                   showMinute={false}
                   showSecond={false}
@@ -278,11 +294,27 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
         <Controller
           name={"sluitTijd"}
           control={control}
-          render={({ field: { onChange, value } }) => {
+          render={({ field: { onChange, value }, ref }) => {
             return (
               <TimePicker
+                {...register("sluitTijd", {
+                  // required: "Vul alstublieft in",
+                })}
                 onChange={onChange}
+                inputRef={ref}
                 selected={value}
+                defaultValue={
+                  kamer === undefined ? (
+                    moment().hour(17).seconds(0).minute(0)
+                  ) : kamer !== {} ? (
+                    moment()
+                      .hour(new Date(kamer.sluitTijd).getHours())
+                      .seconds(0)
+                      .minutes(0)
+                  ) : (
+                    <div>Loading...</div>
+                  )
+                }
                 // defaultValue={() =>getSluitTijd()}
                 showMinute={false}
                 showSecond={false}
