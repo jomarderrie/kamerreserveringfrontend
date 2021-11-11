@@ -19,8 +19,7 @@ export const FlexBoxContainerInput = styled(FlexBox)`
   .submit-auth-btn {
     width: 100%;
     padding: 7px;
-    /* margin: 12 px 0 px; */
-    margin-bottom: 40px;
+    margin-top: 30px;
     font-size: 24px;
   }
 

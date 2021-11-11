@@ -37,87 +37,44 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
 
   // moment().hour(7).minute(0).seconds(0)
   useEffect(() => {
-    // console.log(kamer, "kek123");
-    // console.log(isEmpty(kamer), kamer, " k1 ");
-    // "naam", kamer.naam
-    // !isEmpty(kamer)
-    //   ? console.log( moment()
-    //       .hour(new Date(kamer.startDatum).getHours())
-    //       .minute(0)
-    //       .seconds(0), "oef")
-    //   : console.log(moment.hour(17).minute(0).seconds(0));
-
-    // console.log(isEmpty(kamer), "kamer123");
     if (!isEmpty(kamer)) {
-      //   console.log();
-      //   moment().hour(new Date(kamer.startDatum).getHours());
       let eindTijdDate = new Date(kamer.sluitTijd);
       let startTijdDate = new Date(kamer.startTijd);
-      // register({'startTijd': moment().hour(0).minute(0).seconds(0)})
       setValue("naam", kamer.naam);
       setValue("eindDatum", eindTijdDate);
       setValue("startDatum", startTijdDate);
-      //   setValue("s")
-      //   reset({"startTijd":moment().hour(7).minute(0).seconds(0)});
-      //   startTijd._i= "16:51:51"
-      //   let g = moment().hour(new Date(kamer.startTijd).getHours()).seconds(0).minutes(0)
-      //   console.log(g, "geez");
-      console.log(
-        kamer === undefined
-          ? moment.hour(17).seconds(0).minute(0)
-          : kamer !== {} ?<div>Loading...</div>:
-              moment()
-                .hour(new Date(kamer.sluitTijd).getHours())
-                .seconds(0)
-                .minutes(0),
-      );
-      console.log(
-        kamer === undefined ? (
-          moment.hour(7).seconds(0).minute(0)
-        ) : kamer === {} ? (
-          <div>Loading...</div>
-        ) : (
-          moment()
-            .hour(new Date(kamer.startTijd).getHours())
-            .seconds(0)
-            .minutes(0)
-        ),
-        "kek"
-      );
-      // setValue("startTijd",);
-      //   setValue("sluitTijd", new Date().getHours())
-      //   let a = moment().hour(eindTijdDate.getHours()).minute(0).seconds(0)
-      //   console.log(a, "");
-      //   setValue("startTijd", moment().hour(0).minute(0).seconds(0));
-      // console.log( moment().subtract(2, 'hours'));`
-      //   console.log(eindTijdDate, "eind");
-      // reset({naam:kamer.naam, startTijd: moment().hour(0).minute(0).seconds(0) })
-      // reset({naam:kamer.naam})
-      // console.log(setValue);
-      // startTijd
-      // console.log(a);
     }
   }, [kamer]);
 
-  const getStartTijd = () => {
-    // if (loading) {
-    //   return moment().hour(new Date(kamer.startTijd).getHours());
-    // } else {
-    return moment().hour(7).minute(0).seconds(0);
-    // }
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageData, setImageData] = useState(null);
+  const [imageName, setImageName] = useState("");
+
+  const handleFileChange = (e) => {
+      e.preventDefault();
+    let file = e.target.files[0];
+    let formData = new FormData(); 
+    console.log(e.target.files, "files");
+    for(let key of Object.keys(e.target.files)) {
+        if (key !== 'length') {
+          formData.append('files', e.target.files[key]);
+        }
+      }
+      console.log(formData, "formdata");
+        
+    // console.log(e.target.files, "hey");
   };
-  //   const getSluitTijd = () => {
-  //     if (!loading) {
-  //       return moment().hour(new Date(kamer.sluitTijd).getHours());
-  //     } else {
-  //       return moment().hour(17).minute(0).seconds(0);
-  //     }
-  //   };
 
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
         setSubmitting(true);
+        // let file = data.kamer_fotos[0];
+        // let reader = new FileReader();
+        // reader.onloadend = () =>{
+        //     console.log(reader.result);
+        // }
+        // reader.readAsDataURL(file);
         // if (event.target.files.length === 0) {
         // return;
         //   }
@@ -327,10 +284,12 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
 
       <FlexContainerFileInput z={"column"} y={"none"}>
         <label htmlFor="kamer_fotos">Kamer foto's</label>
+
         <input
           {...register("kamer_fotos")}
           type="file"
           name="kamer_fotos"
+          onChange={handleFileChange}
           className={"kamer_foto"}
           multiple
           accept="image/png, image/jpeg"
