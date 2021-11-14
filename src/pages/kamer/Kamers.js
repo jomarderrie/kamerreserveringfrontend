@@ -1,11 +1,12 @@
 import React, { Component, useEffect, useState } from "react";
-import { deleteKamerMetFetch, getAllKamers } from "../../functions/kamers";
+import { deleteKamerMetFetch, getAllKamers, getImageFromDb } from "../../functions/kamers";
 import { set } from "react-hook-form";
 import { FlexBox } from "../../styled/styles";
 import KamerCard from "../../components/kamer/KamerCard";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { deleteKamer } from "../../functions/kamers";
+import { Image } from "../../styled/Image";
 
 function Kamers() {
   const [kamers, setKamers] = useState([]);
@@ -17,6 +18,7 @@ function Kamers() {
     getAllKamers().then((res, err) => {
       console.log(res);
       setKamers(res.data);
+      console.log(res.data, "kamers");
       setLoading(false);
     });
   }, []);
@@ -56,13 +58,14 @@ function Kamers() {
       </Link>
 
       <FlexBox>
-        {kamers.map((kamer) => {
+        {kamers.map((kamer,key) => {
           return (
-            <div key={kamer.id}>
-              <KamerCard kamer={kamer} deleteKamer={deleteKamerOnClick} />
+            <div key={key}>
+              <KamerCard kamer={kamer} deleteKamer={deleteKamerOnClick} image={kamer.attachment}/>
             </div>
           );
         })}
+        {/* {() => getImageFromDb()} */}
       </FlexBox>
     </div>
   );

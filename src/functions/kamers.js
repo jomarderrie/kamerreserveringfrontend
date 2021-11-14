@@ -22,3 +22,10 @@ export const deleteKamer = async (naam) =>{
 export const maakNieuweReservatie = async (naam, startTijd, eindTijd) =>{
     await axios.post(`http://localhost:8080/kamer/${naam}/reserveer`, {startTijd, eindTijd}, { headers: { authorization: 'Basic ' + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"), "Access-Control-Allow-Origin": "*"  }})
 }
+
+export const getImageFromDb = async(naam) => {
+    await axios.get(`http://localhost:8080/images/kamer/ok/${naam}`, { headers: { authorization: 'Basic ' + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"), "Access-Control-Allow-Origin": "*"  }})
+    // .then((m) =>{
+    //     console.log(m);
+    // })
+}
