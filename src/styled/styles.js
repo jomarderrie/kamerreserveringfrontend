@@ -20,6 +20,13 @@ export const FlexBox = styled.div`
 ${(props) => setFlex({x: props.x, y: props.y, z: props.z})}
 `
 
+export const setPadding = ({top='0',right='0',bottom='0',left='0'} = {}) =>{
+    return `padding:${setRem(top)} ${setRem(right)} ${setRem(bottom)} ${setRem(left)} `
+} 
+
+export const setUpDownPadding = ({upDown='0',leftRight='0'} = {}) =>{
+    return `padding:${setRem(upDown)} ${setRem(leftRight)};`
+} 
 
 
 export const setFlex = ({x = 'center', y = 'center', z = 'row'} = {}) => {

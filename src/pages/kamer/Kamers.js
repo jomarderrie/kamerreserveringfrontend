@@ -1,19 +1,28 @@
 import React, { Component, useEffect, useState } from "react";
-import { deleteKamerMetFetch, getAllKamers, getImageFromDb } from "../../functions/kamers";
+import {
+  deleteKamerMetFetch,
+  getAllKamers,
+  getImageFromDb,
+} from "../../functions/kamers";
 import { set } from "react-hook-form";
-import { FlexBox } from "../../styled/styles";
+import { FlexBox, setUpDownPadding } from "../../styled/styles";
 import KamerCard from "../../components/kamer/KamerCard";
 import { Link, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { deleteKamer } from "../../functions/kamers";
 import { Image } from "../../styled/Image";
-
+import Input from "../../styled/globals/Input";
+import InputWithImage from "../../styled/globals/Input";
+import { FlexBoxUpDown } from "./../../styled/globals/StyledFlexBoxContainer";
+import { ButtonLink, StyledButtonLink, StyledRouterLink } from "./../../styled/globals/StyledRouterLink";
+import SideBar from "../../components/navbar/SideBar";
 function Kamers() {
   const [kamers, setKamers] = useState([]);
   const [loading, setLoading] = useState(false);
   let history = useHistory();
 
   useEffect(() => {
+    console.log(setUpDownPadding({ upDown: 20 }), "hey");
     setLoading(true);
     getAllKamers().then((res, err) => {
       console.log(res);
@@ -47,21 +56,33 @@ function Kamers() {
 
   return (
     <div>
-      <h2>Kamers</h2>
-      <Link
-        className="btn btn-pink"
-        role="button"
-        to={`/kamer/new`}
-        type="button"
-      >
-        Maak nieuwe kamer
-      </Link>
+      <FlexBoxUpDown x="space-between" upDown="10" leftRight="15">
+        <SideBar/>
+     
+
+        <div>
+          <StyledButtonLink text="Maak nieuwe kamer" to2={"/kamer/new"} icon={"fa-plus"}/>
+
+          {/* <StyledRouterLink
+            className="btn btn-pink"
+            role="button"
+            to={`/kamer/new`}
+            type="button"
+          >
+            Maak nieuwe kamer
+          </StyledRouterLink> */}
+        </div>
+      </FlexBoxUpDown>
 
       <FlexBox>
-        {kamers.map((kamer,key) => {
+        {kamers.map((kamer, key) => {
           return (
             <div key={key}>
-              <KamerCard kamer={kamer} deleteKamer={deleteKamerOnClick} image={kamer.attachment}/>
+              <KamerCard
+                kamer={kamer}
+                deleteKamer={deleteKamerOnClick}
+                image={kamer.attachment}
+              />
             </div>
           );
         })}
@@ -70,17 +91,5 @@ function Kamers() {
     </div>
   );
 }
-
-// class Kamers extends Component {
-//
-//
-//     render() {
-//         return (
-//             <div>
-//                 hello from kamers
-//             </div>
-//         );
-//     }
-// }
 
 export default Kamers;

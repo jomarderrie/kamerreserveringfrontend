@@ -13,6 +13,8 @@ import TimePicker from "rc-time-picker";
 import { editKamer, maakNieuweKamer } from "../../functions/kamers";
 import moment from "moment";
 import { isEmpty } from "../../helpers/IsEmpty";
+import { uploadKamerImage, uploadKamerImages } from './../../functions/images';
+import UploadFile from "./FileUpload";
 
 export default function NieuweKamerForm({ kamer, loading, naam }) {
   const [submitting, setSubmitting] = useState(false);
@@ -52,16 +54,26 @@ export default function NieuweKamerForm({ kamer, loading, naam }) {
 
   const handleFileChange = (e) => {
       e.preventDefault();
-    let file = e.target.files[0];
     let formData = new FormData(); 
-    console.log(e.target.files, "files");
-    for(let key of Object.keys(e.target.files)) {
-        if (key !== 'length') {
-          formData.append('files', e.target.files[key]);
-        }
-      }
-      console.log(formData, "formdata");
-        
+    const arData = new FormData();
+
+    arData.append("file", e.target.files[0],"f")
+    
+    uploadKamerImage("Kamer1", arData);
+    
+    Array.from(e.target.files).forEach((image,index) => {
+      console.log(image, "image " + index);
+      formData.append("files", image, image.name);
+  });
+      // formData.append('files',e.target.files[0]);
+      
+   
+      for (var [key, value] of formData.entries()) { 
+        console.log(key, value , 'k');
+       }
+       uploadKamerImage("kamer1", arData)
+      // console.log(formData, "formdata");
+      uploadKamerImages("Kamer1",formData)
     // console.log(e.target.files, "hey");
   };
 
