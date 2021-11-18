@@ -29,9 +29,9 @@ export const setUpDownPadding = ({upDown='0',leftRight='0'} = {}) =>{
 } 
 
 
-export const setFlex = ({x = 'center', y = 'center', z = 'row'} = {}) => {
+export const setFlex = ({display="flex",x = 'center', y = 'center', z = 'row'} = {}) => {
     return `
-    display:flex; 
+    display:${display}; 
     align-items:${y}; 
     justify-content:${x};
     flex-direction:${z};
