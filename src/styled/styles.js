@@ -17,7 +17,8 @@ export const setFont = {
 
 
 export const FlexBox = styled.div`
-${(props) => setFlex({x: props.x, y: props.y, z: props.z})}
+/* width: 100%; */
+${(props) => setFlex({x: props.x, y: props.y, z: props.z, width:props.width})}
 `
 
 export const setPadding = ({top='0',right='0',bottom='0',left='0'} = {}) =>{
@@ -29,12 +30,13 @@ export const setUpDownPadding = ({upDown='0',leftRight='0'} = {}) =>{
 } 
 
 
-export const setFlex = ({display="flex",x = 'center', y = 'center', z = 'row'} = {}) => {
+export const setFlex = ({display="flex",x = 'center', y = 'center', z = 'row', width=""} = {}) => {
     return `
     display:${display}; 
     align-items:${y}; 
     justify-content:${x};
     flex-direction:${z};
+    width:${width};
     `;
 };
 

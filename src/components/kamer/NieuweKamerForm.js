@@ -241,7 +241,10 @@ export default function NieuweKamerForm({ kamer, loading, naam, setNaam }) {
         />
         {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
       </FlexBoxContainerInput>
+      <FlexBoxContainerInput x="flex-start">
+
         <FileUpload />
+      </FlexBoxContainerInput>
       {/* <FlexContainerFileInput z={"column"} y={"none"}>
         <label htmlFor="kamer_fotos">Kamer foto's</label>
 

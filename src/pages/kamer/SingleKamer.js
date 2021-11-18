@@ -188,9 +188,7 @@ export default function SingleKamer({ match }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (errorAm) {
-      console.log(am);
-      console.log(am[0], "0");
-      console.log(am[1], "1");
+     
       maakNieuweReservatie(kamer.naam, am[0], am[1]).then((res,err) =>{
       
         toast.success("Succesvol nieuwe reservering aangemaakt.")

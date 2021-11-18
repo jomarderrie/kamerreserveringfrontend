@@ -13,7 +13,7 @@ import { deleteKamer } from "../../functions/kamers";
 import { Image } from "../../styled/Image";
 import Input from "../../styled/globals/Input";
 import InputWithImage from "../../styled/globals/Input";
-import { FlexBoxUpDown } from "./../../styled/globals/StyledFlexBoxContainer";
+import { FlexBoxUpDown, GridImages } from "./../../styled/globals/StyledFlexBoxContainer";
 import { ButtonLink, StyledButtonLink, StyledRouterLink } from "./../../styled/globals/StyledRouterLink";
 import SideBar from "../../components/navbar/SideBar";
 function Kamers() {
@@ -33,7 +33,7 @@ function Kamers() {
   }, []);
 
   const deleteKamerOnClick = async (e) => {
-    console.log(e.target.value);
+    console.log(e.target);
 
     await deleteKamer(e.target.value)
       .then((res, err) => {
@@ -74,7 +74,7 @@ function Kamers() {
         </div>
       </FlexBoxUpDown>
 
-      <FlexBox>
+      <GridImages width="90vw" display={"grid"} gridSize="250px">
         {kamers.map((kamer, key) => {
           return (
             <div key={key}>
@@ -87,7 +87,7 @@ function Kamers() {
           );
         })}
         {/* {() => getImageFromDb()} */}
-      </FlexBox>
+      </GridImages>
     </div>
   );
 }

@@ -9,6 +9,7 @@ import {
 import { toast } from "react-toastify";
 import { isFiletypeImage } from "./../../helpers/detectFileTypeIsImage";
 import { GridImages } from "../../styled/globals/StyledFlexBoxContainer";
+import { FileUploadButton } from "../../styled/globals/Button";
 
 const FileUpload = ({ naam }) => {
   const [files, setFiles] = useState(null);
@@ -66,7 +67,7 @@ const FileUpload = ({ naam }) => {
   const onChange = (e) => {
     // console.log(parseInt(e.target.files.length)>8, "length");
 
-    console.log(e.target.files.length);
+    console.log(e.target.files, "onchange");
     let arrayFormFiles =Array.from(e.target.files); 
     console.log(arrayFormFiles, "ar");
     if (parseInt(e.target.files.length) < 8) {
@@ -82,16 +83,16 @@ const FileUpload = ({ naam }) => {
   const onDeleteImage = (e, index,files) => {
     e.preventDefault();
     let copyFileArray = files.slice();
-    copyFileArray.splice(index)
+    copyFileArray.splice(index,1)
     setFiles(copyFileArray)
     setPreviewImages(copyFileArray)
-    console.log(files,"afterdelete");
+    console.log(copyFileArray,"afterdelete");
   };
   // onSubmit={(e) => onFormSubmit(e)}
   return (
     <div>
       {resizedImages !== null && (
-        <GridImages display={"grid"} upDown="10">
+        <GridImages display={"grid"} upDown="10" gridSize="200px" width="640px">
           {resizedImages.map((img, i) => {
             return (
               <div key={i}>
@@ -107,7 +108,7 @@ const FileUpload = ({ naam }) => {
           })}
         </GridImages>
       )}
-      <input type="file" hidden multiple onChange={onChange} />
+      <FileUploadButton type="file"  multiple onChange={onChange} />
       <button type="submit">Upload</button>
     </div>
   );

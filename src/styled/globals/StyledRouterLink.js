@@ -43,15 +43,26 @@ export const StyledRouterLinkWrapper = styled(StyledRouterLink)`
 export const ButtonLink = (props) => {
   console.log(props, "buttonProps");
   return (
-      <Link to={`${props.to2}`} className="button">
-    <button className={`${props.className}`}  to={`${props.to2}`} type="button">
-        <FlexBoxUpDown x="space-between" leftRight="15">
-          <span className={`fa ${props.icon} fa-2x button-icon`}></span>
+    <Link to={`${props.to2}`} className="button">
+      <ButtonWithIcon
+        className={props.className}
+        icon={props.icon}
+        text={props.text}
+        onClick={props.onClick}
+      />
+    </Link>
+  );
+};
 
-          {props.text}
-        </FlexBoxUpDown>
+export const ButtonWithIcon = (props) => {
+  return (
+    <button className={`${props.className}`} type="button" onClick={props.onClick}>
+      <FlexBoxUpDown x="space-between" leftRight="15">
+        <span className={`fa ${props.icon} fa-2x button-icon`}></span>
+
+        {props.text}
+      </FlexBoxUpDown>
     </button>
-      </Link>
   );
 };
 
