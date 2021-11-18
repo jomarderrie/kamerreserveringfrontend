@@ -22,7 +22,7 @@ function Kamers() {
   let history = useHistory();
 
   useEffect(() => {
-    console.log(setUpDownPadding({ upDown: 20 }), "hey");
+ 
     setLoading(true);
     getAllKamers().then((res, err) => {
       console.log(res);

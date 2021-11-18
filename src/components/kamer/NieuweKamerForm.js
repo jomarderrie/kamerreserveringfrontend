@@ -13,10 +13,10 @@ import TimePicker from "rc-time-picker";
 import { editKamer, maakNieuweKamer } from "../../functions/kamers";
 import moment from "moment";
 import { isEmpty } from "../../helpers/IsEmpty";
-import { uploadKamerImage, uploadKamerImages } from './../../functions/images';
+import { uploadKamerImage, uploadKamerImages } from "./../../functions/images";
 import FileUpload from "./FileUpload";
 
-export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
+export default function NieuweKamerForm({ kamer, loading, naam, setNaam }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [selected, onChange] = useState(new Date());
@@ -33,7 +33,7 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
     data,
     reset,
     value,
- 
+
     formState: { errors },
   } = useForm();
 
@@ -47,8 +47,6 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
       setValue("startDatum", startTijdDate);
     }
   }, [kamer]);
-
-
 
   return (
     <form
@@ -64,7 +62,7 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
         if (data.startTijd === undefined) {
           startDatumObj.setHours(7);
         } else {
-          startDatumObj.setHours(data.startTijd.hours()   );
+          startDatumObj.setHours(data.startTijd.hours());
         }
 
         startDatumObj.setMinutes(0);
@@ -73,7 +71,7 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
         if (data.sluitTijd === undefined) {
           eindDatumObj.setHours(17);
         } else {
-          eindDatumObj.setHours(data.sluitTijd.hours() );
+          eindDatumObj.setHours(data.sluitTijd.hours());
         }
         eindDatumObj.setMinutes(0);
         eindDatumObj.setSeconds(0);
@@ -96,10 +94,9 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
             });
         } else {
           await maakNieuweKamer(data.naam, eindDatumObj, startDatumObj)
-          .then((res, err) => {
+            .then((res, err) => {
               if (err) {
                 console.log(err);
-          
               } else {
                 toast.success(
                   `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
@@ -176,7 +173,6 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
         <FlexBoxContainerInput z={"column"} y={"none"}>
           <label htmlFor="startTijd">Start tijd</label>
           <Controller
-       
             name={"startTijd"}
             control={control}
             render={({ field: { onChange, value }, ref }) => {
@@ -209,7 +205,6 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
           {errors.startTijd && <p>{errors.startTijd.message}</p>}
         </FlexBoxContainerInput>
       }
-   
 
       <FlexBoxContainerInput z={"column"} y={"none"}>
         <label htmlFor="sluitTijd">Sluit tijd</label>
@@ -246,7 +241,7 @@ export default function NieuweKamerForm({ kamer, loading, naam,setNaam }) {
         />
         {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
       </FlexBoxContainerInput>
-      <FileUpload/>
+        <FileUpload />
       {/* <FlexContainerFileInput z={"column"} y={"none"}>
         <label htmlFor="kamer_fotos">Kamer foto's</label>
 
