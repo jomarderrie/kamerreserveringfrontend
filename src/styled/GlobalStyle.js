@@ -26,7 +26,6 @@ export const GlobalsStyle = createGlobalStyle`
 
   h2 {
     font-size: 2em;;
-    margin-bottom: 0.75em;
   }
 
   h3 {

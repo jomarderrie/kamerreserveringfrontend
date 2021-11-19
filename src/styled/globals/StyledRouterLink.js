@@ -49,14 +49,17 @@ export const ButtonLink = (props) => {
         icon={props.icon}
         text={props.text}
         onClick={props.onClick}
+        value2={props.value2}
       />
     </Link>
   );
 };
 
 export const ButtonWithIcon = (props) => {
+  console.log(props, "btnicon");
   return (
-    <button className={`${props.className}`} type="button" onClick={props.onClick}>
+    <button className={`${props.className}`} type="button" value={props.value2} 
+    onClick={() =>props.action&&props?.action(props.naam)}>
       <FlexBoxUpDown x="space-between" leftRight="15">
         <span className={`fa ${props.icon} fa-2x button-icon`}></span>
 

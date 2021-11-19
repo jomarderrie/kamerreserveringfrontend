@@ -32,24 +32,25 @@ function Kamers() {
     });
   }, []);
 
-  const deleteKamerOnClick = async (e) => {
-    console.log(e.target);
-
-    await deleteKamer(e.target.value)
+  const deleteKamerOnClick = async (naam) => {
+      // console.log(e.target);
+      console.log(naam);
+    await deleteKamer(naam)
       .then((res, err) => {
         if (err) {
           toast.error("Error met het toevoegen van een kamer");
         } else {
           setKamers((prevKamer) => {
             return prevKamer.filter((kamer) => {
-              return kamer.naam !== e.target.value;
+              return kamer.naam !== naam;
             });
           });
-          toast.success(`Delete kamer met naam ${e.target.value}`);
+          toast.success(`Delete kamer met naam ${naam}`);
         }
       })
       .catch((k) => {
         toast.error(k.response.data.message);
+
         return Promise.reject(k);
       });
   };

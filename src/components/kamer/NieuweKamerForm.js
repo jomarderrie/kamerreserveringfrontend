@@ -16,12 +16,13 @@ import { isEmpty } from "../../helpers/IsEmpty";
 import { uploadKamerImage, uploadKamerImages } from "./../../functions/images";
 import FileUpload from "./FileUpload";
 
-export default function NieuweKamerForm({ kamer, loading, naam, setNaam }) {
+export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [selected, onChange] = useState(new Date());
   const [image, setImage] = useState(undefined);
   //   const { naam } = match.params;
+  const [loading,setLoading] = useState(false);
 
   let history = useHistory();
 
@@ -42,17 +43,26 @@ export default function NieuweKamerForm({ kamer, loading, naam, setNaam }) {
     if (!isEmpty(kamer)) {
       let eindTijdDate = new Date(kamer.sluitTijd);
       let startTijdDate = new Date(kamer.startTijd);
+      
+      console.log(new Date(kamer.sluitTijd).getHours(), "");
+      console.log(  moment()
+      .hour(new Date(kamer.sluitTijd).getHours())
+      .seconds(0)
+      .minutes(0).get);
       setValue("naam", kamer.naam);
       setValue("eindDatum", eindTijdDate);
       setValue("startDatum", startTijdDate);
     }
   }, [kamer]);
 
+  useEffect(() => {
+    
+
+  }, [])
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
         setSubmitting(true);
-        console.log(data, "data");
         //creeer datum van object
         let startDatumObj = new Date(data.startDatum);
 
@@ -185,13 +195,14 @@ export default function NieuweKamerForm({ kamer, loading, naam, setNaam }) {
                   defaultValue={
                     kamer === undefined ? (
                       moment().hour(7).seconds(0).minute(0)
-                    ) : kamer === {} ? (
-                      <div>Loading...</div>
-                    ) : (
+                    ) : kamer !== {} ? (
                       moment()
                         .hour(new Date(kamer.startTijd).getHours())
                         .seconds(0)
                         .minutes(0)
+                  
+                    ) : (
+                      <div>Loading...</div>
                     )
                   }
                   onChange={onChange}
@@ -221,17 +232,20 @@ export default function NieuweKamerForm({ kamer, loading, naam, setNaam }) {
                 inputRef={ref}
                 selected={value}
                 defaultValue={
-                  kamer === undefined ? (
-                    moment().hour(17).seconds(0).minute(0)
-                  ) : kamer !== {} ? (
-                    moment()
-                      .hour(new Date(kamer.sluitTijd).getHours())
-                      .seconds(0)
-                      .minutes(0)
-                  ) : (
-                    <div>Loading...</div>
-                  )
-                }
+                    kamer === undefined ? (
+                      moment().hour(17).seconds(0).minute(0)
+                    ) : kamer !== {} ? (
+                      moment()
+.hour(new Date(kamer.sluitTijd).getHours())
+                        .seconds(0)
+                        .minutes(0)
+                     
+                    ) : (
+                      <div>Loading...</div>
+                    )
+                  }
+
+              
                 // defaultValue={() =>getSluitTijd()}
                 showMinute={false}
                 showSecond={false}
