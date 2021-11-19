@@ -22,7 +22,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [selected, onChange] = useState(new Date());
   const [image, setImage] = useState(undefined);
   //   const { naam } = match.params;
-  const [loading,setLoading] = useState(false);
+  const [kekLoading, setKekLoading] = useState(true);
 
   let history = useHistory();
 
@@ -40,25 +40,21 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
 
   // moment().hour(7).minute(0).seconds(0)
   useEffect(() => {
-    if (!isEmpty(kamer)) {
-      let eindTijdDate = new Date(kamer.sluitTijd);
-      let startTijdDate = new Date(kamer.startTijd);
-      
-      console.log(new Date(kamer.sluitTijd).getHours(), "");
-      console.log(  moment()
-      .hour(new Date(kamer.sluitTijd).getHours())
-      .seconds(0)
-      .minutes(0).get);
-      setValue("naam", kamer.naam);
-      setValue("eindDatum", eindTijdDate);
-      setValue("startDatum", startTijdDate);
+    if (kamer !== undefined) {
+      if (!isEmpty(kamer)) {
+        let eindTijdDate = new Date(kamer.sluitTijd);
+        let startTijdDate = new Date(kamer.startTijd);
+        setValue("naam", kamer.naam);
+        setValue("eindDatum", eindTijdDate);
+        setValue("startDatum", startTijdDate);
+        setKekLoading(false);
+      }
+    }else{
+      setKekLoading(false);
     }
   }, [kamer]);
 
-  useEffect(() => {
-    
 
-  }, [])
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
@@ -180,6 +176,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
       </FlexBoxContainerInput>
 
       {
+        kekLoading?<div>loading...</div>:
         <FlexBoxContainerInput z={"column"} y={"none"}>
           <label htmlFor="startTijd">Start tijd</label>
           <Controller
@@ -200,7 +197,6 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                         .hour(new Date(kamer.startTijd).getHours())
                         .seconds(0)
                         .minutes(0)
-                  
                     ) : (
                       <div>Loading...</div>
                     )
@@ -216,7 +212,8 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
           {errors.startTijd && <p>{errors.startTijd.message}</p>}
         </FlexBoxContainerInput>
       }
-
+      {
+        kekLoading?<div>loading...</div>:
       <FlexBoxContainerInput z={"column"} y={"none"}>
         <label htmlFor="sluitTijd">Sluit tijd</label>
         <Controller
@@ -232,20 +229,17 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                 inputRef={ref}
                 selected={value}
                 defaultValue={
-                    kamer === undefined ? (
-                      moment().hour(17).seconds(0).minute(0)
-                    ) : kamer !== {} ? (
-                      moment()
-.hour(new Date(kamer.sluitTijd).getHours())
-                        .seconds(0)
-                        .minutes(0)
-                     
-                    ) : (
-                      <div>Loading...</div>
-                    )
-                  }
-
-              
+                  kamer === undefined ? (
+                    moment().hour(17).seconds(0).minute(0)
+                  ) : kamer !== {} ? (
+                    moment()
+                      .hour(new Date(kamer.sluitTijd).getHours())
+                      .seconds(0)
+                      .minutes(0)
+                  ) : (
+                    <div>Loading...</div>
+                  )
+                }
                 // defaultValue={() =>getSluitTijd()}
                 showMinute={false}
                 showSecond={false}
@@ -255,8 +249,9 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
         />
         {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
       </FlexBoxContainerInput>
-      <FlexBoxContainerInput x="flex-start">
+      }
 
+      <FlexBoxContainerInput x="flex-start">
         <FileUpload />
       </FlexBoxContainerInput>
       {/* <FlexContainerFileInput z={"column"} y={"none"}>

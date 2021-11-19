@@ -35,21 +35,22 @@ const KamerCard = ({ kamer, deleteKamer, image }) => {
   }, []);
 
   const handleOnClickTest = (e,naam) => {
-    if(!e==="edit"){
+    
+    
       history.push(`/kamer/${naam}`)
-    }
+    
   }
 
   return (
-    <FlexBox z={"column"} style={{cursor:"pointer"}} onClick={(e) =>handleOnClickTest(e,kamer.naam) }>
+    <FlexBox z={"column"} style={{cursor:"pointer"}}>
       {loading ? (
         <div>...loading...</div>
       ) : (
-        <img src={kamerImages === "" ? imageNoFound : kamerImages} />
+        <img onClick={(e) =>handleOnClickTest(e,kamer.naam) }src={kamerImages === "" ? imageNoFound : kamerImages} />
       )}
-<ContainerKamerInfo z = "column">
-      <h2>{kamer.naam}</h2>
-      <FlexBox style={{ paddingLeft: "3px" }}>
+<ContainerKamerInfo z = "column" >
+      <h2 onClick={(e) =>handleOnClickTest(e,kamer.naam) }>{kamer.naam}</h2>
+      <FlexBox style={{ paddingLeft: "3px" }} onClick={(e) =>handleOnClickTest(e,kamer.naam) }>
         {!isEmpty(kamer.startTijd) ? (
           new Date(kamer.startTijd).toLocaleDateString("nl-NL")
         ) : (
@@ -79,7 +80,7 @@ const KamerCard = ({ kamer, deleteKamer, image }) => {
       </FlexBox>
       <FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
       <ButtonLink  value2="hey"  to2={`/kamer/${kamer.naam}/edit`} className={"btn btn-pink"} text={"Edit"} 
-      action={() => handleOnClickTest("edit")}
+     
        icon={"fa-edit"}/>
         <ButtonWithIcon value2={kamer.naam} action={ deleteKamer} text="Delete" icon={"fa-trash"}
           naam={kamer.naam}
