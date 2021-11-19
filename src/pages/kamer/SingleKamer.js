@@ -325,13 +325,6 @@ export default function SingleKamer({ match }) {
   return (
     <FlexBox x={"start"}>
   {!isEmpty(kamer) && !loading ? kamerLoaded(kamer):loading ? <div>loading...</div>: <div><h2>Error kamer niet gevonden</h2></div> }
-      {/* {loading ? (
-        <div>Loading...</div>
-      ) : kamer !== {} && !loading ? (
-        kamerLoaded(kamer)
-      ) : (
-        <h1>kamer niet gevonden</h1>
-      )} */}
     </FlexBox>
   );
 }

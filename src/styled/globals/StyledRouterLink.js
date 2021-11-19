@@ -48,7 +48,7 @@ export const ButtonLink = (props) => {
         className={props.className}
         icon={props.icon}
         text={props.text}
-        onClick={props.onClick}
+        action={props.action}
         value2={props.value2}
       />
     </Link>
