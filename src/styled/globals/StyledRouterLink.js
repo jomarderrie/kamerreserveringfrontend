@@ -41,9 +41,10 @@ export const StyledRouterLinkWrapper = styled(StyledRouterLink)`
 `;
 
 export const ButtonLink = (props) => {
-  console.log(props, "buttonProps");
+  let url = props.to2 === undefined? null: props.to2;
+console.log(props.to2, "hey")
   return (
-    <Link to={`${props.to2}`} className="button">
+    <Link to={`${url}`} disabled className="button">
       <ButtonWithIcon
         className={props.className}
         icon={props.icon}
@@ -56,7 +57,6 @@ export const ButtonLink = (props) => {
 };
 
 export const ButtonWithIcon = (props) => {
-  console.log(props, "btnicon");
   return (
     <button className={`${props.className}`} type="button" value={props.value2} 
     onClick={() =>props.action&&props?.action(props.naam)}>
@@ -74,6 +74,7 @@ export const StyledButtonLink = styled(ButtonLink)`
     text-decoration: none;
     color: black;
   }
+  
   padding: 8px 0px;
   border-radius: 5px;
   outline: 0;
@@ -84,3 +85,20 @@ export const StyledButtonLink = styled(ButtonLink)`
     padding-right: 10px;
   }
 `;
+
+export const StyledButtonDelete = styled(ButtonWithIcon)`
+a {
+    text-decoration: none;
+    color: black;
+  }
+  
+  padding: 8px 0px;
+  border-radius: 5px;
+  outline: 0;
+  cursor: pointer;
+  box-shadow: 0px 2px 2px lightgray;
+  transition: ease background-color 250ms;
+  .button-icon {
+    padding-right: 10px;
+  }
+`

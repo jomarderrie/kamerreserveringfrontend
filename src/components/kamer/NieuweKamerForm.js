@@ -38,7 +38,6 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
     formState: { errors },
   } = useForm();
 
-  // moment().hour(7).minute(0).seconds(0)
   useEffect(() => {
     if (kamer !== undefined) {
       if (!isEmpty(kamer)) {

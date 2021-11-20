@@ -10,7 +10,7 @@ export const FlexBoxUpDown = styled(FlexBox)`
 
 export const ContainerKamerInfo = styled(FlexBoxUpDown)`
 background-color: #8ec1e9;
-margin-top:10px;
+
 `
 
 
@@ -23,7 +23,7 @@ export const GridImages = styled(FlexBoxUpDown)`
   grid-row-gap: 1rem;
   grid-column-gap: 1rem;
   img {
-    width: 200px;
+    width: 100%;
     display: block;
     height: 200px;
   }
@@ -35,7 +35,6 @@ export const GridImages = styled(FlexBoxUpDown)`
     left: 10px;
     width: 40px;
     height: 40px;
-    cursor: pointer;
   }
 `;
 

@@ -34,7 +34,7 @@ function Kamers() {
 
   const deleteKamerOnClick = async (naam) => {
       // console.log(e.target);
-      console.log(naam);
+      console.log(naam, "oekoek");
     await deleteKamer(naam)
       .then((res, err) => {
         if (err) {
@@ -78,13 +78,13 @@ function Kamers() {
       <GridImages width="90vw" display={"grid"} gridSize="250px">
         {kamers.map((kamer, key) => {
           return (
-            <div key={key}>
               <KamerCard
                 kamer={kamer}
                 deleteKamer={deleteKamerOnClick}
                 image={kamer.attachment}
+                key={key}
               />
-            </div>
+         
           );
         })}
         {/* {() => getImageFromDb()} */}

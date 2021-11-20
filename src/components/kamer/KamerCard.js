@@ -8,12 +8,11 @@ import { getImageFromDb } from "../../functions/kamers";
 import axios from "axios";
 import imageNoFound from "../../images/image_not_found.png";
 import { isEmpty } from "./../../helpers/IsEmpty";
-import { StyledButtonLink, ButtonWithIcon, ButtonLink } from './../../styled/globals/StyledRouterLink';
+import { StyledButtonLink, ButtonWithIcon, ButtonLink, StyledButtonDelete } from './../../styled/globals/StyledRouterLink';
 import { ContainerKamerInfo, FlexBoxUpDown } from './../../styled/globals/StyledFlexBoxContainer';
 import { useHistory } from "react-router-dom";
 
-
-const KamerCard = ({ kamer, deleteKamer, image }) => {
+const KamerCard = ({ kamer, deleteKamer, image,key }) => {
   const { user } = useContext(AuthContext);
   const [kamerImages, setKamerImages] = useState("");
   const [loading, setLoading] = useState(true);
@@ -42,7 +41,10 @@ const KamerCard = ({ kamer, deleteKamer, image }) => {
   }
 
   return (
-    <FlexBox z={"column"} style={{cursor:"pointer"}}>
+    <FlexBox z={"column"} width={"100%"} key={key} style={{cursor:"pointer"}}>
+    <div style={{cursor:"pointer", width:"100%"}}>
+
+    
       {loading ? (
         <div>...loading...</div>
       ) : (
@@ -50,7 +52,7 @@ const KamerCard = ({ kamer, deleteKamer, image }) => {
       )}
 <ContainerKamerInfo z = "column" >
       <h2 onClick={(e) =>handleOnClickTest(e,kamer.naam) }>{kamer.naam}</h2>
-      <FlexBox style={{ paddingLeft: "3px" }} onClick={(e) =>handleOnClickTest(e,kamer.naam) }>
+      <FlexBox onClick={(e) =>handleOnClickTest(e,kamer.naam) }>
         {!isEmpty(kamer.startTijd) ? (
           new Date(kamer.startTijd).toLocaleDateString("nl-NL")
         ) : (
@@ -79,15 +81,16 @@ const KamerCard = ({ kamer, deleteKamer, image }) => {
         )}
       </FlexBox>
       <FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
-      <ButtonLink  value2="hey"  to2={`/kamer/${kamer.naam}/edit`} className={"btn btn-pink"} text={"Edit"} 
+      <StyledButtonLink  value2="hey"  to2={`/kamer/${kamer.naam}/edit`} className={"btn btn-pink"} text={"Edit"} 
      
        icon={"fa-edit"}/>
-        <ButtonWithIcon value2={kamer.naam} action={ deleteKamer} text="Delete" icon={"fa-trash"}
+        <StyledButtonDelete value2={kamer.naam} action={ deleteKamer} text="Delete" icon={"fa-trash"}
           naam={kamer.naam}
         />  
       
       </FlexBoxUpDown>
 </ContainerKamerInfo>
+</div>
     </FlexBox>
   );
 };
