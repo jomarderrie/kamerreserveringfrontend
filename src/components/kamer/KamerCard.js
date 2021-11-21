@@ -22,7 +22,7 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
     console.log(kamer);
     setLoading(true);
     if (kamer.attachments.length !== 0) {
-      getImageFromDb(kamer.attachments[0].name).then((k) => {
+      getImageFromDb(kamer.naam, kamer.attachments[0].name).then((k) => {
         setKamerImages(URL.createObjectURL(k.data));
         setLoading(false);
       });

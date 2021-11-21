@@ -18,7 +18,7 @@ import FileUpload from "./FileUpload";
 import styled  from 'styled-components';
 import { isFiletypeImage } from './../../helpers/detectFileTypeIsImage';
 import { post } from 'axios';
-export default function NieuweKamerForm({ kamer, naam, setNaam }) {
+export default function NieuweKamerForm({ kamer, naam, setNaam}) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [selected, onChange] = useState(new Date());
@@ -67,30 +67,45 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
     return true;
   };
 
-
-  const onFormSubmit = (e) => {
+  const onFormSubmit = (naam) =>{
     console.log(naam, "nek");
-    e.preventDefault();
+    // sendFilesToBackend(files);
+    if(files!==[]){
+        checkFiles(files)
+        const url = `http://localhost:8080/images/kamer/${naam}/upload/images`;
+        const formData = new FormData();
+        Array.from(files).forEach((image,index) => {
+            console.log(image, "image " + index);
+            formData.append("files", image, image.name);
+        });
+
+
+        const config = {
+            headers: {
+                authorization:
+                "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
+              "Access-Control-Allow-Origin": "*",
+                'content-type': 'multipart/form-data'
+            }
+        }
+        return  post(url, formData,config);
+    }else{
+        toast.error("Minstens 1 foto")
+    }
+}
+
+
+  const sendRoomImages = async(naam,files) => {
     // sendFilesToBackend(files);
     if (files !== []) {
       checkFiles(files);
-      const url = "http://localhost:8080/images/kamer/kamer1/upload/images";
       const formData = new FormData();
-    
+  
       (files).forEach((image, index) => {
         console.log(image, "image " + index);
         formData.append("files", image, image.name);
       });
-
-      const config = {
-        headers: {
-          authorization:
-            "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
-          "Access-Control-Allow-Origin": "*",
-          "content-type": "multipart/form-data",
-        },
-      };
-      return post(url, formData, config);
+       uploadKamerImages(naam,formData) 
     } else {
       toast.error("Minstens 1 foto");
     }
@@ -100,6 +115,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
+        
         setSubmitting(true);
         //creeer datum van object
         let startDatumObj = new Date(data.startDatum);
@@ -124,13 +140,14 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
         eindDatumObj.setMinutes(0);
         eindDatumObj.setSeconds(0);
         eindDatumObj.setMilliseconds(0);
-        setNaam(data.naam);
+        // setNaam(data.naam);
         if (!isEmpty(kamer)) {
           await editKamer(kamer.naam, data.naam, eindDatumObj, startDatumObj)
             .then((res, err) => {
               if (err) {
                 console.log(err);
               } else {
+                onFormSubmit(data.naam);
                 toast.success(`Succesvol kamer veranderd`);
                 setSubmitting(false);
                 // toast.error(err)
@@ -146,6 +163,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
               if (err) {
                 console.log(err);
               } else {
+                onFormSubmit(data.naam);
                 toast.success(
                   `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
                 );
@@ -293,7 +311,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
       </FlexBoxContainerInput>
       }
       <FlexBoxContainerInput x="flex-start">
-        <FileUpload checkFiles={checkFiles} onFormSubmit={onFormSubmit}/>
+        <FileUpload checkFiles={checkFiles}  files={files} setFiles={setFiles} resizedImages={resizedImages} setImages={setImages}/>
       </FlexBoxContainerInput>
       {/* <FlexContainerFileInput z={"column"} y={"none"}>
         <label htmlFor="kamer_fotos">Kamer foto's</label>

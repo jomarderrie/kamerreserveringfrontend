@@ -42,7 +42,6 @@ export const StyledRouterLinkWrapper = styled(StyledRouterLink)`
 
 export const ButtonLink = (props) => {
   let url = props.to2 === undefined? null: props.to2;
-console.log(props.to2, "hey")
   return (
     <Link to={`${url}`} disabled className="button">
       <ButtonWithIcon

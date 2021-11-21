@@ -23,8 +23,8 @@ export const maakNieuweReservatie = async (naam, startTijd, eindTijd) =>{
     await axios.post(`http://localhost:8080/kamer/${naam}/reserveer`, {startTijd, eindTijd}, { headers: { authorization: 'Basic ' + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"), "Access-Control-Allow-Origin": "*"  }})
 }
 
-export const getImageFromDb = async(naam) => {
-    return await axios.get(`http://localhost:8080/images/kamer/ok/${naam}`, { 
+export const getImageFromDb = async(kamerNaam,naamImage) => {
+    return await axios.get(`http://localhost:8080/images/kamer/${kamerNaam}/${naamImage}`, { 
         responseType:"blob",
         headers: { authorization: 'Basic ' + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"), "Access-Control-Allow-Origin": "*"  }}).then(data =>{
             return data;

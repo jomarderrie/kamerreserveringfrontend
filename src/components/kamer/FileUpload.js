@@ -11,10 +11,8 @@ import { isFiletypeImage } from "./../../helpers/detectFileTypeIsImage";
 import { GridImages } from "../../styled/globals/StyledFlexBoxContainer";
 import {FileUploadButton} from "../../styled/globals/Button";
 import { FlexBox } from "../../styled/styles";
-const FileUpload = ({ naam,onFormSubmit, checkFiles }) => {
-  const [files, setFiles] = useState(null);
+const FileUpload = ({ naam,onFormSubmit, checkFiles, files,  resizedImages, setImages, setFiles}) => {
   const [loading, setLoading] = useState(false);
-  const [resizedImages, setImages] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   // const onFormSubmit = (e) => {
