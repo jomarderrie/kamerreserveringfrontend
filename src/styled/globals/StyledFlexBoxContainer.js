@@ -10,7 +10,6 @@ export const FlexBoxUpDown = styled(FlexBox)`
 
 export const ContainerKamerInfo = styled(FlexBoxUpDown)`
 background-color: #8ec1e9;
-
 `
 
 

@@ -98,7 +98,5 @@ a {
   cursor: pointer;
   box-shadow: 0px 2px 2px lightgray;
   transition: ease background-color 250ms;
-  .button-icon {
-    padding-right: 10px;
-  }
+ 
 `

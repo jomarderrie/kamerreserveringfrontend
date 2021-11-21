@@ -22,8 +22,6 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
     console.log(kamer);
     setLoading(true);
     if (kamer.attachments.length !== 0) {
-      console.log(kamer.attachments, "ok");
-      // console.log(kamer.attachments[0].name, "k1");
       getImageFromDb(kamer.attachments[0].name).then((k) => {
         setKamerImages(URL.createObjectURL(k.data));
         setLoading(false);
@@ -34,10 +32,7 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
   }, []);
 
   const handleOnClickTest = (e,naam) => {
-    
-    
       history.push(`/kamer/${naam}`)
-    
   }
 
   return (

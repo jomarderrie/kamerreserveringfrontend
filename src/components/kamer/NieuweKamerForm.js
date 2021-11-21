@@ -15,14 +15,17 @@ import moment from "moment";
 import { isEmpty } from "../../helpers/IsEmpty";
 import { uploadKamerImage, uploadKamerImages } from "./../../functions/images";
 import FileUpload from "./FileUpload";
-
+import styled  from 'styled-components';
+import { isFiletypeImage } from './../../helpers/detectFileTypeIsImage';
+import { post } from 'axios';
 export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [selected, onChange] = useState(new Date());
   const [image, setImage] = useState(undefined);
-  //   const { naam } = match.params;
-  const [kekLoading, setKekLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [files, setFiles] = useState(null);
+  const [resizedImages, setImages] = useState(null);
 
   let history = useHistory();
 
@@ -46,12 +49,52 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
         setValue("naam", kamer.naam);
         setValue("eindDatum", eindTijdDate);
         setValue("startDatum", startTijdDate);
-        setKekLoading(false);
+        setLoading(false);
       }
     }else{
-      setKekLoading(false);
+      setLoading(false);
     }
   }, [kamer]);
+
+  const checkFiles = (files) => {
+   
+    for (let index = 0; index < files.length; index++) {
+      if (!isFiletypeImage(files[index].type)) {
+        toast.error("File types alleen jpeg, jpg of png");
+        return false;
+      }
+    }
+    return true;
+  };
+
+
+  const onFormSubmit = (e) => {
+    console.log(naam, "nek");
+    e.preventDefault();
+    // sendFilesToBackend(files);
+    if (files !== []) {
+      checkFiles(files);
+      const url = "http://localhost:8080/images/kamer/kamer1/upload/images";
+      const formData = new FormData();
+    
+      (files).forEach((image, index) => {
+        console.log(image, "image " + index);
+        formData.append("files", image, image.name);
+      });
+
+      const config = {
+        headers: {
+          authorization:
+            "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
+          "Access-Control-Allow-Origin": "*",
+          "content-type": "multipart/form-data",
+        },
+      };
+      return post(url, formData, config);
+    } else {
+      toast.error("Minstens 1 foto");
+    }
+  };
 
 
   return (
@@ -175,7 +218,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
       </FlexBoxContainerInput>
 
       {
-        kekLoading?<div>loading...</div>:
+        loading?<div>loading...</div>:
         <FlexBoxContainerInput z={"column"} y={"none"}>
           <label htmlFor="startTijd">Start tijd</label>
           <Controller
@@ -212,7 +255,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
         </FlexBoxContainerInput>
       }
       {
-        kekLoading?<div>loading...</div>:
+        loading?<div>loading...</div>:
       <FlexBoxContainerInput z={"column"} y={"none"}>
         <label htmlFor="sluitTijd">Sluit tijd</label>
         <Controller
@@ -249,9 +292,8 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
         {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
       </FlexBoxContainerInput>
       }
-
       <FlexBoxContainerInput x="flex-start">
-        <FileUpload />
+        <FileUpload checkFiles={checkFiles} onFormSubmit={onFormSubmit}/>
       </FlexBoxContainerInput>
       {/* <FlexContainerFileInput z={"column"} y={"none"}>
         <label htmlFor="kamer_fotos">Kamer foto's</label>
@@ -276,3 +318,5 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
     </form>
   );
 }
+
+
