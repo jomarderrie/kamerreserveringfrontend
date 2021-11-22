@@ -15,14 +15,15 @@ import moment from "moment";
 import { isEmpty } from "../../helpers/IsEmpty";
 import { uploadKamerImage, uploadKamerImages } from "./../../functions/images";
 import FileUpload from "./FileUpload";
-import styled  from 'styled-components';
-import { isFiletypeImage } from './../../helpers/detectFileTypeIsImage';
-import { post } from 'axios';
-export default function NieuweKamerForm({ kamer, naam, setNaam}) {
+import styled from "styled-components";
+import { isFiletypeImage } from "./../../helpers/detectFileTypeIsImage";
+import { post } from "axios";
+import { getImageFromDb } from "./../../functions/kamers";
+import { loginUser } from "../../functions/auth";
+export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
   const [selected, onChange] = useState(new Date());
-  const [image, setImage] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const [files, setFiles] = useState(null);
   const [resizedImages, setImages] = useState(null);
@@ -44,20 +45,44 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
   useEffect(() => {
     if (kamer !== undefined) {
       if (!isEmpty(kamer)) {
+        let dataImages = [];
+        console.log(kamer, "kmaer");
+        // kamer.attachments.
         let eindTijdDate = new Date(kamer.sluitTijd);
         let startTijdDate = new Date(kamer.startTijd);
         setValue("naam", kamer.naam);
         setValue("eindDatum", eindTijdDate);
         setValue("startDatum", startTijdDate);
+        getImagesFromDbAndFiles(kamer.naam, kamer.attachments).then((a) => {
+          setImages(a);
+        });
+
         setLoading(false);
       }
-    }else{
+    } else {
       setLoading(false);
     }
   }, [kamer]);
 
+  const setFileImages = (blobItems) => {};
+  const getImagesFromDbAndFiles = async (kamerNaam, fileAttachments) => {
+    const images = [];
+    const files = [];
+    for (const fileAttachment of fileAttachments) {
+      await getImageFromDb(kamerNaam, fileAttachment.name).then((k) => {
+        let fileName = k.config.url.split("/").slice(6, k.length);
+        console.log(k.data.type);
+        const file = new File([k.data], fileName, { type: k.data.type });
+        files.push(file);
+        images.push(URL.createObjectURL(k.data));
+      });
+    }
+    setFiles(files);
+    [...files].forEach((file) => console.log(file, "kek"));
+    return images;
+  };
+
   const checkFiles = (files) => {
-   
     for (let index = 0; index < files.length; index++) {
       if (!isFiletypeImage(files[index].type)) {
         toast.error("File types alleen jpeg, jpg of png");
@@ -67,55 +92,50 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
     return true;
   };
 
-  const onFormSubmit = (naam) =>{
-    console.log(naam, "nek");
-    // sendFilesToBackend(files);
-    if(files!==[]){
-        checkFiles(files)
-        const url = `http://localhost:8080/images/kamer/${naam}/upload/images`;
-        const formData = new FormData();
-        Array.from(files).forEach((image,index) => {
-            console.log(image, "image " + index);
-            formData.append("files", image, image.name);
-        });
-
-
-        const config = {
-            headers: {
-                authorization:
-                "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
-              "Access-Control-Allow-Origin": "*",
-                'content-type': 'multipart/form-data'
-            }
-        }
-        return  post(url, formData,config);
-    }else{
-        toast.error("Minstens 1 foto")
-    }
-}
-
-
-  const sendRoomImages = async(naam,files) => {
+  const onFormSubmit = (naam) => {
     // sendFilesToBackend(files);
     if (files !== []) {
       checkFiles(files);
+      const url = `http://localhost:8080/images/kamer/${naam}/upload/images`;
       const formData = new FormData();
-  
-      (files).forEach((image, index) => {
+      Array.from(files).forEach((image, index) => {
         console.log(image, "image " + index);
         formData.append("files", image, image.name);
       });
-       uploadKamerImages(naam,formData) 
+
+      const config = {
+        headers: {
+          authorization:
+            "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
+          "Access-Control-Allow-Origin": "*",
+          "content-type": "multipart/form-data",
+        },
+      };
+      return post(url, formData, config);
     } else {
       toast.error("Minstens 1 foto");
     }
   };
 
+  const sendRoomImages = async (naam, files) => {
+    // sendFilesToBackend(files);
+    if (files !== []) {
+      checkFiles(files);
+      const formData = new FormData();
+
+      files.forEach((image, index) => {
+        console.log(image, "image " + index);
+        formData.append("files", image, image.name);
+      });
+      uploadKamerImages(naam, formData);
+    } else {
+      toast.error("Minstens 1 foto");
+    }
+  };
 
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
-        
         setSubmitting(true);
         //creeer datum van object
         let startDatumObj = new Date(data.startDatum);
@@ -147,13 +167,27 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
               if (err) {
                 console.log(err);
               } else {
-                onFormSubmit(data.naam);
-                toast.success(`Succesvol kamer veranderd`);
-                setSubmitting(false);
-                // toast.error(err)
+                onFormSubmit(data.naam)
+                  .then((res, err) => {
+                    if (err) {
+                      console.log(err)
+                      toast.error("");
+                      setSubmitting(false);
+                    } else {
+                      history.push("/kamers");
+                      toast.success(`Succesvol kamer veranderd`);
+                      setSubmitting(false);
+                    }
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    setSubmitting(false);
+                  });
               }
             })
             .catch((err) => {
+              console.log(err)
+              setSubmitting(false);
               toast.error(err.response.data.message);
               return Promise.reject(err);
             });
@@ -163,20 +197,27 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
               if (err) {
                 console.log(err);
               } else {
-                onFormSubmit(data.naam);
-                toast.success(
-                  `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
-                );
-                setSubmitting(false);
+                onFormSubmit(data.naam).then((res, err) => {
+                  if (res) {
+                    history.push("/kamers");
+                    toast.success(
+                      `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
+                    );
+                    setSubmitting(false);
+                  } else {
+                    console.log(err);
+                  }
+                }).catch((err) =>console.log(err));
                 // toast.error(err)
               }
             })
             .catch((err) => {
+              console.log(err)
+              setSubmitting(false);
               toast.error(err.response.data.message);
               return Promise.reject(err);
             });
         }
-        history.push("/kamers");
       })}
     >
       <FlexBoxContainerInput>
@@ -235,8 +276,9 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
         {errors.eindDatum && <p>{errors.eindDatum.message}</p>}
       </FlexBoxContainerInput>
 
-      {
-        loading?<div>loading...</div>:
+      {loading ? (
+        <div>loading...</div>
+      ) : (
         <FlexBoxContainerInput z={"column"} y={"none"}>
           <label htmlFor="startTijd">Start tijd</label>
           <Controller
@@ -271,47 +313,54 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
           />
           {errors.startTijd && <p>{errors.startTijd.message}</p>}
         </FlexBoxContainerInput>
-      }
-      {
-        loading?<div>loading...</div>:
-      <FlexBoxContainerInput z={"column"} y={"none"}>
-        <label htmlFor="sluitTijd">Sluit tijd</label>
-        <Controller
-          name={"sluitTijd"}
-          control={control}
-          render={({ field: { onChange, value }, ref }) => {
-            return (
-              <TimePicker
-                {...register("sluitTijd", {
-                  // required: "Vul alstublieft in",
-                })}
-                onChange={onChange}
-                inputRef={ref}
-                selected={value}
-                defaultValue={
-                  kamer === undefined ? (
-                    moment().hour(17).seconds(0).minute(0)
-                  ) : kamer !== {} ? (
-                    moment()
-                      .hour(new Date(kamer.sluitTijd).getHours())
-                      .seconds(0)
-                      .minutes(0)
-                  ) : (
-                    <div>Loading...</div>
-                  )
-                }
-                // defaultValue={() =>getSluitTijd()}
-                showMinute={false}
-                showSecond={false}
-              />
-            );
-          }}
-        />
-        {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
-      </FlexBoxContainerInput>
-      }
+      )}
+      {loading ? (
+        <div>loading...</div>
+      ) : (
+        <FlexBoxContainerInput z={"column"} y={"none"}>
+          <label htmlFor="sluitTijd">Sluit tijd</label>
+          <Controller
+            name={"sluitTijd"}
+            control={control}
+            render={({ field: { onChange, value }, ref }) => {
+              return (
+                <TimePicker
+                  {...register("sluitTijd", {
+                    // required: "Vul alstublieft in",
+                  })}
+                  onChange={onChange}
+                  inputRef={ref}
+                  selected={value}
+                  defaultValue={
+                    kamer === undefined ? (
+                      moment().hour(17).seconds(0).minute(0)
+                    ) : kamer !== {} ? (
+                      moment()
+                        .hour(new Date(kamer.sluitTijd).getHours())
+                        .seconds(0)
+                        .minutes(0)
+                    ) : (
+                      <div>Loading...</div>
+                    )
+                  }
+                  // defaultValue={() =>getSluitTijd()}
+                  showMinute={false}
+                  showSecond={false}
+                />
+              );
+            }}
+          />
+          {errors.sluitTijd && <p>{errors.sluitTijd.message}</p>}
+        </FlexBoxContainerInput>
+      )}
       <FlexBoxContainerInput x="flex-start">
-        <FileUpload checkFiles={checkFiles}  files={files} setFiles={setFiles} resizedImages={resizedImages} setImages={setImages}/>
+        <FileUpload
+          checkFiles={checkFiles}
+          files={files}
+          setFiles={setFiles}
+          resizedImages={resizedImages}
+          setImages={setImages}
+        />
       </FlexBoxContainerInput>
       {/* <FlexContainerFileInput z={"column"} y={"none"}>
         <label htmlFor="kamer_fotos">Kamer foto's</label>
@@ -336,5 +385,3 @@ export default function NieuweKamerForm({ kamer, naam, setNaam}) {
     </form>
   );
 }
-
-

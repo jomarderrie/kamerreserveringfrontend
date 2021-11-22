@@ -23,8 +23,13 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
     setLoading(true);
     if (kamer.attachments.length !== 0) {
       getImageFromDb(kamer.naam, kamer.attachments[0].name).then((k) => {
+        console.log(URL.createObjectURL(k.data), "kekw")
         setKamerImages(URL.createObjectURL(k.data));
         setLoading(false);
+      }).catch((err) =>{
+        setKamerImages("")
+        setLoading(false);
+        return Promise.reject(err);
       });
     } else {
       setLoading(false);
