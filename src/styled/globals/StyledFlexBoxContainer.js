@@ -37,6 +37,12 @@ export const GridImages = styled(FlexBoxUpDown)`
   }
 `;
 
-export const kamerImagesContainer = styled(FlexBox)`
-    border: 1px solid #ddd;
-` 
+// export const GridKamerImagesCarousel = styled(FlexBox)`
+// justify-content:flex-start;
+//     img{
+//       border: 3px solid #000000;
+//       width:200px;
+//       height:200px;
+//       cursor:pointer;
+//     }
+// ` 

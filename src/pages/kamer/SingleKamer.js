@@ -10,7 +10,8 @@ import { toast } from "react-toastify";
 import { isEmpty } from "../../helpers/IsEmpty";
 import addMonths from "date-fns/addMonths";
 import DatePicker, { ReactDatePicker } from "react-datepicker";
-
+import { getImagesFromDbAndFiles } from "./../../helpers/getImagesFromDb";
+import Carousel from "../../components/carousel/Carousel";
 const GetDate = (hour, date) => {
   if (date !== undefined) {
     return set(date, {
@@ -39,12 +40,12 @@ export default function SingleKamer({ match }) {
   const [dateRange, setDateRange] = useState([null, null]);
   // const [startDate, endDate] = dateRange;
   const [startDate, setStartDate] = useState(null);
+  const [resizedImages, setImages] = useState(null);
 
   useEffect(() => {
     setLoading(true);
     getSingleKamer(naam)
       .then((res, err) => {
-        
         if (err) {
           setLoading(false);
           setError(err);
@@ -60,10 +61,16 @@ export default function SingleKamer({ match }) {
             GetDate(startDate.getHours()),
             GetDate(eindDate.getHours()),
           ]);
-          // console.log(date.getHours(), "hourss");
-          setLoading(false);
-          // console.log(new Date(kamer.sluitTijd), "sluittijd");
-          // console.log(res.data);
+          getImagesFromDbAndFiles(
+            res.data.naam,
+            res.data.attachments,
+            false
+          ).then((res) => {
+            setImages(res[0]);
+            console.log(res, "kek");
+            setLoading(false);
+          });
+      
         }
       })
       .catch((err) => {
@@ -82,6 +89,7 @@ export default function SingleKamer({ match }) {
   const [disabledIntervals2, setDisabledIntervals2] = useState([]);
   const [errorAm, setErrorAm] = React.useState(false);
   const [alReservatie, setAlReservatie] = React.useState(false);
+
   const timeRangeSlider = () => {
     if (disabledIntervals2 !== []) {
       return (
@@ -105,10 +113,6 @@ export default function SingleKamer({ match }) {
     }
   }, [kamer]);
 
-  useEffect(() => {
-    console.log(alReservatie, " alreservatie");
-  }, [alReservatie]);
-
   const calculateDisabledIntervalsAndOpenInterval = () => {
     let reserveringListObj = [];
     if (kamer.reserveringList.length !== 0) {
@@ -131,7 +135,6 @@ export default function SingleKamer({ match }) {
     let startTijd = new Date(kamer.startTijd);
     let endTijd = new Date(kamer.sluitTijd);
     const interval = 60 * 60000;
-    let intervalFound = false;
     let alReservatieInterval = false;
     while (
       startTijd.getTime() <= endTijd.getTime() - interval &&
@@ -149,7 +152,6 @@ export default function SingleKamer({ match }) {
         setAm(null, null);
       }
     }
-    // if(!alReservatie){}
   };
 
   const getOverLap = (startDate, eindDate) => {
@@ -242,7 +244,7 @@ export default function SingleKamer({ match }) {
       <div>
         <div>
           <h1>{kamer.naam}</h1>
-          <Image logo={KamerImage} />
+            <Carousel images={resizedImages}/>
         </div>
         <FlexBox>
           <div>De ruimte is te reserveren vanaf</div>
@@ -324,7 +326,15 @@ export default function SingleKamer({ match }) {
 
   return (
     <FlexBox x={"start"}>
-  {!isEmpty(kamer) && !loading ? kamerLoaded(kamer):loading ? <div>loading...</div>: <div><h2>Error kamer niet gevonden</h2></div> }
+      {!isEmpty(kamer) && !loading ? (
+        kamerLoaded(kamer)
+      ) : loading ? (
+        <div>loading...</div>
+      ) : (
+        <div>
+          <h2>Error kamer niet gevonden</h2>
+        </div>
+      )}
     </FlexBox>
   );
 }

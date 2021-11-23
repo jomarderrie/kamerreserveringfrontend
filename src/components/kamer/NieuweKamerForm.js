@@ -20,6 +20,7 @@ import { isFiletypeImage } from "./../../helpers/detectFileTypeIsImage";
 import { post } from "axios";
 import { getImageFromDb } from "./../../functions/kamers";
 import { loginUser } from "../../functions/auth";
+import { getImagesFromDbAndFiles } from "../../helpers/getImagesFromDb";
 export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
@@ -53,34 +54,34 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
         setValue("naam", kamer.naam);
         setValue("eindDatum", eindTijdDate);
         setValue("startDatum", startTijdDate);
-        getImagesFromDbAndFiles(kamer.naam, kamer.attachments).then((a) => {
-          setImages(a);
-        });
-
-        setLoading(false);
+        getImagesFromDbAndFiles(kamer.naam, kamer.attachments, true).then(
+          (res) => {
+            setImages(res[0]);
+            setFiles(res[1]);
+            setLoading(false);
+          }
+        );
       }
     } else {
       setLoading(false);
     }
   }, [kamer]);
 
-  const setFileImages = (blobItems) => {};
-  const getImagesFromDbAndFiles = async (kamerNaam, fileAttachments) => {
-    const images = [];
-    const files = [];
-    for (const fileAttachment of fileAttachments) {
-      await getImageFromDb(kamerNaam, fileAttachment.name).then((k) => {
-        let fileName = k.config.url.split("/").slice(6, k.length);
-        console.log(k.data.type);
-        const file = new File([k.data], fileName, { type: k.data.type });
-        files.push(file);
-        images.push(URL.createObjectURL(k.data));
-      });
-    }
-    setFiles(files);
-    [...files].forEach((file) => console.log(file, "kek"));
-    return images;
-  };
+  // const getImagesFromDbAndFiles = async (kamerNaam, fileAttachments, file) => {
+  //   const images = [];
+  //   const files = [];
+  //   for (const fileAttachment of fileAttachments) {
+  //     await getImageFromDb(kamerNaam, fileAttachment.name).then((k) => {
+  //       let fileName = k.config.url.split("/").slice(6, k.length);
+  //       const file = new File([k.data], fileName, { type: k.data.type });
+  //       files.push(file);
+  //       images.push(URL.createObjectURL(k.data));
+  //     });
+  //   }
+  //   setFiles(files);
+  //   [...files].forEach((file) => console.log(file, "kek"));
+  //   return images;
+  // };
 
   const checkFiles = (files) => {
     for (let index = 0; index < files.length; index++) {
@@ -170,7 +171,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                 onFormSubmit(data.naam)
                   .then((res, err) => {
                     if (err) {
-                      console.log(err)
+                      console.log(err);
                       toast.error("");
                       setSubmitting(false);
                     } else {
@@ -186,7 +187,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
               }
             })
             .catch((err) => {
-              console.log(err)
+              console.log(err);
               setSubmitting(false);
               toast.error(err.response.data.message);
               return Promise.reject(err);
@@ -197,22 +198,24 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
               if (err) {
                 console.log(err);
               } else {
-                onFormSubmit(data.naam).then((res, err) => {
-                  if (res) {
-                    history.push("/kamers");
-                    toast.success(
-                      `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
-                    );
-                    setSubmitting(false);
-                  } else {
-                    console.log(err);
-                  }
-                }).catch((err) =>console.log(err));
+                onFormSubmit(data.naam)
+                  .then((res, err) => {
+                    if (res) {
+                      history.push("/kamers");
+                      toast.success(
+                        `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
+                      );
+                      setSubmitting(false);
+                    } else {
+                      console.log(err);
+                    }
+                  })
+                  .catch((err) => console.log(err));
                 // toast.error(err)
               }
             })
             .catch((err) => {
-              console.log(err)
+              console.log(err);
               setSubmitting(false);
               toast.error(err.response.data.message);
               return Promise.reject(err);
