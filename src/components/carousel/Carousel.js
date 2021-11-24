@@ -12,7 +12,7 @@ function Carousel(props) {
   const handleFirstImages = () => {
     let sliderImages = [];
     let index = sliderIndex;
-    const indexDebug = []
+    const indexDebug = [];
     while (sliderImages.length !== visibleImages) {
       if (images[index] !== props.images[currentMainIndex]) {
         if (index >= images.length) {
@@ -21,7 +21,6 @@ function Carousel(props) {
           sliderImages.push(images[index]);
           index++;
         } else if (index <= 0) {
-          setSliderIndex(images.length - 1);
           index = images.length - 1;
         } else {
           sliderImages.push(images[index]);
@@ -29,7 +28,7 @@ function Carousel(props) {
         }
         indexDebug.push(index);
       } else {
-        index = index+2;
+        index = index + 2;
       }
     }
     setSliderImages(sliderImages);
@@ -46,51 +45,24 @@ function Carousel(props) {
 
   useEffect(() => {
     handleFirstImages();
-    console.log(props.images, "images");
-  }, [props.images]);
-
-  //   const handleFirstImages = (command) => {
-  //       console.log("getting called");
-  //     let imagesHandleImages = [];
-  //     let index = currentIndex;
-  //     while (imagesHandleImages.length !== visibleImages) {
-  //       if (command === "increase") {
-  //         index++;
-  //       }
-  //       if (command === "decrease") {
-  //         index--;
-  //       }
-  //       if (index !== currentMainIndex) {
-  //         //check if over length
-  //         if (index > images.length) {
-  //           index = 0;
-  //           imagesHandleImages.push(props.images[index]);
-  //         } else if (index < 0) {
-  //           index = props.images.length;
-  //           imagesHandleImages.push(props.images[index]);
-  //         } else {
-  //           index++;
-  //           imagesHandleImages.push(props.images[index]);
-  //         }
-  //       }
-  //       console.log(imagesHandleImages, "img123");
-  //       setSliderImages(imagesHandleImages);
-  //     }
-  //   };
+    return () => {
+      handleFirstImages();
+    };
+  }, [images]);
 
   const increaseCarouselSlider = () => {
-      setSliderIndex(sliderIndex + 1);
+    setSliderIndex(sliderIndex + 1);
   };
   const decreaseCarouselSlider = () => {
-    if (sliderIndex <= 0) {
-      setSliderIndex(images.length - 1);
+    if (sliderIndex < 0) {
+      setCurrentMainIndex(images.length - 1);
     } else {
-      setSliderIndex(sliderIndex - 1);
+      setCurrentMainIndex(sliderIndex - 1);
     }
   };
 
   const handleOnClickImage = (e, index) => {
-    setCurrentMainIndex(sliderIndex - 1);
+    setCurrentMainIndex(index);
   };
 
   if (images === undefined || images === [] || images.length === 0) {
