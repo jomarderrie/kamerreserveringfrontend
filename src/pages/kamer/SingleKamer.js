@@ -12,6 +12,7 @@ import addMonths from "date-fns/addMonths";
 import DatePicker, { ReactDatePicker } from "react-datepicker";
 import { getImagesFromDbAndFiles } from "./../../helpers/getImagesFromDb";
 import Carousel from "../../components/carousel/Carousel";
+import CarouselCopy from "../../components/carousel/CarouselCopy";
 const GetDate = (hour, date) => {
   if (date !== undefined) {
     return set(date, {
@@ -239,12 +240,17 @@ export default function SingleKamer({ match }) {
     );
   };
 
+ 
+
   const kamerLoaded = (kamer) => {
     return (
       <div>
         <div>
           <h1>{kamer.naam}</h1>
-            <Carousel images={resizedImages}/>
+        </div>
+        <div>
+          <Carousel images={resizedImages}/>
+
         </div>
         <FlexBox>
           <div>De ruimte is te reserveren vanaf</div>
