@@ -14,7 +14,6 @@ function Carousel(props) {
   }, []);
 
   useEffect(() => {
-    console.log(sliderIndex);
     handleFirstImages();
   }, [sliderIndex]);
 
@@ -43,7 +42,6 @@ function Carousel(props) {
       }
     }
     setSliderImages(sliderImages2);
-    console.log(sliderImages2);
   };
 
   const increaseCarouselSlider = () => {
@@ -74,25 +72,24 @@ function Carousel(props) {
   };
   const handleOnClickImage = (e, index) => {
     let kIndex;
-    let a = images.find((item, index) => {
+    images.find((item, index) => {
       if (e.target.src === item) {
         kIndex = index;
         return index;
       }
     });
     setCurrentMainIndex(kIndex);
-    // console.log(kIndex, "a");
   };
 
   if (images === undefined || images === [] || images.length === 0) {
     return <div>error</div>;
   } else {
     return (
-      <CarouselStyled className={props.className} width="60vw" z="column">
+      <CarouselStyled className={props.className} width="55vw" z="column">
         <div className="main-carousel-image">
           <img src={images[currentMainIndex]} />
         </div>
-        <ButtonFlexBox width="60vw">
+        <ButtonFlexBox width="55vw">
           <button onClick={() => decreaseCarouselSlider()}>Previous</button>
           <GridKamerImagesCarousel
             pointer={true}

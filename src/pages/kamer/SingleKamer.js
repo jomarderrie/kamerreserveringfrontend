@@ -11,6 +11,8 @@ import { isEmpty } from "../../helpers/IsEmpty";
 import addMonths from "date-fns/addMonths";
 import DatePicker, { ReactDatePicker } from "react-datepicker";
 import { getImagesFromDbAndFiles } from "./../../helpers/getImagesFromDb";
+import styled from "styled-components";
+
 import Carousel from "../../components/carousel/Carousel";
 const GetDate = (hour, date) => {
   if (date !== undefined) {
@@ -41,7 +43,7 @@ export default function SingleKamer({ match }) {
   // const [startDate, endDate] = dateRange;
   const [startDate, setStartDate] = useState(null);
   const [resizedImages, setImages] = useState(null);
-
+  const [timeRangeSliderDate, setTimeRangeSliderDate] = useState();
   useEffect(() => {
     setLoading(true);
     getSingleKamer(naam)
@@ -70,7 +72,6 @@ export default function SingleKamer({ match }) {
             console.log(res, "kek");
             setLoading(false);
           });
-      
         }
       })
       .catch((err) => {
@@ -220,7 +221,9 @@ export default function SingleKamer({ match }) {
     return currentDate.getTime() < selectedDate.getTime();
   };
 
-  const setStartDateLimit = () => {
+  const setStartDateLimit = (startDate) => {
+    console.log(startDate, "slek");
+    console.log("getting hit");
     let vandaag = new Date();
     let kamerStartTijd = dateRange[0];
     if (kamerStartTijd.getTime() > vandaag.getTime()) {
@@ -239,22 +242,15 @@ export default function SingleKamer({ match }) {
     );
   };
 
- 
-
   const kamerLoaded = (kamer) => {
     return (
-      <div>
-        <div>
+      <SingleKamerStyled>
+        <FlexBox z="column" width="60vw">
           <h1>{kamer.naam}</h1>
-        </div>
-        <div>
-          {/* <FinalCarrousel images={resizedImages}/> */}
-          <div>
+          <Carousel images={resizedImages} />
+        </FlexBox>
 
-          <Carousel images={resizedImages}/>
-          </div>
-        </div>
-        <FlexBox>
+        <FlexBox z="column" width="40vw">
           <div>De ruimte is te reserveren vanaf</div>
           <FlexBox style={{ paddingLeft: "3px" }}>
             {!isEmpty(kamer.startTijd) ? (
@@ -285,37 +281,41 @@ export default function SingleKamer({ match }) {
             ) : (
               <div>...Loading</div>
             )}
-          </FlexBox>
-        </FlexBox>
-        <div>
-          <h3>Openings tijden</h3>
-          {showTime()}
-          {/* {kamer.reserveringList((item) =>{
+          </FlexBox>{" "}
+          <div>
+            <h3>Openings tijden</h3>
+
+            {showTime()}
+            {/* {kamer.reserveringList((item) =>{
 
                         })} */}
-        </div>
-        <form onSubmit={(e) => handleSubmit(e)}>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            minDate={() => setStartDateLimit()}
-            minDate={() => setStartDateLimit(kamer.startDate)}
-            maxDate={dateRange[1]}
-            showMinute={false}
-            showSecond={false}
-            timeFormat="HH:mm"
-            filterTime={filterPassedTime}
-            dateFormat="dd/MM/yyyy h:mm aa"
-            dateFormat="Pp"
-            timeFormat="p"
-            locale="nl-NL"
-            timeIntervals={60}
-            showTimeSelect
-            showDisabledMonthNavigation
-          />
-          {!(disabledIntervals2 === []) && timeRangeSlider()}
-          <button type="submit">submit</button>
-        </form>
+          </div>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            <div className="datePicker">
+              <DatePicker
+                selected={timeRangeSliderDate}
+                onChange={(date) => setTimeRangeSliderDate(date)}
+                minDate={setStartDateLimit(kamer.startDate)}
+                maxDate={dateRange[1]}
+                showMinute={false}
+                showSecond={false}
+                timeFormat="HH:mm"
+                filterTime={filterPassedTime}
+                dateFormat="dd/MM/yyyy h:mm aa"
+                dateFormat="Pp"
+                timeFormat="p"
+                locale="nl-NL"
+                timeIntervals={60}
+                showTimeSelect
+                showDisabledMonthNavigation
+              />
+            </div>
+            <div className="timeRangeSlider">
+              {!(disabledIntervals2 === []) && timeRangeSlider()}
+            </div>
+            <button type="submit">submit</button>
+          </form>
+        </FlexBox>
 
         {/* <DatePicker
                      timeInputLabel="Time:"
@@ -328,7 +328,7 @@ export default function SingleKamer({ match }) {
                         }}
                         isClearable={true}
                     /> */}
-      </div>
+      </SingleKamerStyled>
     );
   };
 
@@ -346,3 +346,18 @@ export default function SingleKamer({ match }) {
     </FlexBox>
   );
 }
+
+const SingleKamerStyled = styled(FlexBox)`
+  .timeRangeSlider {
+    padding: 0px;
+    width: 40vw;
+    z-index: 1;
+  }
+  .react_time_range__time_range_container {
+    padding: 5px 0;
+    padding-top: 30px;
+  }
+  .react-datepicker-popper {
+    z-index: 100;
+  }
+`;
