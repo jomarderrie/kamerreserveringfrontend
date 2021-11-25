@@ -4,65 +4,84 @@ import { FlexBox } from "./../../styled/styles";
 
 function Carousel(props) {
   const [currentMainIndex, setCurrentMainIndex] = useState(0);
-  const visibleImages = 3;
+  const visibleImages = 4;
   const [sliderIndex, setSliderIndex] = useState(0);
   let { images } = props;
   const [sliderImages, setSliderImages] = useState([]);
 
+  useEffect(() => {
+    handleFirstImages();
+  }, []);
+
+  useEffect(() => {
+    console.log(sliderIndex);
+    handleFirstImages();
+  }, [sliderIndex]);
+
   const handleFirstImages = () => {
-    let sliderImages = [];
+    let sliderImages2 = [];
     let index = sliderIndex;
-    const indexDebug = [];
-    while (sliderImages.length !== visibleImages) {
-      if (images[index] !== props.images[currentMainIndex]) {
-        if (index >= images.length) {
+    while (!(sliderImages2.length === visibleImages)) {
+      if (images[currentMainIndex] !== images[index]) {
+        if (index > images.length - 1) {
           index = 0;
-          setSliderIndex(0);
-          sliderImages.push(images[index]);
+          if (images[currentMainIndex] !== images[index]) {
+            sliderImages2.push(images[index]);
+          }
           index++;
         } else if (index <= 0) {
           index = images.length - 1;
+          if (images[currentMainIndex] !== images[index]) {
+            sliderImages2.push(images[index]);
+          }
         } else {
-          sliderImages.push(images[index]);
+          sliderImages2.push(images[index]);
           index++;
         }
-        indexDebug.push(index);
       } else {
-        index = index + 2;
+        index++;
       }
     }
-    setSliderImages(sliderImages);
-    console.log(indexDebug, "s123");
+    setSliderImages(sliderImages2);
+    console.log(sliderImages2);
   };
-
-  useEffect(() => {
-    console.log("ok123", sliderIndex);
-    handleFirstImages();
-    return () => {
-      handleFirstImages();
-    };
-  }, [sliderIndex]);
-
-  useEffect(() => {
-    handleFirstImages();
-    return () => {
-      handleFirstImages();
-    };
-  }, [images]);
 
   const increaseCarouselSlider = () => {
-    setSliderIndex(sliderIndex + 1);
-  };
-  const decreaseCarouselSlider = () => {
-    if (sliderIndex < 0) {
-      setCurrentMainIndex(images.length - 1);
+    if (sliderIndex > images.length - 1) {
+      if (currentMainIndex === 0) {
+        setSliderIndex(2);
+      } else {
+        setSliderIndex(0);
+      }
     } else {
-      setCurrentMainIndex(sliderIndex - 1);
+      if (currentMainIndex === sliderIndex) {
+        setSliderIndex(sliderIndex + 2);
+      } else {
+        setSliderIndex(sliderIndex + 1);
+      }
     }
   };
-
+  const decreaseCarouselSlider = () => {
+    if (sliderIndex <= 0) {
+      setSliderIndex(images.length - 1);
+    } else {
+      if (currentMainIndex === sliderIndex - 1) {
+        setSliderIndex(images.length - 1);
+      } else {
+        setSliderIndex(sliderIndex - 1);
+      }
+    }
+  };
   const handleOnClickImage = (e, index) => {
-    setCurrentMainIndex(index);
+    let kIndex;
+    let a = images.find((item, index) => {
+      if (e.target.src === item) {
+        kIndex = index;
+        return index;
+      }
+    });
+    setCurrentMainIndex(kIndex);
+    // console.log(kIndex, "a");
   };
 
   if (images === undefined || images === [] || images.length === 0) {
