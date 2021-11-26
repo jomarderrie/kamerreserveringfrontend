@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { getSingleKamer, maakNieuweReservatie } from "../../functions/kamers";
+import {
+  getAllKamerByNaamAndGetAllReserverationsOnCertainDay,
+  getSingleKamer,
+  maakNieuweReservatie,
+} from "../../functions/kamers";
 import moment from "moment";
 import { FlexBox, setRem } from "../../styled/styles";
 import KamerImage from "../../images/neudebieb.png";
@@ -75,6 +79,7 @@ export default function SingleKamer({ match }) {
         }
       })
       .catch((err) => {
+        console.log(err, "err");
         setLoading(false);
         console.log(kamer);
         setKamer({});
@@ -90,7 +95,7 @@ export default function SingleKamer({ match }) {
   const [disabledIntervals2, setDisabledIntervals2] = useState([]);
   const [errorAm, setErrorAm] = React.useState(false);
   const [alReservatie, setAlReservatie] = React.useState(false);
-
+  const [reservation, setReservation] = React.useState([]);
   const timeRangeSlider = () => {
     if (disabledIntervals2 !== []) {
       return (
@@ -110,19 +115,29 @@ export default function SingleKamer({ match }) {
 
   useEffect(() => {
     if (!isEmpty(kamer)) {
-      calculateDisabledIntervalsAndOpenInterval();
+      getAllKamerByNaamAndGetAllReserverationsOnCertainDay().then(
+        (res, err) => {
+          // console.log(res, `ok`);
+          calculateDisabledIntervalsAndOpenInterval(res.data);
+          setReservation(res.data);
+        }
+      );
+      // calculateDisabledIntervalsAndOpenInterval();
     }
   }, [kamer]);
 
-  const calculateDisabledIntervalsAndOpenInterval = () => {
+  const calculateDisabledIntervalsAndOpenInterval = (res) => {
     let reserveringListObj = [];
-    if (kamer.reserveringList.length !== 0) {
-      kamer.reserveringList.map((item, index) => {
-        reserveringListObj.push({
-          start: moment(GetDate(0, new Date(item.start))).toDate(),
-          end: moment(GetDate(0, new Date(item.end))).toDate(),
+    console.log(res, "res");
+    if (res !== null) {
+      if (res !== 0) {
+        res.map((item, index) => {
+          reserveringListObj.push({
+            start: moment(GetDate(0, new Date(item[1]))).toDate(),
+            end: moment(GetDate(0, new Date(item[0]))).toDate(),
+          });
         });
-      });
+      }
     }
     // kamer.startTijd;
     console.log(reserveringListObj, "reserveringListObj");
@@ -156,9 +171,11 @@ export default function SingleKamer({ match }) {
   };
 
   const getOverLap = (startDate, eindDate) => {
-    for (let index = 0; index < kamer.reserveringList.length; index++) {
-      let startReserveringDate = new Date(kamer.reserveringList[index].start);
-      let eindReserveringDate = new Date(kamer.reserveringList[index].end);
+    for (let index = 0; index < reservation.length; index++) {
+      console.log(reservation[index][0], "ik");
+      console.log(reservation[index][1], "ik2");
+      let startReserveringDate = new Date(reservation[index][1]);
+      let eindReserveringDate = new Date(reservation[index][0]);
       if (
         startDate.getTime() < eindReserveringDate.getTime() &&
         eindDate.getTime() > startReserveringDate.getTime()
@@ -167,7 +184,7 @@ export default function SingleKamer({ match }) {
       }
     }
     setAm([GetDate(0, startDate), GetDate(0, eindDate)]);
-    // console.log(am, "am123");
+    console.log(am, "am123");
     setAlReservatie(true);
     return true;
   };
@@ -222,8 +239,6 @@ export default function SingleKamer({ match }) {
   };
 
   const setStartDateLimit = (startDate) => {
-    console.log(startDate, "slek");
-    console.log("getting hit");
     let vandaag = new Date();
     let kamerStartTijd = dateRange[0];
     if (kamerStartTijd.getTime() > vandaag.getTime()) {
@@ -293,21 +308,11 @@ export default function SingleKamer({ match }) {
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="datePicker">
               <DatePicker
-                selected={timeRangeSliderDate}
-                onChange={(date) => setTimeRangeSliderDate(date)}
                 minDate={setStartDateLimit(kamer.startDate)}
                 maxDate={dateRange[1]}
-                showMinute={false}
-                showSecond={false}
-                timeFormat="HH:mm"
-                filterTime={filterPassedTime}
-                dateFormat="dd/MM/yyyy h:mm aa"
-                dateFormat="Pp"
-                timeFormat="p"
-                locale="nl-NL"
-                timeIntervals={60}
-                showTimeSelect
-                showDisabledMonthNavigation
+                dateFormat="dd/MM/yyyy"
+                selected={timeRangeSliderDate}
+                onChange={(date) => setTimeRangeSliderDate(date)}
               />
             </div>
             <div className="timeRangeSlider">

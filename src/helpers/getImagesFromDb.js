@@ -3,10 +3,10 @@ export const getImagesFromDbAndFiles = async (
   kamerNaam,
   fileAttachments,
   wantFiles = false
-  ) => {
+) => {
   let images = [];
   let files = [];
-  const merged = []
+  const merged = [];
   for (const fileAttachment of fileAttachments) {
     await getImageFromDb(kamerNaam, fileAttachment.name).then((k) => {
       let fileName = k.config.url.split("/").slice(6, k.length);
@@ -18,8 +18,8 @@ export const getImagesFromDbAndFiles = async (
     });
   }
   merged[0] = images;
-  if(wantFiles){
-      merged[1] = files;
+  if (wantFiles) {
+    merged[1] = files;
   }
   [...files].forEach((file) => console.log(file, "kek"));
   return merged;

@@ -40,6 +40,8 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
       history.push(`/kamer/${naam}`)
   }
 
+
+
   return (
     <FlexBox z={"column"} width={"100%"} key={key} style={{cursor:"pointer"}}>
     <div style={{cursor:"pointer", width:"100%"}}>
