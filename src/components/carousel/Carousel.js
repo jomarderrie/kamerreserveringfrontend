@@ -9,12 +9,17 @@ function Carousel(props) {
   let { images } = props;
   const [sliderImages, setSliderImages] = useState([]);
 
-  useEffect(() => {
-    handleFirstImages();
-  }, []);
 
   useEffect(() => {
-    handleFirstImages();
+    if(images.length >4){
+      handleFirstImages();
+    }else{
+      let sliderImg = []
+      for (let index = 1; index < images.length; index++) {
+        sliderImg.push(images[index]);
+      }
+      setSliderImages(sliderImg);
+    }
   }, [sliderIndex]);
 
   const handleFirstImages = () => {
@@ -90,14 +95,15 @@ function Carousel(props) {
           <img src={images[currentMainIndex]} />
         </div>
         <ButtonFlexBox width="55vw">
-          <button onClick={() => decreaseCarouselSlider()}>Previous</button>
+        {images.length>4&&<button onClick={() => decreaseCarouselSlider()}>Previous</button>}
+
           <GridKamerImagesCarousel
             pointer={true}
             gridSize="150px"
             upDown="10"
             width="200px"
           >
-            {sliderImages.map((item, imagesIndex) => {
+            {sliderImages.length !==1 && sliderImages.map((item, imagesIndex) => {
               if (sliderImages[imagesIndex] !== images[currentMainIndex]) {
                 return (
                   <div onClick={(e) => handleOnClickImage(e, imagesIndex)}>
@@ -107,7 +113,10 @@ function Carousel(props) {
               }
             })}
           </GridKamerImagesCarousel>
-          <button onClick={() => increaseCarouselSlider()}>Next</button>
+          {
+            images.length>4&&<button onClick={() => increaseCarouselSlider()}>Next</button>
+          }
+          
         </ButtonFlexBox>
       </CarouselStyled>
     );

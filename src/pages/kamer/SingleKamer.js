@@ -38,7 +38,7 @@ const GetDate = (hour, date) => {
 
 export default function SingleKamer({ match }) {
   const { naam } = match.params;
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [kamer, setKamer] = useState({});
   const [errorTimeRange, setTimeRangeError] = useState(null);
 
@@ -47,7 +47,8 @@ export default function SingleKamer({ match }) {
   // const [startDate, endDate] = dateRange;
   const [startDate, setStartDate] = useState(null);
   const [resizedImages, setImages] = useState(null);
-  const [timeRangeSliderDate, setTimeRangeSliderDate] = useState();
+  const [timeRangeSliderDate, setTimeRangeSliderDate] = useState(new Date());
+
   useEffect(() => {
     setLoading(true);
     getSingleKamer(naam)
@@ -75,6 +76,13 @@ export default function SingleKamer({ match }) {
             setImages(res[0]);
             console.log(res, "kek");
             setLoading(false);
+          }).catch((err) =>{
+            console.log(err, "err");
+            setLoading(false);
+            console.log(kamer);
+            setKamer({});
+            toast.error(err.response.data.message);
+            return Promise.reject(err);
           });
         }
       })
@@ -88,7 +96,7 @@ export default function SingleKamer({ match }) {
       });
   }, []);
 
-  const [am, setAm] = React.useState([GetDate(9), GetDate(12)]);
+  const [am, setAm] = React.useState([null, null]);
   const [pm, setPm] = React.useState([GetDate(14), GetDate(19)]);
   const [limite2, setLimite2] = useState([GetDate(7), GetDate(17)]);
   const limite = [GetDate(7), GetDate(22)];
@@ -114,14 +122,49 @@ export default function SingleKamer({ match }) {
   };
 
   useEffect(() => {
-    if (!isEmpty(kamer)) {
-      getAllKamerByNaamAndGetAllReserverationsOnCertainDay().then(
-        (res, err) => {
-          // console.log(res, `ok`);
-          calculateDisabledIntervalsAndOpenInterval(res.data);
+    if (!isEmpty(kamer) && !loading) {
+      getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
+      kamer.naam,
+      timeRangeSliderDate.toLocaleDateString().split("/").join("-")
+      )
+      .then((res, err) => {
+        if (err) {
+          console.log(err);
+        } else{
           setReservation(res.data);
+          calculateDisabledIntervalsAndOpenInterval(res.data);
         }
-      );
+      })
+      .catch((err) => {
+        console.log(err, "err");
+        toast.error(err.response.data.message);
+        return Promise.reject(err);
+      });
+      }
+  }, [timeRangeSliderDate]);
+
+  useEffect(() => {
+    if (!isEmpty(kamer) ) {
+      console.log(kamer);
+      getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
+        kamer.naam,
+        timeRangeSliderDate.toLocaleDateString().split("/").join("-")
+      )
+        .then((res, err) => {
+          if(err){
+
+          }else{
+            console.log(res, `ok`);
+            calculateDisabledIntervalsAndOpenInterval(res.data);
+            
+            setReservation(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err, "err");
+          toast.error(err.response.data.message);
+          return Promise.reject(err);
+        });
       // calculateDisabledIntervalsAndOpenInterval();
     }
   }, [kamer]);
@@ -144,10 +187,10 @@ export default function SingleKamer({ match }) {
 
     setDisabledIntervals2(reserveringListObj);
 
-    generateOpenInterval();
+    generateOpenInterval(res);
   };
 
-  const generateOpenInterval = () => {
+  const generateOpenInterval = (reserveringListObj) => {
     let startTijd = new Date(kamer.startTijd);
     let endTijd = new Date(kamer.sluitTijd);
     const interval = 60 * 60000;
@@ -158,7 +201,7 @@ export default function SingleKamer({ match }) {
     ) {
       alReservatieInterval = getOverLap(
         new Date(startTijd.getTime()),
-        new Date(startTijd.getTime() + interval)
+        new Date(startTijd.getTime() + interval),reserveringListObj
       );
       startTijd = new Date(startTijd.getTime() + interval);
       if (
@@ -170,12 +213,11 @@ export default function SingleKamer({ match }) {
     }
   };
 
-  const getOverLap = (startDate, eindDate) => {
-    for (let index = 0; index < reservation.length; index++) {
-      console.log(reservation[index][0], "ik");
-      console.log(reservation[index][1], "ik2");
-      let startReserveringDate = new Date(reservation[index][1]);
-      let eindReserveringDate = new Date(reservation[index][0]);
+  const getOverLap = (startDate, eindDate,reserveringListObj) => {
+    console.log(reserveringListObj, "rep")
+    for (let index = 0; index < reserveringListObj.length; index++) {
+      let startReserveringDate = new Date(reserveringListObj[index][1]);
+      let eindReserveringDate = new Date(reserveringListObj[index][0]);
       if (
         startDate.getTime() < eindReserveringDate.getTime() &&
         eindDate.getTime() > startReserveringDate.getTime()
@@ -183,6 +225,8 @@ export default function SingleKamer({ match }) {
         return false;
       }
     }
+    console.log(startDate, "start")
+    console.log(eindDate, "eind123")
     setAm([GetDate(0, startDate), GetDate(0, eindDate)]);
     console.log(am, "am123");
     setAlReservatie(true);
@@ -216,19 +260,24 @@ export default function SingleKamer({ match }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (errorAm) {
-      maakNieuweReservatie(kamer.naam, am[0], am[1])
+    if(!loading && !isEmpty(kamer)){
+      console.log("getting hit")
+      if (!errorAm) {
+        maakNieuweReservatie(kamer.naam, am[0], am[1])
         .then((res, err) => {
           if (err) {
             console.log(err, "err");
+          }else{
+          
+            toast.success("Succesvol nieuwe reservering aangemaakt.");
           }
-          toast.success("Succesvol nieuwe reservering aangemaakt.");
         })
         .catch((error) => {
           console.log(error);
           toast.error(error.response.data.message);
           return Promise.reject(error);
         });
+      }
     }
   };
   const filterPassedTime = (time) => {
@@ -298,12 +347,12 @@ export default function SingleKamer({ match }) {
             )}
           </FlexBox>{" "}
           <div>
-            <h3>Openings tijden</h3>
-
+            <h3>Openingstijden</h3>
             {showTime()}
             {/* {kamer.reserveringList((item) =>{
 
                         })} */}
+            Gekozen datum: {timeRangeSliderDate.toDateString()}
           </div>
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="datePicker">
@@ -318,21 +367,9 @@ export default function SingleKamer({ match }) {
             <div className="timeRangeSlider">
               {!(disabledIntervals2 === []) && timeRangeSlider()}
             </div>
-            <button type="submit">submit</button>
+            <button type="submit" onClick={(e) => handleSubmit(e)}>submit reservatie</button>
           </form>
         </FlexBox>
-
-        {/* <DatePicker
-                     timeInputLabel="Time:"
-                        selectsRange={true}
-                        startDate={startDate}
-                        endDate={endDate}
-                        showTimeSelect
-                        onChange={(update) => {
-                            setDateRange(update);
-                        }}
-                        isClearable={true}
-                    /> */}
       </SingleKamerStyled>
     );
   };
