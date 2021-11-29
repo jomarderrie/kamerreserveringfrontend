@@ -18,23 +18,7 @@ import { getImagesFromDbAndFiles } from "./../../helpers/getImagesFromDb";
 import styled from "styled-components";
 
 import Carousel from "../../components/carousel/Carousel";
-const GetDate = (hour, date) => {
-  if (date !== undefined) {
-    return set(date, {
-      seconds: 0,
-      hours: date.getHours(),
-      milliseconds: 0,
-      minutes: 0,
-    });
-  } else {
-    return set(new Date(), {
-      seconds: 0,
-      hours: hour,
-      milliseconds: 0,
-      minutes: 0,
-    });
-  }
-};
+
 
 export default function SingleKamer({ match }) {
   const { naam } = match.params;
@@ -48,6 +32,16 @@ export default function SingleKamer({ match }) {
   const [startDate, setStartDate] = useState(null);
   const [resizedImages, setImages] = useState(null);
   const [timeRangeSliderDate, setTimeRangeSliderDate] = useState(new Date());
+  const [am, setAm] = React.useState([null, null]);
+  const [pm, setPm] = React.useState([null, null]);
+  const [limite2, setLimite2] = useState([null, null]);
+  const limite = [null, null];
+  const [disabledIntervals2, setDisabledIntervals2] = useState([]);
+  const [errorAm, setErrorAm] = React.useState(false);
+  const [alReservatie, setAlReservatie] = React.useState(false);
+  const [reservation, setReservation] = React.useState([]);
+  const [reservationSending, setReservationSending] = useState(false)
+  const [startEindTijd, setStartEindTijd] = useState([])
 
   useEffect(() => {
     setLoading(true);
@@ -64,9 +58,10 @@ export default function SingleKamer({ match }) {
           let eindDate = new Date(res.data.sluitTijd);
 
           setDateRange([startDate, eindDate]);
+          setStartEindTijd([startDate.getHours(), eindDate.getHours()])
           setLimite2([
-            GetDate(startDate.getHours()),
-            GetDate(eindDate.getHours()),
+            getDate(startDate.getHours()),
+            getDate(eindDate.getHours()),
           ]);
           getImagesFromDbAndFiles(
             res.data.naam,
@@ -76,7 +71,7 @@ export default function SingleKamer({ match }) {
             setImages(res[0]);
             console.log(res, "kek");
             setLoading(false);
-          }).catch((err) =>{
+          }).catch((err) => {
             console.log(err, "err");
             setLoading(false);
             console.log(kamer);
@@ -96,14 +91,7 @@ export default function SingleKamer({ match }) {
       });
   }, []);
 
-  const [am, setAm] = React.useState([null, null]);
-  const [pm, setPm] = React.useState([GetDate(14), GetDate(19)]);
-  const [limite2, setLimite2] = useState([GetDate(7), GetDate(17)]);
-  const limite = [GetDate(7), GetDate(22)];
-  const [disabledIntervals2, setDisabledIntervals2] = useState([]);
-  const [errorAm, setErrorAm] = React.useState(false);
-  const [alReservatie, setAlReservatie] = React.useState(false);
-  const [reservation, setReservation] = React.useState([]);
+
   const timeRangeSlider = () => {
     if (disabledIntervals2 !== []) {
       return (
@@ -121,53 +109,64 @@ export default function SingleKamer({ match }) {
     }
   };
 
-  useEffect(() => {
-    if (!isEmpty(kamer) && !loading) {
-      getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
-      kamer.naam,
-      timeRangeSliderDate.toLocaleDateString().split("/").join("-")
-      )
-      .then((res, err) => {
-        if (err) {
-          console.log(err);
-        } else{
-          setReservation(res.data);
-          calculateDisabledIntervalsAndOpenInterval(res.data);
-        }
-      })
-      .catch((err) => {
-        console.log(err, "err");
-        toast.error(err.response.data.message);
-        return Promise.reject(err);
+
+  const getDate = (hour, date) => {
+    if (date !== undefined) {
+      return set(date, {
+        seconds: 0,
+        hours: date.getHours(),
+        milliseconds: 0,
+        minutes: 0,
       });
-      }
-  }, [timeRangeSliderDate]);
+    } else {
+      return set(timeRangeSliderDate, {
+        seconds: 0,
+        hours: hour,
+        milliseconds: 0,
+        minutes: 0,
+      });
+    }
+  };
 
   useEffect(() => {
-    if (!isEmpty(kamer) ) {
-      console.log(kamer);
-      getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
-        kamer.naam,
-        timeRangeSliderDate.toLocaleDateString().split("/").join("-")
-      )
-        .then((res, err) => {
-          if(err){
+    if (!isEmpty(kamer)) {
+      if (!reservationSending) {
+        if (!loading) {
 
-          }else{
-            console.log(res, `ok`);
-            calculateDisabledIntervalsAndOpenInterval(res.data);
-            
-            setReservation(res.data);
-          }
-        })
-        .catch((err) => {
-          console.log(err, "err");
-          toast.error(err.response.data.message);
-          return Promise.reject(err);
-        });
-      // calculateDisabledIntervalsAndOpenInterval();
+          setReservationSending(true);
+          getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
+            kamer.naam,
+            timeRangeSliderDate.toLocaleDateString().split("/").join("-")
+          )
+            .then((res, err) => {
+              if (err) {
+                console.log(err);
+                setReservationSending(false)
+              } else {
+                console.log(res.data, "reservations")
+                setReservation(res.data);
+                setLimite2([
+                  getDate(startEindTijd[0]),
+                  getDate(startEindTijd[1])
+                ]);
+                calculateDisabledIntervalsAndOpenInterval(res.data);
+                setReservationSending(false)
+                // setLimite2([getDate(am[0].getHours()),
+                // getDate(am[1].getHours())])
+              }
+            })
+            .catch((err) => {
+              console.log(err, "err");
+              setReservationSending(false)
+              toast.error(err.response.data.message);
+              return Promise.reject(err);
+            });
+        }
+      }
     }
-  }, [kamer]);
+  }, [kamer, timeRangeSliderDate, reservation, loading]);
+
+
 
   const calculateDisabledIntervalsAndOpenInterval = (res) => {
     let reserveringListObj = [];
@@ -176,23 +175,43 @@ export default function SingleKamer({ match }) {
       if (res !== 0) {
         res.map((item, index) => {
           reserveringListObj.push({
-            start: moment(GetDate(0, new Date(item[1]))).toDate(),
-            end: moment(GetDate(0, new Date(item[0]))).toDate(),
+            start: moment(getDate(new Date(item[1]).getHours())).toDate(),
+            end: moment(getDate(new Date(item[0]).getHours())).toDate(),
           });
         });
       }
     }
     // kamer.startTijd;
     console.log(reserveringListObj, "reserveringListObj");
-
+    console.log(!checkIfReservationIsFull(reserveringListObj), "kek213123");
+    if (!checkIfReservationIsFull(reserveringListObj)) {
+      console.log("getting hit", res)
+      generateOpenInterval(res);
+    } else {
+      setReservation(true)
+      setAm([null, null]);
+    }
     setDisabledIntervals2(reserveringListObj);
-
-    generateOpenInterval(res);
   };
 
+  const checkIfReservationIsFull = (reserveringList) => {
+    let totalHours = 0;
+    let timeLineInterval = limite2[1].getHours() - limite2[0].getHours();
+    console.log(timeLineInterval)
+    if (reserveringList.length != 0) {
+      reserveringList.map((item) => {
+        totalHours += item.end.getHours() - item.start.getHours()
+      })
+    }
+    console.log(totalHours, "total")
+    return totalHours >= timeLineInterval;
+  }
+
   const generateOpenInterval = (reserveringListObj) => {
-    let startTijd = new Date(kamer.startTijd);
-    let endTijd = new Date(kamer.sluitTijd);
+    console.log(startEindTijd[0], "start")
+    let startTijd = getDate(startEindTijd[0]);
+    let endTijd = getDate(startEindTijd[1])
+    console.log(am[0, am[1], "deez"])
     const interval = 60 * 60000;
     let alReservatieInterval = false;
     while (
@@ -201,7 +220,7 @@ export default function SingleKamer({ match }) {
     ) {
       alReservatieInterval = getOverLap(
         new Date(startTijd.getTime()),
-        new Date(startTijd.getTime() + interval),reserveringListObj
+        new Date(startTijd.getTime() + interval), reserveringListObj
       );
       startTijd = new Date(startTijd.getTime() + interval);
       if (
@@ -213,7 +232,7 @@ export default function SingleKamer({ match }) {
     }
   };
 
-  const getOverLap = (startDate, eindDate,reserveringListObj) => {
+  const getOverLap = (startDate, eindDate, reserveringListObj) => {
     console.log(reserveringListObj, "rep")
     for (let index = 0; index < reserveringListObj.length; index++) {
       let startReserveringDate = new Date(reserveringListObj[index][1]);
@@ -227,8 +246,9 @@ export default function SingleKamer({ match }) {
     }
     console.log(startDate, "start")
     console.log(eindDate, "eind123")
-    setAm([GetDate(0, startDate), GetDate(0, eindDate)]);
-    console.log(am, "am123");
+
+    setAm([startDate, eindDate]);
+    setErrorAm(false);
     setAlReservatie(true);
     return true;
   };
@@ -258,25 +278,40 @@ export default function SingleKamer({ match }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e, am) => {
     e.preventDefault();
-    if(!loading && !isEmpty(kamer)){
+    if (!loading && !isEmpty(kamer)) {
       console.log("getting hit")
       if (!errorAm) {
-        maakNieuweReservatie(kamer.naam, am[0], am[1])
-        .then((res, err) => {
-          if (err) {
-            console.log(err, "err");
-          }else{
-          
-            toast.success("Succesvol nieuwe reservering aangemaakt.");
-          }
+        let startReservationDate = set(timeRangeSliderDate, {
+          seconds: 0,
+          hours: am[0].getHours() + 1,
+          milliseconds: 0,
+          minutes: 0,
         })
-        .catch((error) => {
-          console.log(error);
-          toast.error(error.response.data.message);
-          return Promise.reject(error);
-        });
+        // getDate(am[0].getHours() + 1);
+        let eindReservationDate = set(timeRangeSliderDate, {
+          seconds: 0,
+          hours: am[1].getHours() + 1,
+          milliseconds: 0,
+          minutes: 0,
+        })
+        maakNieuweReservatie(kamer.naam, startReservationDate, eindReservationDate)
+          .then((res, err) => {
+            if (err) {
+              console.log(err, "err");
+            } else {
+              setReservation(prev => {
+                prev.push(startReservationDate, eindReservationDate)
+              })
+              toast.success("Succesvol nieuwe reservering aangemaakt.");
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+            toast.error(error.response.data.message);
+            return Promise.reject(error);
+          });
       }
     }
   };
@@ -367,7 +402,7 @@ export default function SingleKamer({ match }) {
             <div className="timeRangeSlider">
               {!(disabledIntervals2 === []) && timeRangeSlider()}
             </div>
-            <button type="submit" onClick={(e) => handleSubmit(e)}>submit reservatie</button>
+            <button type="submit" disabled={reservationSending || loading} onClick={(e) => handleSubmit(e, am)}>submit reservatie</button>
           </form>
         </FlexBox>
       </SingleKamerStyled>
