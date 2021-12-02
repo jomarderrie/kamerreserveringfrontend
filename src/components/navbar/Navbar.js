@@ -7,6 +7,7 @@ import styled from "styled-components"
 import { StyledRouterLink } from '../../styled/globals/StyledRouterLink';
 import { FlexBox, LinkFlexBoxContainer, StyledFlexBoxContainer } from '../../styled/styles';
 const Navbar = () => {
+    
     return (
         <StyledFlexBoxContainer cssClass="link-box-container" x="space-between">
 
@@ -20,16 +21,18 @@ const Navbar = () => {
 
             <LinkFlexBoxContainer>
                 <StyledRouterLink to={"/register"} active={"active"}  p={"hover"}>
-                    register
+                    Register
                 </StyledRouterLink>
                 <StyledRouterLink to={"/login"}  p={"hover"}>
-                    login
+                    Login
                 </StyledRouterLink>
                 <StyledRouterLink to={"/kamers"}  p={"hover"}>
-                    kamers
+                    Kamers
                 </StyledRouterLink>
                 <StyledRouterLink to={"/gebruikers"}  p={"hover"}>
-                    gebruikers
+                    Gebruikers
+                </StyledRouterLink>   <StyledRouterLink to={"/profiel"}  p={"hover"}>
+                    Profiel
                 </StyledRouterLink>
             </LinkFlexBoxContainer>
         </StyledFlexBoxContainer>

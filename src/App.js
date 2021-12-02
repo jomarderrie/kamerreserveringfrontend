@@ -11,12 +11,10 @@ import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import EditSingleKamer from "./pages/kamer/EditSingleKamer";
 import MaakNieuweKamer from "./pages/kamer/MaakNieuweKamer";
-
-
-// const Home = lazy(() => import("./pages/Home"));
-//
+import Profiel from "./pages/gebruiker/Profiel";
+import SingleGebruiker from "./pages/gebruiker/SingleGebruiker";
+import Gebruikers from "./pages/gebruiker/Gebruikers";
 // const Loading = lazy(() => import("./components/Loading"));
-
 function App() {
 
     return (
@@ -32,7 +30,9 @@ function App() {
                     <Route exact path="/kamer/new" component={MaakNieuweKamer} />
                     <Route exact path="/kamer/:naam" component={SingleKamer} />
                     <Route exact path="/kamer/:naam/edit" component={EditSingleKamer} />
-            
+                    <Route exact path="/gebruikers" component={Gebruikers} />
+                    <Route exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker} />
+                    <Route exact path="/profiel/:naam/:achterNaam" component={Profiel} />
                 </Switch>
         
         </Suspense>

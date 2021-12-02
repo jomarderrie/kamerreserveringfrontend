@@ -95,7 +95,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
 
   const onFormSubmit = (naam) => {
     // sendFilesToBackend(files);
-    if (files !== []) {
+    if (files !== [] || files.length !==0) {
       checkFiles(files);
       const url = `http://localhost:8080/images/kamer/${naam}/upload/images`;
       const formData = new FormData();
@@ -172,7 +172,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                   .then((res, err) => {
                     if (err) {
                       console.log(err);
-                      toast.error("");
+                      toast.error("Error met het submitten van een kamer");
                       setSubmitting(false);
                     } else {
                       history.push("/kamers");
@@ -182,7 +182,9 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                   })
                   .catch((err) => {
                     console.log(err);
+                    toast.error("Error met het submitten van een kamer");
                     setSubmitting(false);
+                    return Promise.reject(err);
                   });
               }
             })
