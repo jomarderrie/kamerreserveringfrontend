@@ -23,13 +23,17 @@ function Gebruikers() {
   table {
     border-spacing: 0;
     border: 1px solid black;
-
+    margin-top: 10px;
     tr {
       :last-child {
         td {
           border-bottom: 0;
         }
       }
+    }
+
+    .gebruikers-table{
+      padding:10px;
     }
 
     th,
@@ -44,13 +48,18 @@ function Gebruikers() {
         border-right: 0;
       }
     }
+    .header{
+      padding:10px;
+    }
 
     td {
       input {
         font-size: 1rem;
         padding: 0;
         margin: 0;
-        border: 0;
+        margin: 3px 1px;
+    border: 0;
+    margin-left: 4px;
       }
     }
   }
@@ -259,19 +268,13 @@ function Gebruikers() {
     // Render the UI for your table
     return (
       <>
-        <table {...getTableProps()}>
+        <table {...getTableProps()} className="gebruikers-table">
           <thead>
             {headerGroups.map(headerGroup => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map(column => (
-                  <th {...column.getHeaderProps()}>
-                    <div>
-                      {column.canGroupBy ? (
-                        // If the column can be grouped, let's add a toggle
-                        <span {...column.getGroupByToggleProps()}>
-                          {column.isGrouped ? '🛑 ' : '👊 '}
-                        </span>
-                      ) : null}
+                  <th {...column.getHeaderProps()} className="header">
+                    <div >
                       <span {...column.getSortByToggleProps()}>
                         {column.render('Header')}
                         {/* Add a sort direction indicator */}
@@ -419,7 +422,7 @@ function Gebruikers() {
           {
             Header: 'E-mail',
             accessor: 'email',
-            aggregrate:'count',
+            aggregrate: 'count',
             Aggregated: ({ value }) => `${value} Names`,
           },
 
@@ -505,19 +508,19 @@ function Gebruikers() {
 
   // Let's add a data resetter/randomizer to help
   // illustrate that flow...
- 
+
 
   return (
     <FlexBox>
       {!loading ?
-      <Styles>
-        <Table
-        columns={columns}
-        data={data}
-        updateMyData={updateMyData}
-        skipReset={skipResetRef.current}
-      /> </Styles>: <div>hey</div>}
-    
+        <Styles>
+          <Table
+            columns={columns}
+            data={data}
+            updateMyData={updateMyData}
+            skipReset={skipResetRef.current}
+          /> </Styles> : <div>hey</div>}
+
     </FlexBox>
   )
 }
