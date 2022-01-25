@@ -33,6 +33,7 @@ function Carousel(props) {
             sliderImages2.push(images[index]);
           }
           index++;
+          
         } else if (index <= 0) {
           index = images.length - 1;
           if (images[currentMainIndex] !== images[index]) {

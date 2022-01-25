@@ -16,8 +16,12 @@ import addMonths from "date-fns/addMonths";
 import DatePicker, { ReactDatePicker } from "react-datepicker";
 import { getImagesFromDbAndFiles } from "./../../helpers/getImagesFromDb";
 import styled from "styled-components";
-
+import {
+  StyledButtonLink,
+  StyledButtonDelete,
+} from "./../../styled/globals/StyledRouterLink";
 import Carousel from "../../components/carousel/Carousel";
+import { FlexBoxUpDown } from "../../styled/globals/StyledFlexBoxContainer";
 
 
 export default function SingleKamer({ match }) {
@@ -40,8 +44,8 @@ export default function SingleKamer({ match }) {
   const [errorAm, setErrorAm] = React.useState(false);
   const [alReservatie, setAlReservatie] = React.useState(false);
   const [reservation, setReservation] = React.useState([]);
-  const [reservationSending, setReservationSending] = useState(false)
-  const [startEindTijd, setStartEindTijd] = useState([])
+  const [reservationSending, setReservationSending] = useState(false);
+  const [startEindTijd, setStartEindTijd] = useState([]);
 
   useEffect(() => {
     setLoading(true);
@@ -58,27 +62,25 @@ export default function SingleKamer({ match }) {
           let eindDate = new Date(res.data.sluitTijd);
 
           setDateRange([startDate, eindDate]);
-          setStartEindTijd([startDate.getHours(), eindDate.getHours()])
+          setStartEindTijd([startDate.getHours(), eindDate.getHours()]);
           setLimite2([
             getDate(startDate.getHours()),
             getDate(eindDate.getHours()),
           ]);
-          getImagesFromDbAndFiles(
-            res.data.naam,
-            res.data.attachments,
-            false
-          ).then((res) => {
-            setImages(res[0]);
-            console.log(res, "kek");
-            setLoading(false);
-          }).catch((err) => {
-            console.log(err, "err");
-            setLoading(false);
-            console.log(kamer);
-            setKamer({});
-            toast.error(err.response.data.message);
-            return Promise.reject(err);
-          });
+          getImagesFromDbAndFiles(res.data.naam, res.data.attachments, false)
+            .then((res) => {
+              setImages(res[0]);
+              console.log(res, "kek");
+              setLoading(false);
+            })
+            .catch((err) => {
+              console.log(err, "err");
+              setLoading(false);
+              console.log(kamer);
+              setKamer({});
+              toast.error(err.response.data.message);
+              return Promise.reject(err);
+            });
         }
       })
       .catch((err) => {
@@ -90,7 +92,6 @@ export default function SingleKamer({ match }) {
         return Promise.reject(err);
       });
   }, []);
-
 
   const timeRangeSlider = () => {
     if (disabledIntervals2 !== []) {
@@ -108,7 +109,6 @@ export default function SingleKamer({ match }) {
       );
     }
   };
-
 
   const getDate = (hour, date) => {
     if (date !== undefined) {
@@ -132,7 +132,6 @@ export default function SingleKamer({ match }) {
     if (!isEmpty(kamer)) {
       if (!reservationSending) {
         if (!loading) {
-
           setReservationSending(true);
           getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
             kamer.naam,
@@ -141,23 +140,23 @@ export default function SingleKamer({ match }) {
             .then((res, err) => {
               if (err) {
                 console.log(err);
-                setReservationSending(false)
+                setReservationSending(false);
               } else {
-                console.log(res.data, "reservations")
+                console.log(res.data, "reservations");
                 setReservation(res.data);
                 setLimite2([
                   getDate(startEindTijd[0]),
-                  getDate(startEindTijd[1])
+                  getDate(startEindTijd[1]),
                 ]);
                 calculateDisabledIntervalsAndOpenInterval(res.data);
-                setReservationSending(false)
+                setReservationSending(false);
                 // setLimite2([getDate(am[0].getHours()),
                 // getDate(am[1].getHours())])
               }
             })
             .catch((err) => {
               console.log(err, "err");
-              setReservationSending(false)
+              setReservationSending(false);
               toast.error(err.response.data.message);
               return Promise.reject(err);
             });
@@ -165,8 +164,6 @@ export default function SingleKamer({ match }) {
       }
     }
   }, [kamer, timeRangeSliderDate, reservation, loading]);
-
-
 
   const calculateDisabledIntervalsAndOpenInterval = (res) => {
     let reserveringListObj = [];
@@ -185,10 +182,10 @@ export default function SingleKamer({ match }) {
     console.log(reserveringListObj, "reserveringListObj");
     console.log(!checkIfReservationIsFull(reserveringListObj), "kek213123");
     if (!checkIfReservationIsFull(reserveringListObj)) {
-      console.log("getting hit", res)
+      console.log("getting hit", res);
       generateOpenInterval(res);
     } else {
-      setReservation(true)
+      setReservation(true);
       setAm([null, null]);
     }
     setDisabledIntervals2(reserveringListObj);
@@ -197,21 +194,21 @@ export default function SingleKamer({ match }) {
   const checkIfReservationIsFull = (reserveringList) => {
     let totalHours = 0;
     let timeLineInterval = limite2[1].getHours() - limite2[0].getHours();
-    console.log(timeLineInterval)
+    console.log(timeLineInterval);
     if (reserveringList.length != 0) {
       reserveringList.map((item) => {
-        totalHours += item.end.getHours() - item.start.getHours()
-      })
+        totalHours += item.end.getHours() - item.start.getHours();
+      });
     }
-    console.log(totalHours, "total")
+    console.log(totalHours, "total");
     return totalHours >= timeLineInterval;
-  }
+  };
 
   const generateOpenInterval = (reserveringListObj) => {
-    console.log(startEindTijd[0], "start")
+    console.log(startEindTijd[0], "start");
     let startTijd = getDate(startEindTijd[0]);
-    let endTijd = getDate(startEindTijd[1])
-    console.log(am[0, am[1], "deez"])
+    let endTijd = getDate(startEindTijd[1]);
+    console.log(am[(0, am[1], "deez")]);
     const interval = 60 * 60000;
     let alReservatieInterval = false;
     while (
@@ -220,7 +217,8 @@ export default function SingleKamer({ match }) {
     ) {
       alReservatieInterval = getOverLap(
         new Date(startTijd.getTime()),
-        new Date(startTijd.getTime() + interval), reserveringListObj
+        new Date(startTijd.getTime() + interval),
+        reserveringListObj
       );
       startTijd = new Date(startTijd.getTime() + interval);
       if (
@@ -233,7 +231,7 @@ export default function SingleKamer({ match }) {
   };
 
   const getOverLap = (startDate, eindDate, reserveringListObj) => {
-    console.log(reserveringListObj, "rep")
+    console.log(reserveringListObj, "rep");
     for (let index = 0; index < reserveringListObj.length; index++) {
       let startReserveringDate = new Date(reserveringListObj[index][1]);
       let eindReserveringDate = new Date(reserveringListObj[index][0]);
@@ -244,8 +242,8 @@ export default function SingleKamer({ match }) {
         return false;
       }
     }
-    console.log(startDate, "start")
-    console.log(eindDate, "eind123")
+    console.log(startDate, "start");
+    console.log(eindDate, "eind123");
 
     setAm([startDate, eindDate]);
     setErrorAm(false);
@@ -281,29 +279,33 @@ export default function SingleKamer({ match }) {
   const handleSubmit = (e, am) => {
     e.preventDefault();
     if (!loading && !isEmpty(kamer)) {
-      console.log("getting hit")
+      console.log("getting hit");
       if (!errorAm) {
         let startReservationDate = set(timeRangeSliderDate, {
           seconds: 0,
           hours: am[0].getHours() + 1,
           milliseconds: 0,
           minutes: 0,
-        })
+        });
         // getDate(am[0].getHours() + 1);
         let eindReservationDate = set(timeRangeSliderDate, {
           seconds: 0,
           hours: am[1].getHours() + 1,
           milliseconds: 0,
           minutes: 0,
-        })
-        maakNieuweReservatie(kamer.naam, startReservationDate, eindReservationDate)
+        });
+        maakNieuweReservatie(
+          kamer.naam,
+          startReservationDate,
+          eindReservationDate
+        )
           .then((res, err) => {
             if (err) {
               console.log(err, "err");
             } else {
-              setReservation(prev => {
-                prev.push(startReservationDate, eindReservationDate)
-              })
+              setReservation((prev) => {
+                prev.push(startReservationDate, eindReservationDate);
+              });
               toast.success("Succesvol nieuwe reservering aangemaakt.");
             }
           })
@@ -345,7 +347,24 @@ export default function SingleKamer({ match }) {
     return (
       <SingleKamerStyled>
         <FlexBox z="column" width="60vw">
-          <h1>{kamer.naam}</h1>
+          <FlexBoxUpDown width="60vw" x="space-between" upDown="10" leftRight="30">
+            <h1>{kamer.naam}</h1>
+            <FlexBoxUpDown x="space-evenly" width="50%" upDown="2">
+              <StyledButtonLink
+                value2="hey"
+                to2={`/kamer/${kamer.naam}/edit`}
+                className={"btn btn-pink"}
+                text={"Edit"}
+                icon={"fa-edit"}
+              />
+              <StyledButtonDelete
+                value2={kamer.naam}
+                text="Delete"
+                icon={"fa-trash"}
+                naam={kamer.naam}
+              />
+            </FlexBoxUpDown>
+          </FlexBoxUpDown>
           <Carousel images={resizedImages} />
         </FlexBox>
 
@@ -402,7 +421,13 @@ export default function SingleKamer({ match }) {
             <div className="timeRangeSlider">
               {!(disabledIntervals2 === []) && timeRangeSlider()}
             </div>
-            <button type="submit" disabled={reservationSending || loading} onClick={(e) => handleSubmit(e, am)}>submit reservatie</button>
+            <button
+              type="submit"
+              disabled={reservationSending || loading}
+              onClick={(e) => handleSubmit(e, am)}
+            >
+              submit reservatie
+            </button>
           </form>
         </FlexBox>
       </SingleKamerStyled>

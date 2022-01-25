@@ -11,9 +11,11 @@ import { isEmpty } from "./../../helpers/IsEmpty";
 import { StyledButtonLink, ButtonWithIcon, ButtonLink, StyledButtonDelete } from './../../styled/globals/StyledRouterLink';
 import { ContainerKamerInfo, FlexBoxUpDown } from './../../styled/globals/StyledFlexBoxContainer';
 import { useHistory } from "react-router-dom";
+import { KamersContext } from "../../context/KamersContext";
 
-const KamerCard = ({ kamer, deleteKamer, image,key }) => {
+const KamerCard = ({ kamer, image,key }) => {
   const { user } = useContext(AuthContext);
+  const {deleteKamerOnClick} = useContext(KamersContext);
   const [kamerImages, setKamerImages] = useState("");
   const [loading, setLoading] = useState(true);
   let history = useHistory();
@@ -23,7 +25,6 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
     setLoading(true);
     if (kamer.attachments.length !== 0) {
       getImageFromDb(kamer.naam, kamer.attachments[0].name).then((k) => {
-        console.log(URL.createObjectURL(k.data), "kekw")
         setKamerImages(URL.createObjectURL(k.data));
         setLoading(false);
       }).catch((err) =>{
@@ -86,7 +87,7 @@ const KamerCard = ({ kamer, deleteKamer, image,key }) => {
       <StyledButtonLink  value2="hey"  to2={`/kamer/${kamer.naam}/edit`} className={"btn btn-pink"} text={"Edit"} 
      
        icon={"fa-edit"}/>
-        <StyledButtonDelete value2={kamer.naam} action={ deleteKamer} text="Delete" icon={"fa-trash"}
+        <StyledButtonDelete value2={kamer.naam} action={ deleteKamerOnClick} text="Delete" icon={"fa-trash"}
           naam={kamer.naam}
         />  
       

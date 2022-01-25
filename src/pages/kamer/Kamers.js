@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useContext, useEffect, useState } from "react";
 import {
   deleteKamerMetFetch,
   getAllKamers,
@@ -16,8 +16,10 @@ import InputWithImage from "../../styled/globals/Input";
 import { FlexBoxUpDown, GridImages } from "./../../styled/globals/StyledFlexBoxContainer";
 import { ButtonLink, StyledButtonLink, StyledRouterLink } from "./../../styled/globals/StyledRouterLink";
 import SideBar from "../../components/navbar/SideBar";
+import {deleteKamerOnClick} from "../../helpers/kamerDelete"
+import { KamersContext } from "../../context/KamersContext";
 function Kamers() {
-  const [kamers, setKamers] = useState([]);
+  const {kamers, setKamers}= useContext(KamersContext);
   const [loading, setLoading] = useState(false);
   let history = useHistory();
 
@@ -32,28 +34,31 @@ function Kamers() {
     });
   }, []);
 
-  const deleteKamerOnClick = async (naam) => {
-      // console.log(e.target);
-      console.log(naam, "oekoek");
-    await deleteKamer(naam)
-      .then((res, err) => {
-        if (err) {
-          toast.error("Error met het toevoegen van een kamer");
-        } else {
-          setKamers((prevKamer) => {
-            return prevKamer.filter((kamer) => {
-              return kamer.naam !== naam;
-            });
+  const deleteKamerOnClick = async (naam, setKamers) => {
+    // console.log(e.target);
+    console.log(naam, "oekoek");
+  await deleteKamer(naam)
+    .then((res, err) => {
+      if (err) {
+        toast.error("Error met het toevoegen van een kamer");
+      } else {
+        setKamers((prevKamer) => {
+          return prevKamer.filter((kamer) => {
+            return kamer.naam !== naam;
           });
-          toast.success(`Delete kamer met naam ${naam}`);
-        }
-      })
-      .catch((k) => {
-        toast.error(k.response.data.message);
+        });
+        toast.success(`Delete kamer met naam ${naam}`);
+      }
+    })
+    .catch((k) => {
+      toast.error(k.response.data.message);
 
-        return Promise.reject(k);
-      });
-  };
+      return Promise.reject(k);
+    });
+};
+
+
+
 
   return (
     <div>
@@ -80,6 +85,7 @@ function Kamers() {
           return (
               <KamerCard
                 kamer={kamer}
+                setKamers={setKamers}
                 deleteKamer={deleteKamerOnClick}
                 image={kamer.attachment}
                 key={key}
