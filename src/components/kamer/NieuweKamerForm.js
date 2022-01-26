@@ -214,11 +214,19 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                 // toast.error(err)
               }
             })
-            .catch((err) => {
-              console.log(err);
+            .catch((k) => {
+              if (!k.response?.data?.message) {
+                toast.error(k);
+              } else {
+                toast.error(k.response.data.message);
+              }
               setSubmitting(false);
-              toast.error(err.response.data.message);
-              return Promise.reject(err);
+              return Promise.reject(k);
+
+              // console.log(err);
+              // setSubmitting(false);
+              // toast.error(err.response.data.message);
+              // return Promise.reject(err);
             });
         }
       })}

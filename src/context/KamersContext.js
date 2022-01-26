@@ -1,10 +1,12 @@
 import React, { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { deleteKamer } from "../functions/kamers";
 export const KamersContext = React.createContext();
 
 export default function KamerProvider({ children }) {
   const [kamers, setKamers] = useState([]);
+  let history = useHistory();
 
   const deleteKamerOnClick = async (naam) => {
     // console.log(e.target);
@@ -14,11 +16,14 @@ export default function KamerProvider({ children }) {
         if (err) {
           toast.error("Error met het toevoegen van een kamer");
         } else {
+
           setKamers((prevKamer) => {
             return prevKamer.filter((kamer) => {
               return kamer.naam !== naam;
             });
           });
+          history.push("/kamers")
+
           toast.success(`Delete kamer met naam ${naam}`);
         }
       })

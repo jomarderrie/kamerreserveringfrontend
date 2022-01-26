@@ -22,7 +22,9 @@ import {
 } from "./../../styled/globals/StyledRouterLink";
 import Carousel from "../../components/carousel/Carousel";
 import { FlexBoxUpDown } from "../../styled/globals/StyledFlexBoxContainer";
-
+import { useContext } from "react/cjs/react.development";
+import { KamersContext } from "../../context/KamersContext";
+import { useHistory } from "react-router-dom";
 
 export default function SingleKamer({ match }) {
   const { naam } = match.params;
@@ -46,6 +48,8 @@ export default function SingleKamer({ match }) {
   const [reservation, setReservation] = React.useState([]);
   const [reservationSending, setReservationSending] = useState(false);
   const [startEindTijd, setStartEindTijd] = useState([]);
+
+  const { deleteKamerOnClick } = useContext(KamersContext);
 
   useEffect(() => {
     setLoading(true);
@@ -73,23 +77,31 @@ export default function SingleKamer({ match }) {
               console.log(res, "kek");
               setLoading(false);
             })
-            .catch((err) => {
-              console.log(err, "err");
+            .catch((k) => {
+              if (!k.response?.data?.message) {
+                toast.error(k);
+              } else {
+                toast.error(k.response.data.message);
+              }
               setLoading(false);
-              console.log(kamer);
+             
               setKamer({});
               toast.error(err.response.data.message);
               return Promise.reject(err);
             });
         }
       })
-      .catch((err) => {
-        console.log(err, "err");
+      .catch((k) => {
+        if (!k.response?.data?.message) {
+          toast.error(k);
+        } else {
+          toast.error(k.response.data.message);
+        }
+
         setLoading(false);
-        console.log(kamer);
         setKamer({});
-        toast.error(err.response.data.message);
-        return Promise.reject(err);
+        toast.error(k.response.data.message);
+        return Promise.reject(k);
       });
   }, []);
 
@@ -179,10 +191,8 @@ export default function SingleKamer({ match }) {
       }
     }
     // kamer.startTijd;
-    console.log(reserveringListObj, "reserveringListObj");
-    console.log(!checkIfReservationIsFull(reserveringListObj), "kek213123");
+
     if (!checkIfReservationIsFull(reserveringListObj)) {
-      console.log("getting hit", res);
       generateOpenInterval(res);
     } else {
       setReservation(true);
@@ -279,7 +289,6 @@ export default function SingleKamer({ match }) {
   const handleSubmit = (e, am) => {
     e.preventDefault();
     if (!loading && !isEmpty(kamer)) {
-      console.log("getting hit");
       if (!errorAm) {
         let startReservationDate = set(timeRangeSliderDate, {
           seconds: 0,
@@ -345,30 +354,46 @@ export default function SingleKamer({ match }) {
 
   const kamerLoaded = (kamer) => {
     return (
-      <SingleKamerStyled>
-        <FlexBox z="column" width="60vw">
-          <FlexBoxUpDown width="60vw" x="space-between" upDown="10" leftRight="30">
-            <h1>{kamer.naam}</h1>
-            <FlexBoxUpDown x="space-evenly" width="50%" upDown="2">
-              <StyledButtonLink
-                value2="hey"
-                to2={`/kamer/${kamer.naam}/edit`}
-                className={"btn btn-pink"}
-                text={"Edit"}
-                icon={"fa-edit"}
-              />
-              <StyledButtonDelete
-                value2={kamer.naam}
-                text="Delete"
-                icon={"fa-trash"}
-                naam={kamer.naam}
-              />
-            </FlexBoxUpDown>
-          </FlexBoxUpDown>
-          <Carousel images={resizedImages} />
+      <SingleKamerStyled width="100vw">
+        <FlexBoxUpDown
+          x="flex-end"
+          width="100%"
+          upDown="10"
+          leftRight="24"
+          className="kamerAdmin-btn"
+        >
+          <div>
+            <StyledButtonLink
+              value2="hey"
+              to2={`/kamer/${kamer.naam}/edit`}
+              className={"btn btn-pink"}
+              text={"Edit"}
+              icon={"fa-edit"}
+            />
+
+            <StyledButtonDelete
+              value2={kamer.naam}
+              text="Delete"
+              icon={"fa-trash"}
+              naam={kamer.naam}
+              action={deleteKamerOnClick}
+            />
+          </div>
+        </FlexBoxUpDown>
+<FlexBoxUpDown z="row" width="100vw" leftRight="24">
+
+
+        <FlexBox z="row" width="40vw">
+          <FlexBox z="column" width="40vw">
+            <div>
+              <h1 className="kamer-title">{kamer.naam}</h1>
+            </div>
+            <Carousel images={resizedImages} />
+          </FlexBox>
         </FlexBox>
 
-        <FlexBox z="column" width="40vw">
+
+        <FlexBox z="column" width="60vw">
           <div>De ruimte is te reserveren vanaf</div>
           <FlexBox style={{ paddingLeft: "3px" }}>
             {!isEmpty(kamer.startTijd) ? (
@@ -400,14 +425,11 @@ export default function SingleKamer({ match }) {
               <div>...Loading</div>
             )}
           </FlexBox>{" "}
-          <div>
+          <FlexBox z="column">
             <h3>Openingstijden</h3>
             {showTime()}
-            {/* {kamer.reserveringList((item) =>{
-
-                        })} */}
             Gekozen datum: {timeRangeSliderDate.toDateString()}
-          </div>
+          </FlexBox>
           <form onSubmit={(e) => handleSubmit(e)}>
             <div className="datePicker">
               <DatePicker
@@ -430,6 +452,8 @@ export default function SingleKamer({ match }) {
             </button>
           </form>
         </FlexBox>
+        </FlexBoxUpDown>
+
       </SingleKamerStyled>
     );
   };
@@ -450,9 +474,19 @@ export default function SingleKamer({ match }) {
 }
 
 const SingleKamerStyled = styled(FlexBox)`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  .kamerAdmin-btn button {
+    margin: 10px;
+  }
+  .kamer-title {
+    padding-left: 60px;
+    font-size: 48px;
+  }
   .timeRangeSlider {
     padding: 0px;
-    width: 40vw;
+    width:50vw;
     z-index: 1;
   }
   .react_time_range__time_range_container {

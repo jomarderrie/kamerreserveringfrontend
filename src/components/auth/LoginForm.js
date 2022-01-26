@@ -26,7 +26,7 @@ const LoginForm = () => {
         if (intended) {
             history.push(intended.from);
         } else {
-            history.push("/kamers")
+        
             // if (res.role === "ROLE_ADMIN") {
             //     history.push("/admin/kamers")
             // } else {
