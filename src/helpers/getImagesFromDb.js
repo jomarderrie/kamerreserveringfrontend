@@ -1,9 +1,9 @@
 import { getImageFromDb } from "./../functions/kamers";
-export const getImagesFromDbAndFiles = async (
-  kamerNaam,
+
+
+export async function getImagesFromDbAndFiles(kamerNaam,
   fileAttachments,
-  wantFiles = false
-) => {
+  wantFiles = false) {
   let images = [];
   let files = [];
   const merged = [];
@@ -23,4 +23,4 @@ export const getImagesFromDbAndFiles = async (
   }
   [...files].forEach((file) => console.log(file, "kek"));
   return merged;
-};
+}

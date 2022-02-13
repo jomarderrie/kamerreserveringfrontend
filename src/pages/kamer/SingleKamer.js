@@ -86,7 +86,6 @@ export default function SingleKamer({ match }) {
               setLoading(false);
              
               setKamer({});
-              toast.error(err.response.data.message);
               return Promise.reject(err);
             });
         }
@@ -364,8 +363,8 @@ export default function SingleKamer({ match }) {
         >
           <div>
             <StyledButtonLink
-              value2="hey"
-              to2={`/kamer/${kamer.naam}/edit`}
+          
+              to2={`/kamers/${kamer.naam}/edit`}
               className={"btn btn-pink"}
               text={"Edit"}
               icon={"fa-edit"}

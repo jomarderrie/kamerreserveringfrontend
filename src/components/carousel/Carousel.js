@@ -103,7 +103,8 @@ function CarouselController(props) {
   } else {
     return (
 
-      <Carousel>
+
+      <Carousel width="40vw">
 
       {images.map((image) =>{
         return <img src={image} />
@@ -111,15 +112,15 @@ function CarouselController(props) {
       {/* <div>
           <img src="assets/1.jpeg" />
           <p className="legend">Legend 1</p>
-      </div>
-      <div>
+          </div>
+          <div>
           <img src="assets/2.jpeg" />
           <p className="legend">Legend 2</p>
-      </div>
-      <div>
+          </div>
+          <div>
           <img src="assets/3.jpeg" />
           <p className="legend">Legend 3</p>
-      </div> */}
+        </div> */}
   </Carousel>
 
       // <CarouselStyled className={props.className} width="55vw" z="column">

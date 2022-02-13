@@ -43,6 +43,8 @@ export const StyledRouterLinkWrapper = styled(StyledRouterLink)`
 export const ButtonLink = (props) => {
   let url = props.to2 === undefined? null: props.to2;
   return (
+    <div>
+
     <Link to={`${url}`} disabled className="button">
       <ButtonWithIcon
         className={props.className}
@@ -50,8 +52,9 @@ export const ButtonLink = (props) => {
         text={props.text}
         action={props.action}
         value2={props.value2}
-      />
+        />
     </Link>
+        </div>
   );
 };
 

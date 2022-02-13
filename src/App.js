@@ -30,8 +30,8 @@ function App() {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/kamers" component={Kamers} />
                     <Route exact path="/kamer/new" component={MaakNieuweKamer} />
-                    <Route exact path="/kamer/:naam" component={SingleKamer} />
-                    <Route exact path="/kamer/:naam/edit" component={EditSingleKamer} />
+                    <Route exact path="/kamers/:naam" component={SingleKamer} />
+                    <Route exact path="/kamers/:naam/edit" component={EditSingleKamer} />
             
                 </Switch>
         

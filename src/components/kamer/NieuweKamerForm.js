@@ -43,6 +43,8 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
     formState: { errors },
   } = useForm();
 
+  
+
   useEffect(() => {
     if (kamer !== undefined) {
       if (!isEmpty(kamer)) {
@@ -93,12 +95,13 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
     return true;
   };
 
-  const onFormSubmit = (naam) => {
+  const onImagesFormSubmit = (naam) => {
     // sendFilesToBackend(files);
     if (files !== []) {
       checkFiles(files);
       const url = `http://localhost:8080/images/kamer/${naam}/upload/images`;
       const formData = new FormData();
+      console.log(files, "files");
       Array.from(files).forEach((image, index) => {
         console.log(image, "image " + index);
         formData.append("files", image, image.name);
@@ -168,7 +171,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
               if (err) {
                 console.log(err);
               } else {
-                onFormSubmit(data.naam)
+                onImagesFormSubmit(data.naam)
                   .then((res, err) => {
                     if (err) {
                       console.log(err);
@@ -198,9 +201,11 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
               if (err) {
                 console.log(err);
               } else {
-                onFormSubmit(data.naam)
+                onImagesFormSubmit(data.naam)
                   .then((res, err) => {
                     if (res) {
+
+                      
                       history.push("/kamers");
                       toast.success(
                         `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
@@ -389,7 +394,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
       </FlexContainerFileInput> */}
 
       <FlexBoxContainerInput z={"column"}>
-        <button type="submit" className={"submit-auth-btn"}>
+        <button type="submit" className={"submit-auth-btn"} style={{marginBottom:"20px"}}>
           Submit
         </button>
       </FlexBoxContainerInput>

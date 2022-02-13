@@ -48,10 +48,11 @@ const KamerCard = ({ kamer, image, key }) => {
   }, []);
 
   const handleOnClickTest = (e, naam) => {
-
-    if (!(e.target.outerText === "Edit" || e.target.outerText === "Delete")) {
-      history.push(`/kamer/${naam}`);
+    console.log(e.target.innerText)
+    if (!(e.target.innerText === "Edit" || e.target.innerText === "Delete") || !(e.target.outerText === "Edit" || e.target.outerText === "Delete")) {
+      history.push(`/kamers/${naam}`);
     }
+   
   };
 
   return (
@@ -60,7 +61,7 @@ const KamerCard = ({ kamer, image, key }) => {
       width={"100%"}
       key={key}
       style={{ cursor: "pointer" }}
-      onClick={(e) => handleOnClickTest(e, kamer.naam)}
+    
     >
       <div style={{ cursor: "pointer", width: "100%" }}>
         {loading ? (
@@ -71,7 +72,7 @@ const KamerCard = ({ kamer, image, key }) => {
             src={kamerImages === "" ? imageNoFound : kamerImages}
           />
         )}
-        <ContainerKamerInfo z="column">
+        <ContainerKamerInfo z="column"  onClick={(e) => handleOnClickTest(e, kamer.naam)}>
           <h2 onClick={(e) => handleOnClickTest(e, kamer.naam)}>
             {kamer.naam}
           </h2>
@@ -106,7 +107,7 @@ const KamerCard = ({ kamer, image, key }) => {
           <FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
             <StyledButtonLink
               value2="hey"
-              to2={`/kamer/${kamer.naam}/edit`}
+              to2={`/kamers/${kamer.naam}/edit`}
               className={"btn btn-pink"}
               text={"Edit"}
               icon={"fa-edit"}
