@@ -21,6 +21,7 @@ import { post } from "axios";
 import { getImageFromDb } from "./../../functions/kamers";
 import { loginUser } from "../../functions/auth";
 import { getImagesFromDbAndFiles } from "../../helpers/getImagesFromDb";
+import {KamersContext} from "../../context/KamersContext";
 export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [submitting, setSubmitting] = useState(false);
   const [serverErrors, setServerErrors] = useState([]);
@@ -28,6 +29,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   const [loading, setLoading] = useState(true);
   const [files, setFiles] = useState(null);
   const [resizedImages, setImages] = useState(null);
+  const {kamers, setKamers}= useContext(KamersContext);
 
   let history = useHistory();
 
@@ -169,7 +171,9 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
           await editKamer(kamer.naam, data.naam, eindDatumObj, startDatumObj)
             .then((res, err) => {
               if (err) {
+                toast.error("Er was een error met het editen van de kamer")
                 console.log(err);
+                setSubmitting(false);
               } else {
                 onImagesFormSubmit(data.naam)
                   .then((res, err) => {
@@ -179,6 +183,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
                       setSubmitting(false);
                     } else {
                       history.push("/kamers");
+
                       toast.success(`Succesvol kamer veranderd`);
                       setSubmitting(false);
                     }

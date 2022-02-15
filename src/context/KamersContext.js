@@ -38,6 +38,13 @@ export default function KamerProvider({ children }) {
       });
   };
 
+
+  const filterRooms = (searchKeyWord) =>{
+    kamers.filter((item) =>{
+
+    })
+  }
+
   return (
     <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick }}>
       {children}

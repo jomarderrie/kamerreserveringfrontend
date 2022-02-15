@@ -24,7 +24,6 @@ function Kamers() {
   let history = useHistory();
 
   useEffect(() => {
- 
     setLoading(true);
     getAllKamers().then((res, err) => {
       console.log(res);
@@ -36,7 +35,6 @@ function Kamers() {
 
   const deleteKamerOnClick = async (naam, setKamers) => {
     // console.log(e.target);
-    console.log(naam, "oekoek");
   await deleteKamer(naam)
     .then((res, err) => {
       if (err) {
