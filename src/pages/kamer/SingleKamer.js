@@ -424,19 +424,26 @@ export default function SingleKamer({match}) {
                             ) : (
                                 <div>...Loading</div>
                             )}
-                        </FlexBox>{" "}
-                        <FlexBox z="column">
-                            <h3>Openingstijden</h3>
-                            {showTime()}
-                            Gekozen datum: {timeRangeSliderDate.toDateString()}
                         </FlexBox>
-                        <button onClick={() => {
-                        setTableView(prev => {
-                            return !prev;
-                        })
-                    }}>Switch to table
-                    </button>
-                        <form onSubmit={(e) => handleSubmit(e)}>
+                        <FlexBox z="column">
+                            <div>
+                                <h3>Openingstijden</h3>
+                                {showTime()}
+                                Gekozen datum: {timeRangeSliderDate.toDateString()}
+
+
+                            </div>
+                            <div className={"switch-table-btn"git }>
+                                <button onClick={() => {
+                                    setTableView(prev => {
+                                        return !prev
+                                    })
+                                }}>Switch to table
+                                </button>
+                            </div>
+                        </FlexBox>
+
+                        <form onSubmit={(e) => handleSubmit(e, am)}>
                             <FlexBox x={"space-between"}>
                                 <div className="datePicker">
                                     <DatePicker
@@ -447,24 +454,19 @@ export default function SingleKamer({match}) {
                                         onChange={(date) => setTimeRangeSliderDate(date)}
                                     />
                                 </div>
-                                <div>
 
-                                </div>
                             </FlexBox>
 
-                            <button
-                                type="submit"
-                                disabled={reservationSending || loading}
-                                onClick={(e) => handleSubmit(e, am)}
-                            >
-                                submit reservatie
-                            </button>
                         </form>
                         <div className="timeRangeSlider">
-                            {tableView ? 'currently' : 'not'}
-
-                            {(tableView && !(disabledIntervals2 === [])) ? timeRangeSlider() : "hey"}
+                            {(tableView && !(disabledIntervals2 === [])) ? timeRangeSlider() : <TableView/>}
                         </div>
+                        <button
+                            type="submit"
+                            disabled={reservationSending || loading}
+                        >
+                            submit reservatie
+                        </button>
                     </FlexBox>
                 </FlexBoxUpDown>
 
