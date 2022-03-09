@@ -433,7 +433,7 @@ export default function SingleKamer({match}) {
 
 
                             </div>
-                            <div className={"switch-table-btn"git }>
+                            <div className={"switch-table-btn" }>
                                 <button onClick={() => {
                                     setTableView(prev => {
                                         return !prev

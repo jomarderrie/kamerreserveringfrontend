@@ -1,7 +1,7 @@
 import React, { Component, useContext, useEffect, useState } from "react";
 import {
   deleteKamerMetFetch,
-  getAllKamers,
+  getPaginatedKamers,
   getImageFromDb,
 } from "../../functions/kamers";
 import { set } from "react-hook-form";
@@ -19,15 +19,15 @@ import SideBar from "../../components/navbar/SideBar";
 import {deleteKamerOnClick} from "../../helpers/kamerDelete"
 import { KamersContext } from "../../context/KamersContext";
 function Kamers() {
-  const {kamers, setKamers}= useContext(KamersContext);
+  const {kamers, setKamers, pageKamerInfo}= useContext(KamersContext);
   const [loading, setLoading] = useState(false);
   let history = useHistory();
 
   useEffect(() => {
     setLoading(true);
-    getAllKamers().then((res, err) => {
+    getPaginatedKamers(pageKamerInfo.currentPage,pageKamerInfo.kamersPerPage ).then((res, err) => {
       console.log(res);
-      setKamers(res.data);
+      setKamers(res.data.content);
       console.log(res.data, "kamers");
       setLoading(false);
     });
@@ -93,6 +93,28 @@ function Kamers() {
         })}
         {/* {() => getImageFromDb()} */}
       </GridImages>
+      <div>
+        <button type="button"> 
+          first
+        </button>
+        <button>
+          Prev
+        </button>
+        <button disabled={true}>
+        {pageKamerInfo.currentPage}
+        </button>
+        <button>
+          Next
+        </button>
+
+        <button>
+          last
+        </button>
+        
+      </div>
+      <div>
+        Showing Page {pageKamerInfo.currentPage} of {pageKamerInfo.kamersPerPage}
+      </div>
     </div>
   );
 }

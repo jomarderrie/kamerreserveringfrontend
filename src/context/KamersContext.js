@@ -6,6 +6,13 @@ export const KamersContext = React.createContext();
 
 export default function KamerProvider({ children }) {
   const [kamers, setKamers] = useState([]);
+  const[pageKamerInfo, setPageKamerInfo] = useState({
+    currentPage: 0,
+    kamersPerPage: 5,
+    totalPages: 0,
+    totalElements: 0,
+    
+  })
   let history = useHistory();
 
   const deleteKamerOnClick = async (naam) => {
@@ -46,7 +53,7 @@ export default function KamerProvider({ children }) {
   }
 
   return (
-    <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick }}>
+    <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick, pageKamerInfo }}>
       {children}
     </KamersContext.Provider>
   );
