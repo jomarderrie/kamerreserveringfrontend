@@ -84,7 +84,7 @@ export const StyledButtonLink = styled(ButtonLink)`
   box-shadow: 0px 2px 2px lightgray;
   transition: ease background-color 250ms;
   .button-icon {
-    padding-right: 10px;
+    padding-right: 10px; 
   }
 `;
 

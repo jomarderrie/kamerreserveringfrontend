@@ -367,7 +367,7 @@ export default function SingleKamer({match}) {
                     <StyledButtonLink
 
                         to2={`/kamers/${kamer.naam}/edit`}
-                        className={"btn btn-pink"}
+                        className={"btn-pink"}
                         text={"Edit"}
                         icon={"fa-edit"}
                     />
@@ -425,9 +425,9 @@ export default function SingleKamer({match}) {
                                 <div>...Loading</div>
                             )}
                         </FlexBox>
-                        <FlexBox z="column">
+                        <FlexBox z="row">
                             <div>
-                                <h3>Openingstijden</h3>
+                                <h3>Openings tijden</h3>
                                 {showTime()}
                                 Gekozen datum: {timeRangeSliderDate.toDateString()}
 
@@ -445,6 +445,9 @@ export default function SingleKamer({match}) {
 
                         <form onSubmit={(e) => handleSubmit(e, am)}>
                             <FlexBox x={"space-between"}>
+<span className={`fa-arrow-right fa-2x button-icon`}/>
+
+
                                 <div className="datePicker">
                                     <DatePicker
                                         minDate={setStartDateLimit(kamer.startDate)}
@@ -454,7 +457,7 @@ export default function SingleKamer({match}) {
                                         onChange={(date) => setTimeRangeSliderDate(date)}
                                     />
                                 </div>
-
+                                <span className={`fa-arrow-left fa-2x button-icon`}></span>
                             </FlexBox>
 
                         </form>
