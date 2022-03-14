@@ -11,7 +11,6 @@ export default function KamerProvider({ children }) {
     kamersPerPage: 5,
     totalPages: 0,
     totalElements: 0,
-    
   })
   let history = useHistory();
 

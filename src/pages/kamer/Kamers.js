@@ -18,12 +18,13 @@ import { ButtonLink, StyledButtonLink, StyledRouterLink } from "./../../styled/g
 import SideBar from "../../components/navbar/SideBar";
 import {deleteKamerOnClick} from "../../helpers/kamerDelete"
 import { KamersContext } from "../../context/KamersContext";
-function Kamers() {
+function Kamers(props) {
   const {kamers, setKamers, pageKamerInfo, setPageKamerInfo}= useContext(KamersContext);
   const [loading, setLoading] = useState(false);
-  let history = useHistory();
+
 
   useEffect(() => {
+    console.log(props, "pk123")
     setLoading(true);
     getPaginatedKamers(pageKamerInfo.currentPage,pageKamerInfo.kamersPerPage ).then((res, err) => {
       console.log(res, "rep");
