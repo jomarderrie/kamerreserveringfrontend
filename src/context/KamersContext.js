@@ -53,7 +53,7 @@ export default function KamerProvider({ children }) {
   }
 
   return (
-    <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick, pageKamerInfo }}>
+    <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick, pageKamerInfo, setPageKamerInfo    }}>
       {children}
     </KamersContext.Provider>
   );

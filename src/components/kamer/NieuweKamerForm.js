@@ -88,6 +88,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
   // };
 
   const checkFiles = (files) => {
+    if(files){
     for (let index = 0; index < files.length; index++) {
       if (!isFiletypeImage(files[index].type)) {
         toast.error("File types alleen jpeg, jpg of png");
@@ -95,6 +96,7 @@ export default function NieuweKamerForm({ kamer, naam, setNaam }) {
       }
     }
     return true;
+    }
   };
 
   const onImagesFormSubmit = (naam) => {

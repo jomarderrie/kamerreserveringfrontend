@@ -19,15 +19,17 @@ import SideBar from "../../components/navbar/SideBar";
 import {deleteKamerOnClick} from "../../helpers/kamerDelete"
 import { KamersContext } from "../../context/KamersContext";
 function Kamers() {
-  const {kamers, setKamers, pageKamerInfo}= useContext(KamersContext);
+  const {kamers, setKamers, pageKamerInfo, setPageKamerInfo}= useContext(KamersContext);
   const [loading, setLoading] = useState(false);
   let history = useHistory();
 
   useEffect(() => {
     setLoading(true);
     getPaginatedKamers(pageKamerInfo.currentPage,pageKamerInfo.kamersPerPage ).then((res, err) => {
-      console.log(res);
+      console.log(res, "rep");
       setKamers(res.data.content);
+      setPageKamerInfo({totalPages:res.data.totalPages, totalElements:res.data.totalElements, currentPage:res.data.currentPage, kamersPerPage:res.data.kamersPerPage})
+      console.log(pageKamerInfo, "oek")
       console.log(res.data, "kamers");
       setLoading(false);
     });

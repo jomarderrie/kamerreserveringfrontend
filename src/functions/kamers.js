@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const getPaginatedKamers = async () =>
-  await axios.get("http://localhost:8080/kamer/all?page=0&size=10", {
+export const getPaginatedKamers = async (currentPage=0,pageSize=10 ) =>
+  await axios.get(`http://localhost:8080/kamer/all?page=${currentPage}&size=${pageSize}`, {
     headers: {
       authorization:
         "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
