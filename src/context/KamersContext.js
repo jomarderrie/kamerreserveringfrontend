@@ -1,17 +1,20 @@
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { deleteKamer } from "../functions/kamers";
+import {deleteKamer, getPaginatedKamers} from "../functions/kamers";
 export const KamersContext = React.createContext();
 
 export default function KamerProvider({ children }) {
   const [kamers, setKamers] = useState([]);
+
   const[pageKamerInfo, setPageKamerInfo] = useState({
-    currentPage: 0,
-    kamersPerPage: 5,
+    pageNo: 0,
+    pageSize: 5,
+    sortBy:"naam",
     totalPages: 0,
     totalElements: 0,
   })
+
   let history = useHistory();
 
   const deleteKamerOnClick = async (naam) => {
@@ -44,6 +47,19 @@ export default function KamerProvider({ children }) {
       });
   };
 
+  const getPaginatedKamersContext = async () =>{
+    console.log(pageKamerInfo.pageSize, "page")
+  await  getPaginatedKamers(pageKamerInfo.pageNo,pageKamerInfo.pageSize ).then((res, err) => {
+      setKamers(res.data.content);
+      setPageKamerInfo(
+          {totalPages:res.data.totalPages,
+            totalElements:res.data.totalElements,
+            pageNo:res.data.currentPage,
+            pageSize:res.data.kamersPerPage}
+      )
+    });
+
+  }
 
   const filterRooms = (searchKeyWord) =>{
     kamers.filter((item) =>{
@@ -52,7 +68,7 @@ export default function KamerProvider({ children }) {
   }
 
   return (
-    <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick, pageKamerInfo, setPageKamerInfo    }}>
+    <KamersContext.Provider value={{ kamers, setKamers, deleteKamerOnClick, pageKamerInfo, setPageKamerInfo,getPaginatedKamersContext    }}>
       {children}
     </KamersContext.Provider>
   );

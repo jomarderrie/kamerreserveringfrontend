@@ -20,27 +20,24 @@ import {deleteKamerOnClick} from "../../helpers/kamerDelete"
 import { KamersContext } from "../../context/KamersContext";
 import * as url from "url";
 function Kamers(props) {
-  const {kamers, setKamers, pageKamerInfo, setPageKamerInfo}= useContext(KamersContext);
+  const {kamers, setKamers, pageKamerInfo, setPageKamerInfo, getPaginatedKamersContext}= useContext(KamersContext);
   const [loading, setLoading] = useState(false);
 
   useEffect(() =>{
-    console.log(props.location.search, "pk123")
     const urlSearchParams = new URLSearchParams(props.location.search)
-    console.log(urlSearchParams.get("pageNo"), "kek")
-
-    console.log()
+    console.log(urlSearchParams.get("pageNo"), "ke")
+    urlSearchParams.get("pageSize")
+    for (const [key, value] of urlSearchParams.entries()) {
+      console.log(key, value, "ts1")
+    }
   },[props.location.search])
 
   useEffect(() => {
     setLoading(true);
-    getPaginatedKamers(pageKamerInfo.currentPage,pageKamerInfo.kamersPerPage ).then((res, err) => {
-      console.log(res, "rep");
-      setKamers(res.data.content);
-      setPageKamerInfo({totalPages:res.data.totalPages, totalElements:res.data.totalElements, currentPage:res.data.currentPage, kamersPerPage:res.data.kamersPerPage})
-      console.log(pageKamerInfo, "oek")
-      console.log(res.data, "kamers");
-      setLoading(false);
-    });
+    getPaginatedKamersContext().then(() =>{
+      setLoading(false)
+    })
+
   }, []);
 
   const deleteKamerOnClick = async (naam, setKamers) => {
