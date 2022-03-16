@@ -27,40 +27,41 @@ function Kamers(props) {
     useEffect(() => {
     }, [props.location.search])
 
-    const getPageParams = () =>{
-        const urlSearchParams = new URLSearchParams(props.location.search)
-        if (urlSearchParams.get("sortBy")) {
 
-            setPageKamerInfo({pageNo:urlSearchParams.get("pageNo"), pageSize:urlSearchParams.get("pageSize"), sortBy: urlSearchParams.get("sortBy")})
-            return "a"
-        } else {
-          setPageKamerInfo(prev =>{
-
-              ...prev,
-                  {
-              {pageNo:urlSearchParams.get("pageNo"), pageSize:urlSearchParams.get("pageSize")}
-                  }
-          })
-            return "a"
-        }
-    }
+    // const getPageParams = () =>{
+    //
+    //
+    //     if (urlSearchParams.get("sortBy")) {
+    //
+    //         // setPageKamerInfo(prevKamerInfo => {...pageKamerInfo, pageNo:urlSearchParams.get("pageNo"), pageSize:urlSearchParams.get("pageSize"), sortBy: urlSearchParams.get("sortBy")})
+    //         return "a"
+    //     } else {
+    //         let pageNo = urlSearchParams.get("pageNo");
+    //         console.log(pageNo.toString(), "ke123")
+    //         setPageKamerInfo({...pageKamerInfo, ['pageNo']:pageNo.toString()})
+    //         console.log(pageKamerInfo, "ge3")
+    //     }
+    // }
 
     useEffect(() => {
         setLoading(true);
-        console.log(pageKamerInfo.pageNo, pageKamerInfo.pageSize, pageKamerInfo.sortBy, "t123")
         if (props.location.search){
-            getPageParams()
-
-                getPaginatedKamersContext(pageKamerInfo.pageNo, pageKamerInfo.pageSize, pageKamerInfo.sortBy).then(() => {
+            const urlSearchParams = new URLSearchParams(props.location.search)
+            if (urlSearchParams.get("sortBy")){
+                getPaginatedKamersContext(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize"), urlSearchParams.get("sortBy")).then(() => {
                     setLoading(false)
                 })
-
+            }else{
+                getPaginatedKamersContext(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize")).then(() => {
+                    setLoading(false)
+                })
+            }
         }else{
+            console.log("no search")
             getPaginatedKamersContext(pageKamerInfo.pageNo, pageKamerInfo.pageSize, pageKamerInfo.sortBy).then(() => {
                 setLoading(false)
             })
         }
-
     }, []);
 
     const deleteKamerOnClick = async (naam, setKamers) => {
@@ -80,7 +81,6 @@ function Kamers(props) {
             })
             .catch((k) => {
                 toast.error(k.response.data.message);
-
                 return Promise.reject(k);
             });
     };
