@@ -56,8 +56,8 @@ export default function KamerProvider({children}) {
                 {
                     totalPages: res.data.totalPages,
                     totalElements: res.data.totalElements,
-                    pageNo: res.data.currentPage,
-                    pageSize: res.data.kamersPerPage
+                    pageNo: res.data.number,
+                    pageSize: res.data.size
                 }
             )
         });

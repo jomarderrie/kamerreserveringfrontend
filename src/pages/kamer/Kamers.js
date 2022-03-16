@@ -23,7 +23,7 @@ import * as url from "url";
 function Kamers(props) {
     const {kamers, setKamers, pageKamerInfo, setPageKamerInfo, getPaginatedKamersContext} = useContext(KamersContext);
     const [loading, setLoading] = useState(false);
-
+    const [propsLoadingState, setPropsLoading] = useState(true);
     useEffect(() => {
     }, [props.location.search])
 
@@ -43,7 +43,13 @@ function Kamers(props) {
     //     }
     // }
 
+    useEffect(() =>{
+        console.log(pageKamerInfo, "l123")
+        setPropsLoading(false)
+    }, [pageKamerInfo])
+
     useEffect(() => {
+        console.log(pageKamerInfo.pageNo, "asd123")
         setLoading(true);
         if (props.location.search){
             const urlSearchParams = new URLSearchParams(props.location.search)
@@ -107,7 +113,7 @@ function Kamers(props) {
             </FlexBoxUpDown>
             {kamers.length<=0?<div>
                 No kamers found
-            </div>:  <GridImages width="90vw" display={"grid"} gridSize="250px">
+            </div> :  <GridImages width="90vw" display={"grid"} gridSize="250px">
                 {kamers.map((kamer, key) => {
                     return (
                         <KamerCard
@@ -121,7 +127,9 @@ function Kamers(props) {
                     );
                 })}
             </GridImages>}
-
+            <h2>
+                {propsLoadingState ? 'Loading...' : pageKamerInfo.pageNo}
+            </h2>
             <div>
                 <button type="button">
                     first
@@ -129,8 +137,8 @@ function Kamers(props) {
                 <button>
                     Prev
                 </button>
-                <button disabled={true}>
-                    {pageKamerInfo.currentPage}
+                <button >
+
                 </button>
                 <button>
                     Next
@@ -142,7 +150,11 @@ function Kamers(props) {
 
             </div>
             <div>
-                Showing Page {pageKamerInfo.currentPage} of {pageKamerInfo.kamersPerPage}
+                <h2>
+                    hey
+                    {pageKamerInfo.pageNo}
+                </h2>
+                {/*Showing Page {pageKamerInfo.pageNo !==undefined && pageKamerInfo.pageNo.toLocaleString()} of {pageKamerInfo.kamersPerPage}*/}
             </div>
         </div>
     );
