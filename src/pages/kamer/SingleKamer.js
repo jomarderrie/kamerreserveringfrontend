@@ -68,6 +68,7 @@ export default function SingleKamer({match}) {
                     let eindDate = new Date(res.data.sluitTijd);
 
                     setDateRange([startDate, eindDate]);
+                    console.log(startDate, eindDate, "plek123")
                     setStartEindTijd([startDate.getHours(), eindDate.getHours()]);
                     setLimite2([
                         getDate(startDate.getHours()),
@@ -86,8 +87,6 @@ export default function SingleKamer({match}) {
                                 toast.error(k.response.data.message);
                             }
                             setLoading(false);
-
-                            setKamer({});
                             return Promise.reject(err);
                         });
                 }
@@ -217,10 +216,9 @@ export default function SingleKamer({match}) {
     };
 
     const generateOpenInterval = (reserveringListObj) => {
-        console.log(startEindTijd[0], "start");
         let startTijd = getDate(startEindTijd[0]);
         let endTijd = getDate(startEindTijd[1]);
-        console.log(am[(0, am[1], "deez")]);
+        console.log(startTijd, endTijd, "kekdeez")
         const interval = 60 * 60000;
         let alReservatieInterval = false;
         while (
@@ -245,8 +243,8 @@ export default function SingleKamer({match}) {
     const getOverLap = (startDate, eindDate, reserveringListObj) => {
         console.log(reserveringListObj, "rep");
         for (let index = 0; index < reserveringListObj.length; index++) {
-            let startReserveringDate = new Date(reserveringListObj[index][1]);
-            let eindReserveringDate = new Date(reserveringListObj[index][0]);
+            let startReserveringDate = new Date(reserveringListObj[index].start);
+            let eindReserveringDate = new Date(reserveringListObj[index].end);
             if (
                 startDate.getTime() < eindReserveringDate.getTime() &&
                 eindDate.getTime() > startReserveringDate.getTime()
@@ -254,9 +252,6 @@ export default function SingleKamer({match}) {
                 return false;
             }
         }
-        console.log(startDate, "start");
-        console.log(eindDate, "eind123");
-
         setAm([startDate, eindDate]);
         setErrorAm(false);
         setAlReservatie(true);
