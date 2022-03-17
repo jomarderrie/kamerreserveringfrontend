@@ -22,7 +22,7 @@ import * as url from "url";
 
 function Kamers(props) {
     const {kamers, setKamers, pageKamerInfo, setPageKamerInfo, getPaginatedKamersContext} = useContext(KamersContext);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [propsLoadingState, setPropsLoading] = useState(true);
     useEffect(() => {
     }, [props.location.search])
@@ -43,26 +43,25 @@ function Kamers(props) {
     //     }
     // }
 
-    useEffect(() =>{
+    useEffect(() => {
         console.log(pageKamerInfo, "l123")
         setPropsLoading(false)
     }, [pageKamerInfo])
 
     useEffect(() => {
         console.log(pageKamerInfo.pageNo, "asd123")
-        setLoading(true);
-        if (props.location.search){
+        if (props.location.search) {
             const urlSearchParams = new URLSearchParams(props.location.search)
-            if (urlSearchParams.get("sortBy")){
+            if (urlSearchParams.get("sortBy")) {
                 getPaginatedKamersContext(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize"), urlSearchParams.get("sortBy")).then(() => {
                     setLoading(false)
                 })
-            }else{
+            } else {
                 getPaginatedKamersContext(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize")).then(() => {
                     setLoading(false)
                 })
             }
-        }else{
+        } else {
             console.log("no search")
             getPaginatedKamersContext(pageKamerInfo.pageNo, pageKamerInfo.pageSize, pageKamerInfo.sortBy).then(() => {
                 setLoading(false)
@@ -91,17 +90,27 @@ function Kamers(props) {
             });
     };
 
+    const nextPage = () => {
+        console.log(pageKamerInfo.pageSize, "t")
+        if (
+            pageKamerInfo.pageNo <
+            Math.ceil(pageKamerInfo.totalElements / pageKamerInfo.pageSize)
+        ) {
+
+        }
+
+        // if ()
+    }
 
     return (
-        <div>
-            <FlexBoxUpDown x="space-between" upDown="10" leftRight="15">
-                <SideBar/>
+        (loading === true || propsLoadingState === true) ?
+            <div>Loading...</div> : <div>
+                <FlexBoxUpDown x="space-between" upDown="10" leftRight="15">
+                    <SideBar/>
+                    <div>
+                        <StyledButtonLink text="Maak nieuwe kamer" to2={"/kamer/new"} icon={"fa-plus"}/>
 
-
-                <div>
-                    <StyledButtonLink text="Maak nieuwe kamer" to2={"/kamer/new"} icon={"fa-plus"}/>
-
-                    {/* <StyledRouterLink
+                        {/* <StyledRouterLink
             className="btn btn-pink"
             role="button"
             to={`/kamer/new`}
@@ -109,55 +118,49 @@ function Kamers(props) {
           >
             Maak nieuwe kamer
           </StyledRouterLink> */}
+                    </div>
+                </FlexBoxUpDown>
+                {kamers.length <= 0 ? <div>
+                    No kamers found
+                </div> : <GridImages width="90vw" display={"grid"} gridSize="250px">
+                    {kamers.map((kamer, key) => {
+                        return (
+                            <KamerCard
+                                kamer={kamer}
+                                setKamers={setKamers}
+                                deleteKamer={deleteKamerOnClick}
+                                image={kamer.attachment}
+                                key={key}
+                            />
+
+                        );
+                    })}
+                </GridImages>}
+
+                <div>
+                    <button type="button">
+                        first
+                    </button>
+                    <button>
+                        Prev
+                    </button>
+                    <button>
+
+                    </button>
+                    <button onClick={() => nextPage}>
+                        Next
+                    </button>
+
+                    <button>
+                        last
+                    </button>
+
                 </div>
-            </FlexBoxUpDown>
-            {kamers.length<=0?<div>
-                No kamers found
-            </div> :  <GridImages width="90vw" display={"grid"} gridSize="250px">
-                {kamers.map((kamer, key) => {
-                    return (
-                        <KamerCard
-                            kamer={kamer}
-                            setKamers={setKamers}
-                            deleteKamer={deleteKamerOnClick}
-                            image={kamer.attachment}
-                            key={key}
-                        />
-
-                    );
-                })}
-            </GridImages>}
-            <h2>
-                {propsLoadingState ? 'Loading...' : pageKamerInfo.pageNo}
-            </h2>
-            <div>
-                <button type="button">
-                    first
-                </button>
-                <button>
-                    Prev
-                </button>
-                <button >
-
-                </button>
-                <button>
-                    Next
-                </button>
-
-                <button>
-                    last
-                </button>
-
+                <div>
+                    Showing Page {pageKamerInfo.pageNo} of {pageKamerInfo.totalPages}
+                </div>
             </div>
-            <div>
-                <h2>
-                    hey
-                    {pageKamerInfo.pageNo}
-                </h2>
-                {/*Showing Page {pageKamerInfo.pageNo !==undefined && pageKamerInfo.pageNo.toLocaleString()} of {pageKamerInfo.kamersPerPage}*/}
-            </div>
-        </div>
-    );
+    )
 }
 
 export default Kamers;

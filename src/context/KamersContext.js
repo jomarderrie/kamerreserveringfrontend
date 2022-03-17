@@ -56,7 +56,7 @@ export default function KamerProvider({children}) {
                 {
                     totalPages: res.data.totalPages,
                     totalElements: res.data.totalElements,
-                    pageNo: res.data.number,
+                    pageNo: res.data.number +1,
                     pageSize: res.data.size
                 }
             )
