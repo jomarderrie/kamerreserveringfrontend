@@ -34,7 +34,7 @@ export default function SingleKamer({match}) {
     const [errorTimeRange, setTimeRangeError] = useState(null);
 
     const [error, setError] = useState(null);
-    const [tableView, setTableView] = useState(false);
+    const [tableView, setTableView] = useState(true);
     const [dateRange, setDateRange] = useState([null, null]);
     // const [startDate, endDate] = dateRange;
     const [startDate, setStartDate] = useState(null);
@@ -106,7 +106,7 @@ export default function SingleKamer({match}) {
             });
     }, []);
 
-    const timeRangeSlider = () => {
+    const TimeRangeSlider = () => {
         if (disabledIntervals2 !== []) {
             return (
                 <TimeRange
@@ -185,8 +185,8 @@ export default function SingleKamer({match}) {
             if (res !== 0) {
                 res.map((item, index) => {
                     reserveringListObj.push({
-                        start: moment(getDate(new Date(item[1]).getHours())).toDate(),
-                        end: moment(getDate(new Date(item[0]).getHours())).toDate(),
+                        start: moment(getDate(new Date(item.start).getHours())).toDate(),
+                        end: moment(getDate(new Date(item.end).getHours())).toDate(),
                     });
                 });
             }
@@ -199,14 +199,15 @@ export default function SingleKamer({match}) {
             setReservation(true);
             setAm([null, null]);
         }
+
+        console.log(reserveringListObj, "kek")
         setDisabledIntervals2(reserveringListObj);
     };
 
     const checkIfReservationIsFull = (reserveringList) => {
         let totalHours = 0;
         let timeLineInterval = limite2[1].getHours() - limite2[0].getHours();
-        console.log(timeLineInterval);
-        if (reserveringList.length != 0) {
+        if (reserveringList.length !== 0) {
             reserveringList.map((item) => {
                 totalHours += item.end.getHours() - item.start.getHours();
             });
@@ -433,21 +434,20 @@ export default function SingleKamer({match}) {
 
 
                             </div>
-                            <div className={"switch-table-btn" }>
+                            <div className={"switch-table-btn"}>
                                 <button onClick={() => {
                                     setTableView(prev => {
                                         return !prev
                                     })
-                                }}>Switch to table
+                                }}>
+                                    Switch to table
                                 </button>
                             </div>
                         </FlexBox>
 
                         <form onSubmit={(e) => handleSubmit(e, am)}>
                             <FlexBox x={"space-between"}>
-<span className={`fa-arrow-right fa-2x button-icon`}/>
-
-
+                                <span className={`fa-arrow-right fa-2x button-icon`}/>
                                 <div className="datePicker">
                                     <DatePicker
                                         minDate={setStartDateLimit(kamer.startDate)}
@@ -457,19 +457,19 @@ export default function SingleKamer({match}) {
                                         onChange={(date) => setTimeRangeSliderDate(date)}
                                     />
                                 </div>
-                                <span className={`fa-arrow-left fa-2x button-icon`}></span>
+                                <span className={`fa-arrow-left fa-2x button-icon`}/>
                             </FlexBox>
-
+                            <button
+                                type="submit"
+                                disabled={reservationSending || loading}
+                            >
+                                submit reservatie
+                            </button>
                         </form>
                         <div className="timeRangeSlider">
-                            {(tableView && !(disabledIntervals2 === [])) ? timeRangeSlider() : <TableView/>}
+                            {(tableView && !(disabledIntervals2 === [])) ? <TimeRangeSlider/> : <TableView/>}
                         </div>
-                        <button
-                            type="submit"
-                            disabled={reservationSending || loading}
-                        >
-                            submit reservatie
-                        </button>
+
                     </FlexBox>
                 </FlexBoxUpDown>
 
