@@ -34,7 +34,7 @@ export default function SingleKamer({match}) {
     const [errorTimeRange, setTimeRangeError] = useState(null);
 
     const [error, setError] = useState(null);
-    const [tableView, setTableView] = useState(true);
+    const [tableView, setTableView] = useState(false);
     const [dateRange, setDateRange] = useState([null, null]);
     // const [startDate, endDate] = dateRange;
     const [startDate, setStartDate] = useState(null);
@@ -47,7 +47,7 @@ export default function SingleKamer({match}) {
     const [disabledIntervals2, setDisabledIntervals2] = useState([]);
     const [errorAm, setErrorAm] = React.useState(false);
     const [alReservatie, setAlReservatie] = React.useState(false);
-    const [reservation, setReservation] = React.useState([]);
+    const [reservations, setReservations] = React.useState([]);
     const [reservationSending, setReservationSending] = useState(false);
     const [startEindTijd, setStartEindTijd] = useState([]);
 
@@ -155,7 +155,7 @@ export default function SingleKamer({match}) {
                                 setReservationSending(false);
                             } else {
                                 console.log(res.data, "reservations");
-                                setReservation(res.data);
+                                setReservations(res.data);
                                 setLimite2([
                                     getDate(startEindTijd[0]),
                                     getDate(startEindTijd[1]),
@@ -175,7 +175,7 @@ export default function SingleKamer({match}) {
                 }
             }
         }
-    }, [kamer, timeRangeSliderDate, reservation, loading]);
+    }, [kamer, timeRangeSliderDate, reservations, loading]);
 
     const calculateDisabledIntervalsAndOpenInterval = (res) => {
         let reserveringListObj = [];
@@ -195,7 +195,7 @@ export default function SingleKamer({match}) {
         if (!checkIfReservationIsFull(reserveringListObj)) {
             generateOpenInterval(res);
         } else {
-            setReservation(true);
+            setReservations(true);
             setAm([null, null]);
         }
 
@@ -310,7 +310,7 @@ export default function SingleKamer({match}) {
                         if (err) {
                             console.log(err, "err");
                         } else {
-                            setReservation((prev) => {
+                            setReservations((prev) => {
                                 prev.push(startReservationDate, eindReservationDate);
                             });
                             toast.success("Succesvol nieuwe reservering aangemaakt.");
@@ -426,8 +426,6 @@ export default function SingleKamer({match}) {
                                 <h3>Openings tijden</h3>
                                 {showTime()}
                                 Gekozen datum: {timeRangeSliderDate.toDateString()}
-
-
                             </div>
                             <div className={"switch-table-btn"}>
                                 <button onClick={() => {
@@ -462,7 +460,7 @@ export default function SingleKamer({match}) {
                             </button>
                         </form>
                         <div className="timeRangeSlider">
-                            {(tableView && !(disabledIntervals2 === [])) ? <TimeRangeSlider/> : <TableView/>}
+                            {(tableView && !(disabledIntervals2 === [])) ? <TimeRangeSlider/> : <TableView reservaties={reservations} />}
                         </div>
 
                     </FlexBox>
