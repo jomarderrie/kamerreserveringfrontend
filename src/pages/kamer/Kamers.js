@@ -98,20 +98,16 @@ function Kamers(props) {
                 setLoading(false)
             })
         }
-        // console.log(pageKamerInfo.pageSize, "t")
-        // if (
-        //     pageKamerInfo.pageNo <
-        //     Math.ceil(pageKamerInfo.totalElements / pageKamerInfo.pageSize)
-        // ) {
-        //
-        // }
 
-        // if ()
     }
 
     const handlePrevious = (event) => {
         event.preventDefault()
-
+        if (!(pageKamerInfo.pageNo-1 < 0)) {
+            getPaginatedKamersContext(Math.max(0, pageKamerInfo.pageNo - 1), pageKamerInfo.pageSize, pageKamerInfo.sortBy).then(() => {
+                setLoading(false)
+            })
+        }
     }
 
     return (
