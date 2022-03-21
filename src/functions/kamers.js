@@ -59,10 +59,10 @@ export const deleteKamer = async (naam) => {
     });
 };
 
-export const maakNieuweReservatie = async (naam, startTijd, eindTijd) => {
+export const maakNieuweReservatie = async (naam, start, end) => {
     await axios.post(
         `http://localhost:8080/kamer/${naam}/reserveer`,
-        {startTijd, eindTijd},
+        {start, end},
         {
             headers: {
                 authorization:

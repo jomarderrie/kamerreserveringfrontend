@@ -144,6 +144,7 @@ export default function SingleKamer({match}) {
         if (!isEmpty(kamer)) {
             if (!reservationSending) {
                 if (!loading) {
+                 
                     setReservationSending(true);
                     getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
                         kamer.naam,
@@ -301,6 +302,7 @@ export default function SingleKamer({match}) {
                     milliseconds: 0,
                     minutes: 0,
                 });
+                console.log(kamer.naam)
                 maakNieuweReservatie(
                     kamer.naam,
                     startReservationDate,
@@ -459,9 +461,7 @@ export default function SingleKamer({match}) {
                                 submit reservatie
                             </button>
                         </form>
-                        <div className="timeRangeSlider">
-                            {(tableView && !(disabledIntervals2 === [])) ? <TimeRangeSlider/> : <TableView reservaties={reservations} />}
-                        </div>
+                            {(tableView) ? <TimeRangeSlider/> : <TableView reservaties={reservations} tableView={tableView}/>}
 
                     </FlexBox>
                 </FlexBoxUpDown>
