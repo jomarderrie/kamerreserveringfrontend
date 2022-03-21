@@ -30,7 +30,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
     const [loading, setLoading] = useState(true);
     const [files, setFiles] = useState([]);
     const [resizedImages, setImages] = useState(null);
-    const {kamers, setKamers} = useContext(KamersContext);
+    const {kamers, setKamers, pageKamerInfo, lastPage} = useContext(KamersContext);
 
     let history = useHistory();
 
@@ -46,6 +46,10 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
         formState: {errors},
     } = useForm();
 
+    useEffect(() =>{
+        console.log(pageKamerInfo.sortBy, "jsjs")
+        console.log(`/kamers?pageNo=${lastPage()}&pageSize=${pageKamerInfo.pageSize}&sortBy=${pageKamerInfo.sortBy}`, "kek123")
+    }, [pageKamerInfo])
 
     useEffect(() => {
         if (kamer !== undefined) {
@@ -154,7 +158,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                 if (data.startTijd === undefined) {
                     startDatumObj.setHours(7);
                 } else {
-                    startDatumObj.setHours(data.startTijd.hours());
+                    startDatumObj.setHours(data.startTijd.hours()+1);
                 }
 
                 startDatumObj.setMinutes(0);
@@ -163,7 +167,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                 if (data.sluitTijd === undefined) {
                     eindDatumObj.setHours(17);
                 } else {
-                    eindDatumObj.setHours(data.sluitTijd.hours());
+                    eindDatumObj.setHours(data.sluitTijd.hours()+1);
                 }
                 eindDatumObj.setMinutes(0);
                 eindDatumObj.setSeconds(0);
@@ -185,8 +189,8 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                                                 toast.error("");
                                                 setSubmitting(false);
                                             } else {
-                                                history.push("/kamers");
-
+                                                history.push(`/kamers?pageNo=${lastPage()}&pageSize=${pageKamerInfo.pageSize}&sortBy=${pageKamerInfo.sortBy}`);
+                                                // pageNo=0&pageSize=5&sortBy=naam
                                                 toast.success(`Succesvol kamer veranderd`);
                                                 setSubmitting(false);
                                             }
@@ -221,7 +225,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                                 onImagesFormSubmit(data.naam)
                                     .then((res, err) => {
                                         if (res) {
-                                            history.push("/kamers");
+                                            history.push(`/kamers?pageNo=${lastPage()}&pageSize=${pageKamerInfo.pageSize}&sortBy=${pageKamerInfo.sortBy}`);
                                             toast.success(
                                                 `Succesvol nieuwe kamer toegevoegd met naam ${data.naam}`
                                             );
