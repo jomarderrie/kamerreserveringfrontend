@@ -45,6 +45,7 @@ function Kamers(props) {
 
     useEffect(() => {
         console.log(pageKamerInfo, "l123")
+        console.log(pageKamerInfo.pageNo)
         setPropsLoading(false)
     }, [pageKamerInfo])
 
@@ -90,16 +91,27 @@ function Kamers(props) {
             });
     };
 
-    const nextPage = () => {
-        console.log(pageKamerInfo.pageSize, "t")
-        if (
-            pageKamerInfo.pageNo <
-            Math.ceil(pageKamerInfo.totalElements / pageKamerInfo.pageSize)
-        ) {
-
+    const nextPage = (event) => {
+        event.preventDefault()
+        if (pageKamerInfo.pageNo+1 < pageKamerInfo.totalPages) {
+            getPaginatedKamersContext(Math.min(pageKamerInfo.totalPages, pageKamerInfo.pageNo + 1), pageKamerInfo.pageSize, pageKamerInfo.sortBy).then(() => {
+                setLoading(false)
+            })
         }
+        // console.log(pageKamerInfo.pageSize, "t")
+        // if (
+        //     pageKamerInfo.pageNo <
+        //     Math.ceil(pageKamerInfo.totalElements / pageKamerInfo.pageSize)
+        // ) {
+        //
+        // }
 
         // if ()
+    }
+
+    const handlePrevious = (event) => {
+        event.preventDefault()
+
     }
 
     return (
@@ -141,13 +153,13 @@ function Kamers(props) {
                     <button type="button">
                         first
                     </button>
-                    <button>
+                    <button onClick={(e) => handlePrevious(e)}>
                         Prev
                     </button>
                     <button>
 
                     </button>
-                    <button onClick={() => nextPage}>
+                    <button onClick={(e) => nextPage(e)}>
                         Next
                     </button>
 
@@ -157,7 +169,7 @@ function Kamers(props) {
 
                 </div>
                 <div>
-                    Showing Page {pageKamerInfo.pageNo} of {pageKamerInfo.totalPages}
+                    Showing Page {pageKamerInfo.pageNo + 1} of {pageKamerInfo.totalPages}
                 </div>
             </div>
     )
