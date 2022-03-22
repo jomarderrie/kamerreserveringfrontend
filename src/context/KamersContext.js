@@ -17,8 +17,8 @@ export default function KamerProvider({children}) {
     })
 
     const [pageKamerFilters, setPageKamerFilters] = useState({
-        eigenReservaties:false, 
-        alGereserveerde:false,
+        eigenReservaties: false,
+        alGereserveerde: false,
         startDatum: '',
         eindDatum: '',
         searchKamerString: ''
@@ -55,9 +55,9 @@ export default function KamerProvider({children}) {
                 return Promise.reject(k);
             });
     };
-    
-    const lastPage = () =>{
-        return parseInt(pageKamerInfo.totalElements+1/pageKamerInfo.pageSize) 
+
+    const lastPage = () => {
+        return parseInt(pageKamerInfo.totalElements + 1 / pageKamerInfo.pageSize)
     }
 
     const getPaginatedKamersContext = async (currentPage, pageSize, sortBy = "naam") => {
@@ -77,15 +77,36 @@ export default function KamerProvider({children}) {
 
     }
 
-    const filterRooms = (searchKeyWord) => {
-        kamers.filter((item) => {
+    const filterRooms = (stringToSearch) => {
+        console.log(stringToSearch, "lol")
+        if (pageKamerFilters.searchKamerString !== "") {
+            let a = kamers.filter((item) => item.naam.match(`/${pageKamerFilters.searchKamerString}/`))
 
-        })
+            console.log(a, "asd")
+        }
+        // if (kamers.length>0) {
+        //     // let b = g.filter((item) => item.match(/a/))
+        //     let a = kamers.filter((item) => item.match(`/${pageKamerFilters.searchKamerString}/`))
+        //     console.log(a, "trekkk")
+        // }
+
+
     }
 
     return (
         <KamersContext.Provider
-            value={{kamers, setKamers, deleteKamerOnClick, pageKamerInfo, setPageKamerInfo, getPaginatedKamersContext, lastPage, pageKamerFilters, setPageKamerFilters}}>
+            value={{
+                kamers,
+                setKamers,
+                deleteKamerOnClick,
+                pageKamerInfo,
+                setPageKamerInfo,
+                getPaginatedKamersContext,
+                lastPage,
+                filterRooms,
+                pageKamerFilters,
+                setPageKamerFilters
+            }}>
             {children}
         </KamersContext.Provider>
     );

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useState, useEffect} from "react";
 import InputWithImage from "../../styled/globals/Input";
 import {FlexBoxUpDown} from "../../styled/globals/StyledFlexBoxContainer";
 import {FlexBox} from "../../styled/styles";
@@ -10,13 +10,43 @@ const SideBar = () => {
     const {pageKamerFilters, setPageKamerFilters, filterRooms} = useContext(KamersContext);
 
     const handleOnSearchChange = (e) => {
-        console.log(e.target.value, "snap")
-        console.log(e.target.name)
+        const {name, value} = e.target; // destructured object that taps into the event.target.name and value
+        setPageKamerFilters((prevKamerFilterValues) => {
+            if (name === "eigenReservaties") {
+                filterRooms(value);
+                return {
+                    ...prevKamerFilterValues,
+                    'eigenReservaties': !prevKamerFilterValues.eigenReservaties
+                }
+            } else if (name === "alGereserveerde") {
+                filterRooms(value);
+                return {
+                    ...prevKamerFilterValues,
+                    'alGereserveerde': !prevKamerFilterValues.alGereserveerde
+                }
+            } else {
+                filterRooms(value);
+                return {
+                    ...prevKamerFilterValues,
+                    [name]: value,
+                };
+            }
+        })
+
     }
+
+    useEffect(() => {
+        return () => {
+            console.log(pageKamerFilters, "filters")
+        };
+    }, [pageKamerFilters]);
+    
+
+    
+
 
     const handleOnSubmitSearch = (e) => {
         e.preventDefault()
-
         console.log(e.target[0].value, 'form')
     }
     return (
@@ -26,7 +56,7 @@ const SideBar = () => {
                     placeHolderName="Naam, locatie, sterren"
                     icon="fa-search"
                     name={"searchKamerString"}
-                    onchange={(e) => handleOnSearchChange(e)}
+                    onchange={handleOnSearchChange}
                 />
                 <div className="single-extra">
                     <input
