@@ -21,7 +21,7 @@ export default function KamerProvider({children}) {
         alGereserveerde:false,
         startDatum: '',
         eindDatum: '',
-        searchedString: ''
+        searchKamerString: ''
     })
 
     let history = useHistory();

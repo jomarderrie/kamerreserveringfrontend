@@ -7,9 +7,9 @@ const Input = (props) => {
     <div className={`input-icon-wrap ${props.className}`}>
       <span className={"input-icon"}>
         {/* <span className={"fa fa-user"}></span> */}
-        <span className={`fa ${props.icon}`}></span>
+        <span className={`fa ${props.icon}`}/>
       </span>
-      <input type="text" className="input-with-icon" id="form-name" placeHolder={props.placeHolderName} />
+      <input type="text" className="input-with-icon" id="form-name" name={props.name} placeholder={props.placeHolderName} onChange={(e) => {props.onchange(e)}}/>
     </div>
   );
 };
