@@ -30,7 +30,7 @@ export const setUpDownPadding = ({upDown='0',leftRight='0'} = {}) =>{
 } 
 
 
-export const setFlex = ({display="flex",x = 'center', y = 'center', z = 'row', width=""} = {}) => {
+export const  setFlex = ({display="flex",x = 'center', y = 'center', z = 'row', width=""} = {}) => {
     return `
     display:${display}; 
     align-items:${y}; 

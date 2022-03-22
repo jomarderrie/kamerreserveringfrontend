@@ -3,7 +3,7 @@ import styled from "styled-components";
 import React, { Component } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FlexBox, setRem } from "../styles";
-import { FlexBoxUpDown } from "./StyledFlexBoxContainer";
+import {  FlexBoxUpDown } from "./StyledFlexBoxContainer";
 export const StyledRouterLink = (props) => {
   let { p, to, linkName, children, activeClassName } = props;
 
@@ -62,11 +62,11 @@ export const ButtonWithIcon = (props) => {
   return (
     <button className={`${props.className}`} type="button" value={props.value2} 
     onClick={() =>props.action&&props?.action(props.naam)}>
-      <FlexBoxUpDown x="space-between" leftRight="15">
+      < FlexBoxUpDown x="space-between" leftRight="15">
         <span className={`fa ${props.icon} fa-2x button-icon`}></span>
 
         {props.text}
-      </FlexBoxUpDown>
+      </ FlexBoxUpDown>
     </button>
   );
 };

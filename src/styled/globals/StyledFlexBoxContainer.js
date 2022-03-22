@@ -3,17 +3,17 @@ import { FlexBox, setUpDownPadding } from "../styles";
 
 
 
-export const FlexBoxUpDown = styled(FlexBox)`
+export const  FlexBoxUpDown = styled(FlexBox)`
   ${(props) =>
     setUpDownPadding({ upDown: props.upDown, leftRight: props.leftRight })}
 `;
 
-export const ContainerKamerInfo = styled(FlexBoxUpDown)`
+export const ContainerKamerInfo = styled( FlexBoxUpDown)`
 background-color: #8ec1e9;
 `
 
 
-export const GridImages = styled(FlexBoxUpDown)`
+export const GridImages = styled( FlexBoxUpDown)`
   width: ${(props) => props.width};
   margin: 0 auto;
   display: grid;

@@ -16,6 +16,14 @@ export default function KamerProvider({children}) {
         totalElements: 0,
     })
 
+    const [pageKamerFilters, setPageKamerFilters] = useState({
+        eigenReservaties:false, 
+        alGereserveerde:false,
+        startDatum: '',
+        eindDatum: '',
+        searchedString: ''
+    })
+
     let history = useHistory();
 
     const deleteKamerOnClick = async (naam) => {
@@ -77,7 +85,7 @@ export default function KamerProvider({children}) {
 
     return (
         <KamersContext.Provider
-            value={{kamers, setKamers, deleteKamerOnClick, pageKamerInfo, setPageKamerInfo, getPaginatedKamersContext, lastPage}}>
+            value={{kamers, setKamers, deleteKamerOnClick, pageKamerInfo, setPageKamerInfo, getPaginatedKamersContext, lastPage, pageKamerFilters, setPageKamerFilters}}>
             {children}
         </KamersContext.Provider>
     );

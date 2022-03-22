@@ -16,7 +16,7 @@ import {
 } from "./../../styled/globals/StyledRouterLink";
 import {
   ContainerKamerInfo,
-  FlexBoxUpDown,
+   FlexBoxUpDown,
 } from "./../../styled/globals/StyledFlexBoxContainer";
 import { useHistory } from "react-router-dom";
 import { KamersContext } from "../../context/KamersContext";
@@ -104,7 +104,7 @@ const KamerCard = ({ kamer, image, key }) => {
               <div>...Loading</div>
             )}
           </FlexBox>
-          <FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
+          < FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
             <StyledButtonLink
               value2="hey"
               to2={`/kamers/${kamer.naam}/edit`}
@@ -119,7 +119,7 @@ const KamerCard = ({ kamer, image, key }) => {
               icon={"fa-trash"}
               naam={kamer.naam}
             />
-          </FlexBoxUpDown>
+          </ FlexBoxUpDown>
         </ContainerKamerInfo>
       </div>
     </FlexBox>

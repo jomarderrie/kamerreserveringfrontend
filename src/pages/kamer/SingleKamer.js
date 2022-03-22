@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useContext} from "react";
 import {
     getAllKamerByNaamAndGetAllReserverationsOnCertainDay,
     getSingleKamer,
@@ -22,7 +22,6 @@ import {
 } from "./../../styled/globals/StyledRouterLink";
 import Carousel from "../../components/carousel/Carousel";
 import {FlexBoxUpDown} from "../../styled/globals/StyledFlexBoxContainer";
-import {useContext} from "react/cjs/react.development";
 import {KamersContext} from "../../context/KamersContext";
 import {useHistory} from "react-router-dom";
 import TableView from "../../components/kamer/TableView";
