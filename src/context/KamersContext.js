@@ -12,6 +12,7 @@ export default function KamerProvider({children}) {
         pageNo: 0,
         pageSize: 5,
         sortBy: "naam",
+        content: [],
         totalPages: 0,
         totalElements: 0,
     })
@@ -64,25 +65,41 @@ export default function KamerProvider({children}) {
         console.log(pageKamerInfo, "asd")
         await getPaginatedKamers(currentPage, pageSize, sortBy).then((res, err) => {
             setKamers(res.data.content);
-            console.log(res.data, "test123")
+            console.log(res.data.content, "test123")
             setPageKamerInfo(
                 {
                     totalPages: res.data.totalPages,
                     totalElements: res.data.totalElements,
                     pageNo: res.data.number,
-                    pageSize: res.data.size
+                    pageSize: res.data.size,
+                    content: res.data.content
                 }
             )
         });
 
     }
 
+    // let a = kamers.filter((item) => {return item.naam.toLowerCase().match//
+    //  (`/${pageKamerFilters.searchKamerString}/`)})
     const filterRooms = (stringToSearch) => {
-        console.log(stringToSearch, "lol")
-        if (pageKamerFilters.searchKamerString !== "") {
-            let a = kamers.filter((item) => item.naam.match(`/${pageKamerFilters.searchKamerString}/`))
-
-            console.log(a, "asd")
+        if (stringToSearch !== "") {
+            let searchedKamers = pageKamerFilters.content.filter((item) => {
+                return item.naam.toLowerCase()
+                    .indexOf(stringToSearch) !== -1;
+            })
+            console.log(searchedKamers, "kek")
+            if (searchedKamers === []){
+                setKamers(pageKamerInfo.content);
+            }else{
+                setKamers(searchedKamers);
+            }
+            
+            // console.log(a, "smak")
+            // kamers.map((item) =>{
+            //
+            //     console.log(item.naam, "test");
+            // })
+            // console.log(a, "asd")
         }
         // if (kamers.length>0) {
         //     // let b = g.filter((item) => item.match(/a/))

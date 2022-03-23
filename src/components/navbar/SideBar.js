@@ -13,13 +13,13 @@ const SideBar = () => {
         const {name, value} = e.target; // destructured object that taps into the event.target.name and value
         setPageKamerFilters((prevKamerFilterValues) => {
             if (name === "eigenReservaties") {
-                filterRooms(value);
+                // filterRooms(value);
                 return {
                     ...prevKamerFilterValues,
                     'eigenReservaties': !prevKamerFilterValues.eigenReservaties
                 }
             } else if (name === "alGereserveerde") {
-                filterRooms(value);
+                // filterRooms(value);
                 return {
                     ...prevKamerFilterValues,
                     'alGereserveerde': !prevKamerFilterValues.alGereserveerde
