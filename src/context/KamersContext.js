@@ -7,7 +7,7 @@ export const KamersContext = React.createContext();
 
 export default function KamerProvider({children}) {
     const [kamers, setKamers] = useState([]);
-
+    const [kamerFound, setKamerFound] = useState(false)
     const [pageKamerInfo, setPageKamerInfo] = useState({
         pageNo: 0,
         pageSize: 5,
@@ -79,35 +79,21 @@ export default function KamerProvider({children}) {
 
     }
 
-    // let a = kamers.filter((item) => {return item.naam.toLowerCase().match//
-    //  (`/${pageKamerFilters.searchKamerString}/`)})
     const filterRooms = (stringToSearch) => {
         if (stringToSearch !== "") {
-            let searchedKamers = pageKamerFilters.content.filter((item) => {
+            let searchedKamers = pageKamerInfo.content.filter((item) => {
                 return item.naam.toLowerCase()
                     .indexOf(stringToSearch) !== -1;
             })
-            console.log(searchedKamers, "kek")
-            if (searchedKamers === []){
-                setKamers(pageKamerInfo.content);
+            setKamers(searchedKamers);
+            if (searchedKamers.length === 0){
+                setKamerFound(false)
             }else{
-                setKamers(searchedKamers);
+                setKamerFound(true)
             }
-            
-            // console.log(a, "smak")
-            // kamers.map((item) =>{
-            //
-            //     console.log(item.naam, "test");
-            // })
-            // console.log(a, "asd")
+        }else{
+            setKamers(pageKamerInfo.content);
         }
-        // if (kamers.length>0) {
-        //     // let b = g.filter((item) => item.match(/a/))
-        //     let a = kamers.filter((item) => item.match(`/${pageKamerFilters.searchKamerString}/`))
-        //     console.log(a, "trekkk")
-        // }
-
-
     }
 
     return (
@@ -122,7 +108,9 @@ export default function KamerProvider({children}) {
                 lastPage,
                 filterRooms,
                 pageKamerFilters,
-                setPageKamerFilters
+                setPageKamerFilters,
+                kamerFound,
+                setKamerFound
             }}>
             {children}
         </KamersContext.Provider>

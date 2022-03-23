@@ -34,6 +34,8 @@ function Kamers(props) {
     pageKamerInfo,
     setPageKamerInfo,
     getPaginatedKamersContext,
+      kamerFound,
+      setKamerFound
   } = useContext(KamersContext);
   const [loading, setLoading] = useState(true);
   const [propsLoadingState, setPropsLoading] = useState(true);
@@ -154,7 +156,7 @@ function Kamers(props) {
       </div>
       <FlexBoxUpDown width="85%" z="column">
         <FlexBoxUpDown z="column">
-          {kamers.length <= 0 ? (
+          {kamers.length <= 0|| kamerFound   ? (
             <div>No kamers found</div>
           ) : (
             <GridImages width="70vw" display={"grid"} gridSize="500px">

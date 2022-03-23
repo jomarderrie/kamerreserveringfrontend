@@ -35,17 +35,14 @@ const SideBar = () => {
 
     }
 
-    useEffect(() => {
-        return () => {
-            console.log(pageKamerFilters, "filters")
-        };
-    }, [pageKamerFilters]);
-    
-
-    
-
+    // useEffect(() => {
+    //     return () => {
+    //         console.log(pageKamerFilters, "filters")
+    //     };
+    // }, [pageKamerFilters]);
 
     const handleOnSubmitSearch = (e) => {
+
         e.preventDefault()
         console.log(e.target[0].value, 'form')
     }
