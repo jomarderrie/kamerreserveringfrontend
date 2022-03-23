@@ -4,10 +4,18 @@ import {FlexBoxUpDown} from "../../styled/globals/StyledFlexBoxContainer";
 import {FlexBox} from "../../styled/styles";
 import styled from "styled-components";
 import {KamersContext} from "../../context/KamersContext";
-
+import DatePicker, {ReactDatePicker} from "react-datepicker";
+import {getAllkamersByNaamEnSortables} from "../../functions/kamers";
 const SideBar = () => {
     const [submitting, setSubmitting] = useState(false);
     const {pageKamerFilters, setPageKamerFilters, filterRooms} = useContext(KamersContext);
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(null);
+    const onChange = (dates) => {
+        const [start, end] = dates;
+        setStartDate(start);
+        setEndDate(end);
+    };
 
     const handleOnSearchChange = (e) => {
         const {name, value} = e.target; // destructured object that taps into the event.target.name and value
@@ -42,9 +50,9 @@ const SideBar = () => {
     // }, [pageKamerFilters]);
 
     const handleOnSubmitSearch = (e) => {
-
+        getAllkamersByNaamEnSortables(pageKamerFilters.searchKamerString, pageKamerFilters.algereserveerde, pageKamerFilters.eigenReservaties)
         e.preventDefault()
-        console.log(e.target[0].value, 'form')
+
     }
     return (
         <SideBarBox leftRight="15" z='column' x='start' y="start">
@@ -75,9 +83,7 @@ const SideBar = () => {
                         <label htmlFor="Al gereserveerd">Al gereserveerd</label>
                     </div>
                 </div>
-                <input type={"submit"}>
-
-                </input>
+                <input type={"submit"} value={"zoek"} />
             </form>
         </SideBarBox>
     );
@@ -86,3 +92,13 @@ const SideBar = () => {
 export const SideBarBox = styled(FlexBoxUpDown)``;
 
 export default SideBar;
+{/*<DatePicker*/}
+{/*    selected={startDate}*/}
+{/*    onChange={onChange}*/}
+{/*    startDate={startDate}*/}
+{/*    endDate={endDate}*/}
+{/*    excludeDates={[addDays(new Date(), 1), addDays(new Date(), 5)]}*/}
+{/*    selectsRange*/}
+{/*    selectsDisabledDaysInRange*/}
+{/*    inline*/}
+{/*/>*/}

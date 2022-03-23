@@ -247,10 +247,6 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                             setSubmitting(false);
                             return Promise.reject(k);
 
-                            // console.log(err);
-                            // setSubmitting(false);
-                            // toast.error(err.response.data.message);
-                            // return Promise.reject(err);
                         });
                 }
             })}

@@ -151,12 +151,12 @@ function Kamers(props) {
     <div>Loading...</div>
   ) : (
     <FlexBoxUpDown z="row" width="100%" upDown="10" y="start"> 
-      <div width="10%" leftRight="15" >
+      <div >
         <SideBar />
       </div>
       <FlexBoxUpDown width="85%" z="column">
         <FlexBoxUpDown z="column">
-          {kamers.length <= 0|| kamerFound   ? (
+          {kamers.length <= 0|| !kamerFound   ? (
             <div>No kamers found</div>
           ) : (
             <GridImages width="70vw" display={"grid"} gridSize="500px">

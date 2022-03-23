@@ -7,7 +7,7 @@ export const KamersContext = React.createContext();
 
 export default function KamerProvider({children}) {
     const [kamers, setKamers] = useState([]);
-    const [kamerFound, setKamerFound] = useState(false)
+    const [kamerFound, setKamerFound] = useState(true)
     const [pageKamerInfo, setPageKamerInfo] = useState({
         pageNo: 0,
         pageSize: 5,
@@ -80,11 +80,13 @@ export default function KamerProvider({children}) {
     }
 
     const filterRooms = (stringToSearch) => {
-        if (stringToSearch !== "") {
+        console.log(stringToSearch.length, 't')
+        if (stringToSearch.length !== 0) {
             let searchedKamers = pageKamerInfo.content.filter((item) => {
                 return item.naam.toLowerCase()
                     .indexOf(stringToSearch) !== -1;
             })
+            console.log(searchedKamers, "kek123")
             setKamers(searchedKamers);
             if (searchedKamers.length === 0){
                 setKamerFound(false)
@@ -92,7 +94,9 @@ export default function KamerProvider({children}) {
                 setKamerFound(true)
             }
         }else{
+            console.log("getting hit", pageKamerInfo.content)
             setKamers(pageKamerInfo.content);
+            setKamerFound(true)
         }
     }
 
