@@ -104,5 +104,5 @@ export const getAllKamerByNaamAndGetAllReserverationsOnCertainDay = async (
     );
 
 export const getAllkamersByNaamEnSortables =  async (pageKamerFilters) => {
-    return await axios.get(`http://localhost:8080/kamer/searched=${pageKamerFilters.searchKamerString}&alGereserveerde=${pageKamerFilters.alGereserveerde}&eigenReservaties=${pageKamerFilters.eigenReservaties}`)
+    return await axios.get(`http://localhost:8080/kamer/${pageKamerFilters.searchKamerString}&alGereserveerde=${pageKamerFilters.alGereserveerde}&eigenReservaties=${pageKamerFilters.eigenReservaties}`)
 }
