@@ -6,6 +6,7 @@ import styled from "styled-components";
 import {KamersContext} from "../../context/KamersContext";
 import DatePicker, {ReactDatePicker} from "react-datepicker";
 import {getAllkamersByNaamEnSortables} from "../../functions/kamers";
+import {toast} from "react-toastify";
 const SideBar = () => {
     const [submitting, setSubmitting] = useState(false);
     const {pageKamerFilters, setPageKamerFilters, filterRooms} = useContext(KamersContext);
@@ -50,8 +51,15 @@ const SideBar = () => {
     // }, [pageKamerFilters]);
 
     const handleOnSubmitSearch = (e) => {
-        getAllkamersByNaamEnSortables(pageKamerFilters.searchKamerString, pageKamerFilters.algereserveerde, pageKamerFilters.eigenReservaties)
         e.preventDefault()
+        console.log(pageKamerFilters.searchKamerString)
+        let a =  new URLSearchParams(pageKamerFilters)
+        console.log(pageKamerFilters)
+        if (pageKamerFilters.searchKamerString.length===0){
+            toast.error("Searched string is leeg")
+        }else{
+            getAllkamersByNaamEnSortables(pageKamerFilters)
+        }
 
     }
     return (

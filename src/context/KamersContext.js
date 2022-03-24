@@ -20,8 +20,6 @@ export default function KamerProvider({children}) {
     const [pageKamerFilters, setPageKamerFilters] = useState({
         eigenReservaties: false,
         alGereserveerde: false,
-        startDatum: '',
-        eindDatum: '',
         searchKamerString: ''
     })
 
