@@ -8,6 +8,7 @@
     "axios": "^0.23.0",
     "date-utils": "^1.2.21",
     "font-awesome": "^4.7.0",
+    "match-sorter": "^6.3.1",
     "moment": "^2.29.1",
     "rc-time-picker": "^3.7.3",
     "react": "^17.0.2",
