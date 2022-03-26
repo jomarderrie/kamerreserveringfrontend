@@ -7,9 +7,10 @@ import {KamersContext} from "../../context/KamersContext";
 import DatePicker, {ReactDatePicker} from "react-datepicker";
 import {getAllkamersByNaamEnSortables} from "../../functions/kamers";
 import {toast} from "react-toastify";
+
 const SideBar = () => {
     const [submitting, setSubmitting] = useState(false);
-    const {pageKamerFilters, setPageKamerFilters, filterRooms} = useContext(KamersContext);
+    const {pageKamerFilters, setPageKamerFilters, filterRooms, getPaginatedKamersSortables} = useContext(KamersContext);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(null);
     const onChange = (dates) => {
@@ -53,13 +54,11 @@ const SideBar = () => {
     const handleOnSubmitSearch = (e) => {
         e.preventDefault()
         console.log(pageKamerFilters.searchKamerString)
-        let a =  new URLSearchParams(pageKamerFilters)
+        let a = new URLSearchParams(pageKamerFilters)
         console.log(pageKamerFilters)
-        if (pageKamerFilters.searchKamerString.length===0){
-            toast.error("Searched string is leeg")
-        }else{
-            getAllkamersByNaamEnSortables(pageKamerFilters)
-        }
+
+        getPaginatedKamersSortables(pageKamerFilters)
+
 
     }
     return (
@@ -91,7 +90,7 @@ const SideBar = () => {
                         <label htmlFor="Al gereserveerd">Al gereserveerd</label>
                     </div>
                 </div>
-                <input type={"submit"} value={"zoek"} />
+                <input type={"submit"} value={"zoek"}/>
             </form>
         </SideBarBox>
     );
@@ -100,13 +99,23 @@ const SideBar = () => {
 export const SideBarBox = styled(FlexBoxUpDown)``;
 
 export default SideBar;
-{/*<DatePicker*/}
-{/*    selected={startDate}*/}
-{/*    onChange={onChange}*/}
-{/*    startDate={startDate}*/}
-{/*    endDate={endDate}*/}
-{/*    excludeDates={[addDays(new Date(), 1), addDays(new Date(), 5)]}*/}
-{/*    selectsRange*/}
-{/*    selectsDisabledDaysInRange*/}
-{/*    inline*/}
-{/*/>*/}
+{/*<DatePicker*/
+}
+{/*    selected={startDate}*/
+}
+{/*    onChange={onChange}*/
+}
+{/*    startDate={startDate}*/
+}
+{/*    endDate={endDate}*/
+}
+{/*    excludeDates={[addDays(new Date(), 1), addDays(new Date(), 5)]}*/
+}
+{/*    selectsRange*/
+}
+{/*    selectsDisabledDaysInRange*/
+}
+{/*    inline*/
+}
+{/*/>*/
+}

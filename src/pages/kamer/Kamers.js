@@ -66,6 +66,7 @@ function Kamers(props) {
     console.log(pageKamerInfo.pageNo, "asd123");
     if (props.location.search) {
       const urlSearchParams = new URLSearchParams(props.location.search);
+
       if (urlSearchParams.get("sortBy")) {
         getPaginatedKamersContext(
           urlSearchParams.get("pageNo"),

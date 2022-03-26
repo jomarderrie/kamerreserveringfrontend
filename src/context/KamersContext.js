@@ -1,7 +1,7 @@
 import React, {useContext, useState} from "react";
 import {useHistory} from "react-router-dom";
 import {toast} from "react-toastify";
-import {deleteKamer, getPaginatedKamers} from "../functions/kamers";
+import {deleteKamer, getAllkamersByNaamEnSortables, getPaginatedKamers} from "../functions/kamers";
 
 export const KamersContext = React.createContext();
 
@@ -20,7 +20,8 @@ export default function KamerProvider({children}) {
     const [pageKamerFilters, setPageKamerFilters] = useState({
         eigenReservaties: false,
         alGereserveerde: false,
-        searchKamerString: ''
+        pageNo: 0,
+        pageSize: 5,
     })
 
     let history = useHistory();
@@ -74,7 +75,22 @@ export default function KamerProvider({children}) {
                 }
             )
         });
+    }
 
+    const getPaginatedKamersSortables= async (pageKamerInfo) =>{
+        await getAllkamersByNaamEnSortables(pageKamerInfo).then((res, err) => {
+            setKamers(res.data.content);
+            console.log(res.data.content, "test123")
+            setPageKamerInfo(
+                {
+                    totalPages: res.data.totalPages,
+                    totalElements: res.data.totalElements,
+                    pageNo: res.data.number,
+                    pageSize: res.data.size,
+                    content: res.data.content
+                }
+            )
+        });
     }
 
     const filterRooms = (stringToSearch) => {
@@ -112,7 +128,9 @@ export default function KamerProvider({children}) {
                 pageKamerFilters,
                 setPageKamerFilters,
                 kamerFound,
-                setKamerFound
+                setKamerFound,
+                getPaginatedKamersSortables,
+
             }}>
             {children}
         </KamersContext.Provider>

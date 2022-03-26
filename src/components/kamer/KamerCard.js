@@ -52,7 +52,6 @@ const KamerCard = ({ kamer, image, key }) => {
     if (!(e.target.innerText === "Edit" || e.target.innerText === "Delete") || !(e.target.outerText === "Edit" || e.target.outerText === "Delete")) {
       history.push(`/kamers/${naam}`);
     }
-   
   };
 
   return (
