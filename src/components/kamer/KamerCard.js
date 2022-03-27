@@ -48,7 +48,7 @@ const KamerCard = ({ kamer, image, key }) => {
   }, []);
 
   const handleOnClickTest = (e, naam) => {
-    console.log(e.target.innerText)
+    console.log(e.target.innerText) 
     if (!(e.target.innerText === "Edit" || e.target.innerText === "Delete") || !(e.target.outerText === "Edit" || e.target.outerText === "Delete")) {
       history.push(`/kamers/${naam}`);
     }

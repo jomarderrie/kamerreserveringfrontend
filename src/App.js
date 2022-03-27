@@ -15,8 +15,9 @@ import Profiel from "./pages/gebruiker/Profiel";
 import SingleGebruiker from "./pages/gebruiker/SingleGebruiker";
 import Gebruikers from "./pages/gebruiker/Gebruikers";
 // const Loading = lazy(() => import("./components/Loading"));
-
+import Reservaties from "./pages/reservaties/Reservaties"
 function App() {
+
 
     return (
         <Suspense fallback={Loading}>
@@ -32,6 +33,7 @@ function App() {
                     <Route exact path="/kamer/:naam" component={SingleKamer} />
                     <Route exact path="/kamer/:naam/edit" component={EditSingleKamer} />
                     <Route exact path="/gebruikers" component={Gebruikers} />
+                    <Route exact path={"/reservaties"} component={Reservaties} />
                     <Route exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker} />
                     <Route exact path="/profiel/:naam/:achterNaam" component={Profiel} />
                 </Switch>
