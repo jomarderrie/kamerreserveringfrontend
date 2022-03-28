@@ -33,7 +33,7 @@ function App() {
                     <Route exact path="/kamer/:naam" component={SingleKamer} />
                     <Route exact path="/kamer/:naam/edit" component={EditSingleKamer} />
                     <Route exact path="/gebruikers" component={Gebruikers} />
-                    <Route exact path={"/reservaties"} component={Reservaties} />
+                    <Route exact path="/reservaties" component={Reservaties} />
                     <Route exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker} />
                     <Route exact path="/profiel/:naam/:achterNaam" component={Profiel} />
                 </Switch>
