@@ -140,6 +140,7 @@ export default function SingleKamer({match}) {
     };
 
     useEffect(() => {
+        console.log("test");
         if (!isEmpty(kamer)) {
             if (!reservationSending) {
                 if (!loading) {
