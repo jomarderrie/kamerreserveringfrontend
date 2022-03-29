@@ -27,7 +27,7 @@ import { deleteKamerOnClick } from "../../helpers/kamerDelete";
 import { KamersContext } from "../../context/KamersContext";
 import * as url from "url";
 
-function Kamers(props) {
+function  Kamers(props) {
   const {
     kamers,
     setKamers,

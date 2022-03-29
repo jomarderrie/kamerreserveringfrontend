@@ -15,7 +15,7 @@ import { FlexBox } from '../../styled/styles';
 
 
 function Gebruikers() {
-  const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
   const [data, setData] = useState([])
 
 

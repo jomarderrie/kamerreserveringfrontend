@@ -1,6 +1,5 @@
 import axios from "axios";
-import {logDOM} from "@testing-library/react";
-
+    
 export const getPaginatedKamers = async (currentPage, pageSize, sortBy = "naam") =>
     await axios.get(`http://localhost:8080/kamer/all?pageNo=${currentPage}&pageSize=${pageSize}&sortBy=${sortBy}`, {
         headers: {
