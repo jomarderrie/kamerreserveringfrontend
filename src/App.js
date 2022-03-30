@@ -20,21 +20,24 @@ import setAuthToken from "./helpers/setAuthToken";
 import {KamersContext} from "./context/KamersContext";
 import {AuthContext} from "./context/AuthContext";
 import {getHuidigeGebruikerMetToken} from "./functions/user";
+import AdminReservaties from "./pages/admin/Reservaties";
 
 function App() {
     const {
-        user,setUser, token, setToken
+        user, setUser, token, setToken
     } = useContext(AuthContext);
 
     useEffect(() => {
         if (localStorage.token) {
             setAuthToken(localStorage.token)
             console.log("gangster testrap")
-            getHuidigeGebruikerMetToken(localStorage.token).then((res, err) =>{
-                console.log(res, "test123")
+            getHuidigeGebruikerMetToken(localStorage.token).then((res, err) => {
+                if (res.data) {
+                    setUser(res.data)
+                }
             })
         } else {
-
+            localStorage.removeItem("token")
         }
     }, []);
 
@@ -54,6 +57,7 @@ function App() {
                 <Route exact path="/kamer/:naam/edit" component={EditSingleKamer}/>
                 <Route exact path="/gebruikers" component={Gebruikers}/>
                 <Route exact path="/reservaties" component={Reservaties}/>
+                <Route exact path="admin/reservaties" component={AdminReservaties}/>
                 <Route exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker}/>
                 <Route exact path="/profiel/:naam/:achterNaam" component={Profiel}/>
             </Switch>

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useContext} from 'react';
 import {Image} from "../../styled/Image";
 import Logo from "../../images/logo.svg";
 import {Link} from "react-router-dom";
@@ -6,8 +6,13 @@ import styled from "styled-components"
 
 import {StyledRouterLink} from '../../styled/globals/StyledRouterLink';
 import {FlexBox, LinkFlexBoxContainer, StyledFlexBoxContainer} from '../../styled/styles';
+import {AuthContext} from "../../context/AuthContext";
 
 const Navbar = () => {
+
+    const {
+        user
+    } = useContext(AuthContext);
 
     return (
         <StyledFlexBoxContainer cssClass="link-box-container" x="space-between">
@@ -21,24 +26,43 @@ const Navbar = () => {
             </StyledRouterLink>
 
             <LinkFlexBoxContainer>
-                <StyledRouterLink to={"/register"} active={"active"} p={"hover"}>
-                    Register
-                </StyledRouterLink>
-                <StyledRouterLink to={"/login"} p={"hover"}>
-                    Login
-                </StyledRouterLink>
-                <StyledRouterLink to={"/kamers"} p={"hover"}>
-                    Kamers
-                </StyledRouterLink>
-                <StyledRouterLink to={"/reservaties"} p={"hover"}>
-                    Reservaties
-                </StyledRouterLink>
-                <StyledRouterLink to={"/gebruikers"} p={"hover"}>
-                    Gebruikers
-                </StyledRouterLink>
-                <StyledRouterLink to={"/profiel"} p={"hover"}>
-                    Profiel
-                </StyledRouterLink>
+                {!user &&
+                    <>
+                        <StyledRouterLink to={"/login"} p={"hover"}>
+                            Login
+                        </StyledRouterLink>
+                        <StyledRouterLink to={"/register"} active={"active"} p={"hover"}>
+                            Register
+                        </StyledRouterLink>
+                    </>
+                }
+
+                {user &&
+                    <StyledRouterLink to={"/kamers"} p={"hover"}>
+                        Kamers
+                    </StyledRouterLink>
+                }
+
+
+                {
+                   user && user.role === "admin" && <StyledRouterLink to={"/gebruikers"} p={"hover"}>
+                        Gebruikers
+                    </StyledRouterLink>
+                }
+                {
+                    user && user.role === "admin" ? <StyledRouterLink to={"/admin/reservaties"} p={"hover"}>
+                        Reservaties
+                    </StyledRouterLink> : <StyledRouterLink to={"/reservaties"} p={"hover"}>
+                        Reservaties
+                    </StyledRouterLink>
+                }
+
+                {
+                    user && (user.role === "user") && <StyledRouterLink to={"/profiel"} p={"hover"}>
+                        Profiel
+                    </StyledRouterLink>
+                }
+
             </LinkFlexBoxContainer>
         </StyledFlexBoxContainer>
 
@@ -46,7 +70,7 @@ const Navbar = () => {
 }
 
 
-//  =>(
+// =>(
 
 // )`
 // .link-box-container{
