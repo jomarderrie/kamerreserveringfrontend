@@ -31,9 +31,9 @@ const Navbar = () => {
                         <StyledRouterLink to={"/login"} p={"hover"}>
                             Login
                         </StyledRouterLink>
-                        <StyledRouterLink to={"/register"} active={"active"} p={"hover"}>
+                        {/* <StyledRouterLink to={"/register"} active={"active"} p={"hover"}>
                             Register
-                        </StyledRouterLink>
+                        </StyledRouterLink> */}
                     </>
                 }
 
@@ -50,12 +50,16 @@ const Navbar = () => {
                     </StyledRouterLink>
                 }
                 {
-                    user && user.role === "admin" ? <StyledRouterLink to={"/admin/reservaties"} p={"hover"}>
-                        Reservaties
-                    </StyledRouterLink> : <StyledRouterLink to={"/reservaties"} p={"hover"}>
+                    user && user.role === "admin" && <StyledRouterLink to={"/admin/reservaties"} p={"hover"}>
                         Reservaties
                     </StyledRouterLink>
                 }
+                 {
+                    user && user.role === "user" && <StyledRouterLink to={"/reservaties"} p={"hover"}>
+                        Reservaties
+                    </StyledRouterLink>
+                }
+
 
                 {
                     user && (user.role === "user") && <StyledRouterLink to={"/profiel"} p={"hover"}>

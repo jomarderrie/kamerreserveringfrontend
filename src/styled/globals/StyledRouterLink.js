@@ -40,6 +40,13 @@ export const StyledRouterLinkWrapper = styled(StyledRouterLink)`
   }
 `;
 
+export const StyledUnderlinedRouteLink = styled(StyledRouterLink)`
+   padding: 5px 2px;
+    border-bottom-color: rgba(140, 130, 115, 0.12);
+    border-bottom: 2px solid;
+    font-size: 24px;
+`
+
 export const ButtonLink = (props) => {
   let url = props.to2 === undefined? null: props.to2;
   return (
