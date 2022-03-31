@@ -1,13 +1,14 @@
-import React, {Component} from 'react';
+import { useContext } from "react";
+import { Route } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
+import LoadingToRedirect from "./LoadingToRedirect";
 
-class Home extends Component {
-    render() {
-        return (
-            <div>
-                hello from home
-            </div>
-        );
-    }
-}
+const UserRoute = ({ children, ...rest }) => {
+    const {
+        token, user
+    } = useContext(AuthContext);
 
-export default Home;
+  return token !== "" && user? <Route {...rest} /> : <LoadingToRedirect />;
+};
+
+export default UserRoute;

@@ -11,7 +11,7 @@ import {AuthContext} from "../../context/AuthContext";
 const Navbar = () => {
 
     const {
-        user
+        user, logout
     } = useContext(AuthContext);
 
     return (
@@ -65,6 +65,10 @@ const Navbar = () => {
                     user && (user.role === "user") && <StyledRouterLink to={"/profiel"} p={"hover"}>
                         Profiel
                     </StyledRouterLink>
+                }
+
+                {
+                    user && <p className='Logout' onClick={logout}>Logout </p>
                 }
 
             </LinkFlexBoxContainer>

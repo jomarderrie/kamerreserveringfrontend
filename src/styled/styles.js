@@ -124,4 +124,7 @@ export const StyledFlexBoxContainer = styled(LinkFlexBoxContainer)`
     padding-right: 20px;
     border-bottom-color: rgba(140, 130, 115, 0.12);
     border-bottom: 2px solid;
+    .Logout{
+        padding-left: 20px;
+    }
 `
