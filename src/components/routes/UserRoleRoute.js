@@ -3,12 +3,12 @@ import { Route } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import LoadingToRedirect from "./LoadingRedirect";
 
-const UserRoute = ({ children, ...rest }) => {
+const UserRoleRoute = ({ children, ...rest }) => {
     const {
         token, user
     } = useContext(AuthContext);
 
-  return token !== "" && user.role !== ""? <Route {...rest} /> : <LoadingToRedirect />;
+  return token !== "" && user.role === "user"? <Route {...rest} /> : <LoadingToRedirect />;
 };
 
-export default UserRoute;
+export default UserRoleRoute;

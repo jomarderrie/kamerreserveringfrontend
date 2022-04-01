@@ -10,7 +10,7 @@ export default function Register() {
         <FlexBox z={"column"}>
             <h2 style={{paddingTop:"100px"}}>Registratie</h2>
             <SignUpForm/>
-            <p>
+            <p style={{paddingTop:"10px", fontSize:'20px'}}>
           <StyledRouterLink
             activeClassName={"none"}
             to={"/login"}

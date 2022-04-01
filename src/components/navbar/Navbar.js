@@ -26,7 +26,7 @@ const Navbar = () => {
             </StyledRouterLink>
 
             <LinkFlexBoxContainer>
-                {!user &&
+                {user.role === "" &&
                     <>
                         <StyledRouterLink to={"/login"} p={"hover"}>
                             Login
@@ -37,7 +37,7 @@ const Navbar = () => {
                     </>
                 }
 
-                {user &&
+                {user.role !== "" &&
                     <StyledRouterLink to={"/kamers"} p={"hover"}>
                         Kamers
                     </StyledRouterLink>
@@ -68,7 +68,7 @@ const Navbar = () => {
                 }
 
                 {
-                    user && <p className='Logout' onClick={logout}>Logout </p>
+                    user.role !== "" && <p className='Logout' onClick={logout}>Logout </p>
                 }
 
             </LinkFlexBoxContainer>

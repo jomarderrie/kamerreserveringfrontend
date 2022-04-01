@@ -8,8 +8,10 @@ export const FlexBoxContainerInput = styled(FlexBox)`
     padding-left: 20px;
   }
   label {
-    color: #aba499;
+    color: black;
     margin: 5px 0;
+    font-size: 22px;
+    padding:5px 0px;
   }
   .error {
     font-size: 14px;

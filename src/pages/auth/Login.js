@@ -10,12 +10,12 @@ export default function Login() {
       <h2 style={{ paddingTop: "100px" }}>Login</h2>
       <LoginForm />
       <div>
-        <p>
+        <p style={{paddingTop:"10px", fontSize:'20px'}}>
           <StyledRouterLink
             activeClassName={"none"}
             to={"/register"}
 
-          > Geen account? Maak een account aan!{" "}klik hier</StyledRouterLink>
+          > Geen account? Maak een account aan!{" "}Klik hier</StyledRouterLink>
         </p>
       </div>
     </FlexBox>

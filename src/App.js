@@ -21,6 +21,9 @@ import {KamersContext} from "./context/KamersContext";
 import {AuthContext} from "./context/AuthContext";
 import {getHuidigeGebruikerMetToken} from "./functions/user";
 import AdminReservaties from "./pages/admin/Reservaties";
+import UserRoute from "./components/routes/UserRoute";
+import AdminRoute from "./components/routes/AdminRoute";
+import UserRoleRoute from "./components/routes/UserRoleRoute";
 
 function App() {
     const {
@@ -28,11 +31,13 @@ function App() {
     } = useContext(AuthContext);
 
     useEffect(() => {
+        console.log(user, "user");
         if (localStorage.token) {
             setAuthToken(localStorage.token)
             console.log("gangster testrap")
             getHuidigeGebruikerMetToken(localStorage.token).then((res, err) => {
                 if (res.data) {
+                    console.log(res.data, "user");
                     setUser(res.data)
                 }
             })
@@ -40,7 +45,6 @@ function App() {
             localStorage.removeItem("token")
         }
     }, []);
-
 
     return (
         <Suspense fallback={Loading}>
@@ -51,15 +55,15 @@ function App() {
                 <Route exact path="/" component={Home}/>
                 <Route exact path="/register" component={Register}/>
                 <Route exact path="/login" component={Login}/>
-                <Route exact path="/kamers" component={Kamers}/>
-                <Route exact path="/kamer/new" component={MaakNieuweKamer}/>
-                <Route exact path="/kamer/:naam" component={SingleKamer}/>
-                <Route exact path="/kamer/:naam/edit" component={EditSingleKamer}/>
-                <Route exact path="/gebruikers" component={Gebruikers}/>
-                <Route exact path="/reservaties" component={Reservaties}/>
-                <Route exact path="admin/reservaties" component={AdminReservaties}/>
-                <Route exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker}/>
-                <Route exact path="/profiel/:naam/:achterNaam" component={Profiel}/>
+                <UserRoute exact path="/kamers" component={Kamers}/>
+                <AdminRoute exact path="/kamer/new" component={MaakNieuweKamer}/>
+                <UserRoute exact path="/kamer/:naam" component={SingleKamer}/>
+                <AdminRoute exact path="/kamer/:naam/edit" component={EditSingleKamer}/>
+                <AdminRoute exact path="/gebruikers" component={Gebruikers}/>
+                <UserRoute exact path="/reservaties" component={Reservaties}/>
+                <AdminRoute exact path="admin/reservaties" component={AdminReservaties}/>
+                <UserRoleRoute exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker}/>
+                <UserRoleRoute exact path="/profiel/:naam/:achterNaam" component={Profiel}/>
             </Switch>
 
         </Suspense>
