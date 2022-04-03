@@ -11,19 +11,9 @@ const AdminRoute = ({ children, ...rest }) => {
   const [ok, setOk] = useState(false);
 
   useEffect(() => {
-    console.log(ok)
-    if (user && user.token) {
-      getHuidigeGebruikerMetToken(token)
-        .then((res) => {
-          if(res.role === "admin"){
-            console.log("CURRENT ADMIN RES", res);
-            setOk(true);
-          }
-        })
-        .catch((err) => {
-          console.log("ADMIN ROUTE ERR", err);
-          setOk(false);
-        });
+    console.log(user.role, "kak")
+    if (user.role === "admin") {   
+         setOk(true);
     }
   }, [user, ok, token]);
 

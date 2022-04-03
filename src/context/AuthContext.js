@@ -1,8 +1,10 @@
 import React, { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 export const AuthContext = React.createContext();
 
 export function AuthProvider({ children }) {
+    let history = useHistory();
   const [user, setUser] = useState({
     achternaam: "",
     email: "",
@@ -16,7 +18,14 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState("");
 
   const logout = () => {
-    console.log("logout");
+      setToken("")
+      setUser( {achternaam: "",
+      email: "",
+      laatstIngelodgeDatumDisplay: "",
+      naam: "",
+      profileFileAttachment: "",
+      role: ""})
+      history.push("/login")
 }
 
   return (

@@ -9,7 +9,7 @@ import {FlexBox, LinkFlexBoxContainer, StyledFlexBoxContainer} from '../../style
 import {AuthContext} from "../../context/AuthContext";
 
 const Navbar = () => {
-
+   
     const {
         user, logout
     } = useContext(AuthContext);
@@ -56,7 +56,7 @@ const Navbar = () => {
                 }
                  {
                     user && user.role === "user" && <StyledRouterLink to={"/reservaties"} p={"hover"}>
-                        Reservaties
+                        Reservatis
                     </StyledRouterLink>
                 }
 
@@ -66,12 +66,14 @@ const Navbar = () => {
                         Profiel
                     </StyledRouterLink>
                 }
+<div>
+
 
                 {
-                    user.role !== "" && <p className='Logout' onClick={logout}>Logout </p>
+                    user.role !== "" && <p className='Logout' onClick={() => logout()}>Logout </p>
                 }
 
-            </LinkFlexBoxContainer>
+      </div>      </LinkFlexBoxContainer>
         </StyledFlexBoxContainer>
 
     );

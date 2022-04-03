@@ -6,7 +6,8 @@ import { AuthContext } from "../../context/AuthContext";
 import { loginUser } from "../../functions/auth";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
-import {setAuthToken} from "../../helpers/setAuthTokenz"
+import setAuthToken from "../../helpers/setAuthToken";
+
 const LoginForm = () => {
   const { user, setUser, token, setToken } = useContext(AuthContext);
   let history = useHistory();
@@ -47,7 +48,9 @@ const LoginForm = () => {
                 toast.error("Error met het inloggen");
               } else {   
                 setUser(resp.data);
-                setToken("Basic " + window.btoa(data.email + ":" + data.wachtwoord))
+                let token = window.btoa(data.email + ":" + data.wachtwoord);
+                setAuthToken(token)
+                setToken(token)
 
                 toast.success("Succesvol ingelogd");
                 roleBasedRedirect();
