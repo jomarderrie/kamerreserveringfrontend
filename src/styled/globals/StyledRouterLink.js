@@ -21,12 +21,15 @@ export const NavLink2 = styled(NavLink)`
   padding: 0rem 1rem;
   color: black;
   text-decoration: none;
+  font-size: 1.3rem;
+
   &.hover:hover {
     color: lightblue;
   }
+
   &.active {
-    padding: 5px 2px;
-    border-bottom-color: rgba(140, 130, 115, 0.12);
+    //padding: 5px 2px;
+    border-bottom-color: rgba(191, 142, 68, 0.12);
     border-bottom: 2px solid;
   }
 `;

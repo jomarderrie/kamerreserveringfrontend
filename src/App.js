@@ -24,6 +24,7 @@ import AdminReservaties from "./pages/admin/Reservaties";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 import UserRoleRoute from "./components/routes/UserRoleRoute";
+import LoginRoute from "./components/routes/LoginRoute";
 
 function App() {
     const {
@@ -33,11 +34,11 @@ function App() {
     useEffect(() => {
         console.log(user, "user");
         if (localStorage.token) {
-            setAuthToken(localStorage.token)
             console.log("gangster testrap")
             getHuidigeGebruikerMetToken(localStorage.token).then((res, err) => {
                 if (res.data) {
                     console.log(res.data, "user");
+                    setAuthToken(localStorage.token)
                     setUser(res.data)
                 }
             })
@@ -52,9 +53,9 @@ function App() {
             <Navbar/>
             <ToastContainer/>
             <Switch>
-                <Route exact path="/" component={Home}/>
-                <Route exact path="/register" component={Register}/>
-                <Route exact path="/login" component={Login}/>
+                <LoginRoute exact path="/" component={Home}/>
+                <LoginRoute exact path="/register" component={Register}/>
+                <LoginRoute exact path="/login" component={Login}/>
                 <UserRoute exact path="/kamers" component={Kamers}/>
                 <AdminRoute exact path="/kamer/new" component={MaakNieuweKamer}/>
                 <UserRoute exact path="/kamer/:naam" component={SingleKamer}/>

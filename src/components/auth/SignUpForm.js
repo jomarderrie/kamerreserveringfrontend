@@ -1,10 +1,14 @@
-import React, {useRef, useState} from "react";
+import React, {useContext, useRef, useState} from "react";
 import {useForm} from "react-hook-form";
 import ReCAPTCHA from "react-google-recaptcha";
 import {FlexBox} from "../../styled/styles";
 import styled from "styled-components";
 import {FlexBoxContainerInput} from "../../styled/globals/AuthBoxContainer";
-import {createUser} from "../../functions/auth";
+import {maakGebruiker} from "../../functions/auth";
+import {AuthContext} from "../../context/AuthContext";
+import {toast} from "react-toastify";
+import {useHistory} from "react-router-dom";
+import setAuthToken from "../../helpers/setAuthToken";
 
 export default function SignUpForm() {
     const {
@@ -16,6 +20,12 @@ export default function SignUpForm() {
     const [submitting, setSubmitting] = useState(false);
     const [serverErrors, setServerErrors] = useState([]);
     // const reRef = useRef<ReCAPTCHA>();
+    const {
+        user, setUser, token, setToken
+    } = useContext(AuthContext);
+
+    let history = useHistory();
+
 
     return (
         <FlexBox>
@@ -32,14 +42,18 @@ export default function SignUpForm() {
                     //     }
                     //     console.log(resp)
                     // })
-
-                    await createUser("log", "gemieee", "nathangemieee@gmail.com","Nathanj!k2", true).then((resp, err) => {
+                    console.log(formData, "hey")
+                    await maakGebruiker(formData.naam, formData.achterNaam, formData.email,formData.wachtwoord, formData.terms).then((resp, err) => {
                         if (resp.data){
-
+                            history.push("/kamers")
+                            setUser(resp.data);
+                            let token = window.btoa(formData.email + ":" + formData.wachtwoord);
+                            localStorage.removeItem("token")
+                            setAuthToken(token)
+                            setToken(token)
                         }else{
-
+                            toast.error(err.message)
                         }
-                        console.log(resp)
                     })
 
                     // const token = await reRef.current.executeAsync();

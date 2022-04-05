@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const createUser = async (
+export const maakGebruiker = async (
   naam,
   achterNaam,
   email,

@@ -60,8 +60,8 @@ export default function KamerProvider({children}) {
         return parseInt(pageKamerInfo.totalElements + 1 / pageKamerInfo.pageSize)
     }
 
-    const getPaginatedKamersContext = async (currentPage, pageSize, sortBy = "naam") => {
-        await getPaginatedKamers(currentPage, pageSize, sortBy).then((res, err) => {
+    const getPaginatedKamersContext = async (currentPage, pageSize, sortBy = "naam", token) => {
+        await getPaginatedKamers(currentPage, pageSize, sortBy, token).then((res, err) => {
             setKamers(res.data.content);
             console.log(res.data.content, "test123")
             setPageKamerInfo(

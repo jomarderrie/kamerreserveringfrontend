@@ -15,22 +15,21 @@ export const setFont = {
 };
 
 
-
 export const FlexBox = styled.div`
-/* width: 100%; */
-${(props) => setFlex({x: props.x, y: props.y, z: props.z, width:props.width})}
+  /* width: 100%; */
+  ${(props) => setFlex({x: props.x, y: props.y, z: props.z, width: props.width})}
 `
 
-export const setPadding = ({top='0',right='0',bottom='0',left='0'} = {}) =>{
+export const setPadding = ({top = '0', right = '0', bottom = '0', left = '0'} = {}) => {
     return `padding:${setRem(top)} ${setRem(right)} ${setRem(bottom)} ${setRem(left)} `
-} 
+}
 
-export const setUpDownPadding = ({upDown='0',leftRight='0'} = {}) =>{
+export const setUpDownPadding = ({upDown = '0', leftRight = '0'} = {}) => {
     return `padding:${setRem(upDown)} ${setRem(leftRight)};`
-} 
+}
 
 
-export const  setFlex = ({display="flex",x = 'center', y = 'center', z = 'row', width=""} = {}) => {
+export const setFlex = ({display = "flex", x = 'center', y = 'center', z = 'row', width = ""} = {}) => {
     return `
     display:${display}; 
     align-items:${y}; 
@@ -113,18 +112,20 @@ export const LinkFlexBoxContainer = (props) => {
     console.log(props);
     return (<div className={props.className}>
             <FlexBox x={props.x}>
-            {props.children}
+                {props.children}
             </FlexBox>
         </div>
     )
 }
 
 export const StyledFlexBoxContainer = styled(LinkFlexBoxContainer)`
-    padding-top:10px;
-    padding-right: 20px;
-    border-bottom-color: rgba(140, 130, 115, 0.12);
-    border-bottom: 2px solid;
-    .Logout{
-        padding-left: 20px;
-    }
+  //padding-top: 10px;
+  padding: 5px 20px;
+  border-bottom-color: rgba(140, 130, 115, 0.12);
+  border-bottom: 2px solid;
+  color: black;
+  .logout:hover{
+    color: lightblue;
+    cursor:pointer;
+  }
 `

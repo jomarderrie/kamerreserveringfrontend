@@ -56,7 +56,7 @@ const Navbar = () => {
                 }
                  {
                     user && user.role === "user" && <StyledRouterLink to={"/reservaties"} p={"hover"}>
-                        Reservatis
+                        Reservaties
                     </StyledRouterLink>
                 }
 
@@ -70,7 +70,7 @@ const Navbar = () => {
 
 
                 {
-                    user.role !== "" && <p className='Logout' onClick={() => logout()}>Logout </p>
+                    user.role !== "" && <p className='logout' onClick={() => logout()}>Logout </p>
                 }
 
       </div>      </LinkFlexBoxContainer>

@@ -11,8 +11,7 @@ const AdminRoute = ({ children, ...rest }) => {
   const [ok, setOk] = useState(false);
 
   useEffect(() => {
-    console.log(user.role, "kak")
-    if (user.role === "admin") {   
+    if (user.role === "admin") {
          setOk(true);
     }
   }, [user, ok, token]);

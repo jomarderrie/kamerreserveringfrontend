@@ -16,7 +16,7 @@ const LoadingToRedirect = () => {
   }, [count, history]);
 
   return (
-    <div className="container p-5 text-center">
+    <div>
       <p>Je wordt terug gestuurd naar de homepagina in {count} seconden</p>
     </div>
   );

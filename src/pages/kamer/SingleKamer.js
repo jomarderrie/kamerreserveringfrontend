@@ -25,6 +25,7 @@ import {FlexBoxUpDown} from "../../styled/globals/StyledFlexBoxContainer";
 import {KamersContext} from "../../context/KamersContext";
 import {useHistory} from "react-router-dom";
 import TableView from "../../components/kamer/TableView";
+import {AuthContext} from "../../context/AuthContext";
 
 export default function SingleKamer({match}) {
     const {naam} = match.params;
@@ -42,7 +43,6 @@ export default function SingleKamer({match}) {
     const [am, setAm] = React.useState([null, null]);
     const [pm, setPm] = React.useState([null, null]);
     const [limite2, setLimite2] = useState([null, null]);
-    const limite = [null, null];
     const [disabledIntervals2, setDisabledIntervals2] = useState([]);
     const [errorAm, setErrorAm] = React.useState(false);
     const [alReservatie, setAlReservatie] = React.useState(false);
@@ -51,6 +51,10 @@ export default function SingleKamer({match}) {
     const [startEindTijd, setStartEindTijd] = useState([]);
 
     const {deleteKamerOnClick} = useContext(KamersContext);
+    const {
+        user, setUser, token, setToken
+    } = useContext(AuthContext);
+
 
     useEffect(() => {
         setLoading(true);
@@ -355,7 +359,7 @@ export default function SingleKamer({match}) {
     const kamerLoaded = (kamer) => {
         return (
             <SingleKamerStyled width="100vw">
-                <FlexBoxUpDown
+                {user.role === "admin" && <FlexBoxUpDown
                     x="flex-end"
                     width="100%"
                     upDown="10"
@@ -377,7 +381,8 @@ export default function SingleKamer({match}) {
                         naam={kamer.naam}
                         action={deleteKamerOnClick}
                     />
-                </FlexBoxUpDown>
+                </FlexBoxUpDown> }
+
                 <FlexBoxUpDown z="row" width="100vw" leftRight="24">
 
 
