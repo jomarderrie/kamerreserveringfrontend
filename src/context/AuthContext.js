@@ -1,5 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
+import setAuthToken from "../helpers/setAuthToken";
 
 export const AuthContext = React.createContext();
 
@@ -25,6 +26,7 @@ export function AuthProvider({ children }) {
       naam: "",
       profileFileAttachment: "",
       role: ""})
+      setAuthToken()
       history.push("/login")
 }
 

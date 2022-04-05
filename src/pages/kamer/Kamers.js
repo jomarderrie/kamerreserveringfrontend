@@ -58,7 +58,7 @@ function Kamers(props) {
     }, [pageKamerInfo]);
 
     useEffect(() => {
-        console.log(pageKamerInfo.pageNo, "asd123");
+        console.log(token, "asd123");
         if (props.location.search) {
             const urlSearchParams = new URLSearchParams(props.location.search);
 
@@ -89,7 +89,7 @@ function Kamers(props) {
                 setLoading(false);
             });
         }
-    }, []);
+    }, [token]);
 
     const deleteKamerOnClick = async (naam, setKamers) => {
         // console.log(e.target);

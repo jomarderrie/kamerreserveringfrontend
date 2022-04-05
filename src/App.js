@@ -39,6 +39,7 @@ function App() {
                 if (res.data) {
                     console.log(res.data, "user");
                     setAuthToken(localStorage.token)
+                    setToken(localStorage.token)
                     setUser(res.data)
                 }
             })
