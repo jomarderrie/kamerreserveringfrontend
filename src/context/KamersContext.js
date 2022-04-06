@@ -6,6 +6,8 @@ import {deleteKamer, getAllkamersByNaamEnSortables, getPaginatedKamers} from "..
 export const KamersContext = React.createContext();
 
 export default function KamerProvider({children}) {
+    let history = useHistory();
+
     const [kamers, setKamers] = useState([]);
     const [kamerFound, setKamerFound] = useState(true)
     const [pageKamerInfo, setPageKamerInfo] = useState({
@@ -24,7 +26,7 @@ export default function KamerProvider({children}) {
         pageSize: 5,
     })
 
-    let history = useHistory();
+
 
     const deleteKamerOnClick = async (naam) => {
         // console.log(e.target);

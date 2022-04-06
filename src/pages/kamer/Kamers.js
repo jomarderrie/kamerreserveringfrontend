@@ -32,20 +32,6 @@ function Kamers(props) {
     const [loading, setLoading] = useState(true);
     const [propsLoadingState, setPropsLoading] = useState(true);
 
-    // const getPageParams = () =>{
-    //
-    //
-    //     if (urlSearchParams.get("sortBy")) {
-    //
-    //         // setPageKamerInfo(prevKamerInfo => {...pageKamerInfo, pageNo:urlSearchParams.get("pageNo"), pageSize:urlSearchParams.get("pageSize"), sortBy: urlSearchParams.get("sortBy")})
-    //         return "a"
-    //     } else {
-    //         let pageNo = urlSearchParams.get("pageNo");
-    //         console.log(pageNo.toString(), "ke123")
-    //         setPageKamerInfo({...pageKamerInfo, ['pageNo']:pageNo.toString()})
-    //         console.log(pageKamerInfo, "ge3")
-    //     }
-    // }
 
     useEffect(() => {
         if (user.role === "admin") {
@@ -139,13 +125,7 @@ function Kamers(props) {
             });
         }
     };
-    // <div>
-    //             <StyledButtonLink
-    //               text="Maak nieuwe kamer"
-    //               to2={"/kamer/new"}
-    //               icon={"fa-plus"}
-    //             />
-    //           </div>
+
     return loading === true || propsLoadingState === true ? (
         <div>Loading...</div>
     ) : (
