@@ -28,10 +28,10 @@ export default function KamerProvider({children}) {
 
 
 
-    const deleteKamerOnClick = async (naam) => {
+    const deleteKamerOnClick = async (naam, token) => {
         // console.log(e.target);
         console.log(naam, "oekoek");
-        await deleteKamer(naam)
+        await deleteKamer(naam, token)
             .then((res, err) => {
                 if (err) {
                     toast.error("Error met het toevoegen van een kamer");

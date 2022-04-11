@@ -22,6 +22,7 @@ import {getImageFromDb} from "./../../functions/kamers";
 import {loginUser} from "../../functions/auth";
 import {getImagesFromDbAndFiles} from "../../helpers/getImagesFromDb";
 import {KamersContext} from "../../context/KamersContext";
+import {AuthContext} from "../../context/AuthContext";
 
 export default function NieuweKamerForm({kamer, naam, setNaam}) {
     const [submitting, setSubmitting] = useState(false);
@@ -31,7 +32,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
     const [files, setFiles] = useState([]);
     const [resizedImages, setImages] = useState(null);
     const {kamers, setKamers, pageKamerInfo, lastPage} = useContext(KamersContext);
-
+    const {user, token} = useContext(AuthContext);
     let history = useHistory();
 
     const {
@@ -42,13 +43,12 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
         data,
         reset,
         value,
-
         formState: {errors},
     } = useForm();
 
     useEffect(() =>{
-        console.log(pageKamerInfo.sortBy, "jsjs")
-        console.log(`/kamers?pageNo=${lastPage()}&pageSize=${pageKamerInfo.pageSize}&sortBy=${pageKamerInfo.sortBy}`, "kek123")
+        // console.log(pageKamerInfo.sortBy, "jsjs")
+        // console.log(`/kamers?pageNo=${lastPage()}&pageSize=${pageKamerInfo.pageSize}&sortBy=${pageKamerInfo.sortBy}`, "kek123")
     }, [pageKamerInfo])
 
     useEffect(() => {
@@ -62,7 +62,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                 setValue("naam", kamer.naam);
                 setValue("eindDatum", eindTijdDate);
                 setValue("startDatum", startTijdDate);
-                getImagesFromDbAndFiles(kamer.naam, kamer.attachments, true).then(
+                getImagesFromDbAndFiles(kamer.naam, kamer.attachments, true, token).then(
                     (res) => {
                         setImages(res[0]);
                         setFiles(res[1]);
@@ -103,7 +103,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
         }
     };
 
-    const  onImagesFormSubmit = (naam) => {
+    const  onImagesFormSubmit = (naam, token) => {
         // sendFilesToBackend(files);
         if (files !== [] || files.length !== 0) {
             checkFiles(files);
@@ -118,7 +118,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
             const config = {
                 headers: {
                     authorization:
-                        "Basic " + window.btoa("admin@gmail.com" + ":" + "AdminUser!1"),
+                        "Basic " + token,
                     "Access-Control-Allow-Origin": "*",
                     "content-type": "multipart/form-data",
                 },
@@ -139,7 +139,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                 console.log(image, "image " + index);
                 formData.append("files", image, image.name);
             });
-            uploadKamerImages(naam, formData);
+            uploadKamerImages(naam, formData, token);
         } else {
             toast.error("Minstens 1 foto");
         }
@@ -174,7 +174,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                 eindDatumObj.setMilliseconds(0);
                 // setNaam(data.naam);
                 if (!isEmpty(kamer)) {
-                    await editKamer(kamer.naam, data.naam, eindDatumObj, startDatumObj)
+                    await editKamer(kamer.naam, data.naam, eindDatumObj, startDatumObj, token)
                         .then((res, err) => {
                             if (err) {
                                 toast.error("Er was een error met het editen van de kamer")
@@ -182,7 +182,7 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                                 setSubmitting(false);
                             } else {
                                 if (files !== [] || files.length !== 0) {
-                                    onImagesFormSubmit(data.naam)
+                                    onImagesFormSubmit(data.naam, token)
                                         .then((res, err) => {
                                             if (err) {
                                                 console.log(err);
@@ -215,14 +215,14 @@ export default function NieuweKamerForm({kamer, naam, setNaam}) {
                     // }else{
                     //     toast.error("")
                     // }
-                    await maakNieuweKamer(data.naam, eindDatumObj, startDatumObj)
+                    await maakNieuweKamer(data.naam, eindDatumObj, startDatumObj, token)
                         .then((res, err) => {
                             if (err) {
                                 toast.error("Er was een error met het editen van de kamer")
                                 console.log(err);
                                 setSubmitting(false);
                             } else {
-                                onImagesFormSubmit(data.naam)
+                                onImagesFormSubmit(data.naam, token)
                                     .then((res, err) => {
                                         if (res) {
                                             history.push(`/kamers?pageNo=${lastPage()}&pageSize=${pageKamerInfo.pageSize}&sortBy=${pageKamerInfo.sortBy}`);

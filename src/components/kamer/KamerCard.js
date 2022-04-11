@@ -21,7 +21,7 @@ import {
 import { useHistory } from "react-router-dom";
 import { KamersContext } from "../../context/KamersContext";
 
-const KamerCard = ({ kamer, image, key, admin }) => {
+const KamerCard = ({ kamer, image, key, admin, token }) => {
 
   const { deleteKamerOnClick } = useContext(KamersContext);
   const [kamerImages, setKamerImages] = useState("");
@@ -33,7 +33,7 @@ const KamerCard = ({ kamer, image, key, admin }) => {
     console.log(admin, "admin123")
     setLoading(true);
     if (kamer.attachments.length !== 0) {
-      getImageFromDb(kamer.naam, kamer.attachments[0].name)
+      getImageFromDb(kamer.naam, kamer.attachments[0].name, token)
         .then((k) => {
           setKamerImages(URL.createObjectURL(k.data));
           setLoading(false);
@@ -106,7 +106,7 @@ const KamerCard = ({ kamer, image, key, admin }) => {
           {admin &&  < FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
             <StyledButtonLink
                 value2="hey"
-                to2={`/kamers/${kamer.naam}/edit`}
+                to2={`/kamer/${kamer.naam}/edit`}
                 className={"btn btn-pink"}
                 text={"Edit"}
                 icon={"fa-edit"}
@@ -117,6 +117,7 @@ const KamerCard = ({ kamer, image, key, admin }) => {
                 text="Delete"
                 icon={"fa-trash"}
                 naam={kamer.naam}
+                token={token}
             />
           </ FlexBoxUpDown>}
 

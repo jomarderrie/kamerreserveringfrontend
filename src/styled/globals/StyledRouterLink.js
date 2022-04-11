@@ -71,9 +71,9 @@ export const ButtonLink = (props) => {
 export const ButtonWithIcon = (props) => {
   return (
     <button className={`${props.className}`} type={props.button?props.button:"button"} value={props.value2} 
-    onClick={() =>props.action&&props?.action(props.naam)}>
+    onClick={() =>props.action&&props?.action(props.naam, props.token)}>
       < FlexBoxUpDown x="space-between" leftRight="15">
-        <span className={`fa ${props.icon} fa-2x button-icon`}></span>
+        <span className={`fa ${props.icon} fa-2x button-icon`}/>
 
         {props.text}
       </ FlexBoxUpDown>

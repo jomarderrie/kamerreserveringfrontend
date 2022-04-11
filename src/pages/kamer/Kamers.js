@@ -15,6 +15,7 @@ import SideBar from "../../components/navbar/SideBar";
 import {KamersContext} from "../../context/KamersContext";
 
 import {AuthContext} from "../../context/AuthContext";
+import {StyledButtonLink, StyledRouterLink} from "../../styled/globals/StyledRouterLink";
 
 function Kamers(props) {
     const {
@@ -78,8 +79,7 @@ function Kamers(props) {
     }, [token]);
 
     const deleteKamerOnClick = async (naam, setKamers) => {
-        // console.log(e.target);
-        await deleteKamer(naam)
+        await deleteKamer(naam, token)
             .then((res, err) => {
                 if (err) {
                     toast.error("Error met het toevoegen van een kamer");
@@ -129,7 +129,7 @@ function Kamers(props) {
     return loading === true || propsLoadingState === true ? (
         <div>Loading...</div>
     ) : (
-        <FlexBoxUpDown z="row" width="100%" upDown="10" y="start">
+        <FlexBoxUpDown z="row" width="100%" upDown="10" leftRight="30" y="start">
             <div>
                 <SideBar/>
             </div>
@@ -147,6 +147,7 @@ function Kamers(props) {
                                         deleteKamer={deleteKamerOnClick}
                                         image={kamer.attachment}
                                         admin={admin}
+                                        token={token}
                                         key={key}
                                     />
                                 );
@@ -167,6 +168,18 @@ function Kamers(props) {
                     </FlexBoxUpDown>
                 </FlexBoxUpDown>
             </FlexBoxUpDown>
+            {user.role === "admin" &&
+                <div>
+                    <StyledButtonLink text="Maak nieuwe kamer" to2={"/kamer/new"} icon={"fa-plus"}/>
+                    <StyledRouterLink
+                        className="btn btn-pink"
+                        role="button"
+                        to={`/kamer/new`}
+                        type="button"
+                    >
+                    </StyledRouterLink>
+                </div>
+            }
         </FlexBoxUpDown>
     );
 }

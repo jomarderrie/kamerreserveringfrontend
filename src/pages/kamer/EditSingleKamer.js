@@ -1,15 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, {useContext, useEffect, useState} from "react";
 import NieuweKamerForm from "../../components/kamer/NieuweKamerForm";
 import { FlexBox } from "../../styled/styles";
 import { getSingleKamer } from "../../functions/kamers";
+import {AuthContext} from "../../context/AuthContext";
 
-export default function EditSingleKamer({ match }) {
-  const { naam } = match.params;
+export default function EditSingleKamer(props) {
+  const { naam } = props.match.params;
+  const {user, token} = useContext(AuthContext);
+
   const [loading, setLoading] = useState(false);
   const [kamer, setKamer] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log(props, "prop123")
+    console.log(props.match.params, "params")
+    console.log(token, user, "kek123")
+    console.log(token, "token123")
+
     setLoading(true);
     getSingleKamer(naam).then((res, err) => {
       if (err) {

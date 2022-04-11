@@ -3,12 +3,12 @@ import { getImageFromDb } from "./../functions/kamers";
 
 export async function getImagesFromDbAndFiles(kamerNaam,
   fileAttachments,
-  wantFiles = false) {
+  wantFiles = false, token) {
   let images = [];
   let files = [];
   const merged = [];
   for (const fileAttachment of fileAttachments) {
-    await getImageFromDb(kamerNaam, fileAttachment.name).then((k) => {
+    await getImageFromDb(kamerNaam, fileAttachment.name ,token).then((k) => {
       let fileName = k.config.url.split("/").slice(6, k.length);
       if (wantFiles !== false) {
         const file = new File([k.data], fileName, { type: k.data.type });
@@ -21,6 +21,5 @@ export async function getImagesFromDbAndFiles(kamerNaam,
   if (wantFiles) {
     merged[1] = files;
   }
-  [...files].forEach((file) => console.log(file, "kek"));
   return merged;
 }

@@ -58,7 +58,7 @@ export default function SingleKamer({match}) {
 
     useEffect(() => {
         setLoading(true);
-        getSingleKamer(naam)
+        getSingleKamer(naam, token)
             .then((res, err) => {
                 if (err) {
                     setLoading(false);
@@ -77,7 +77,7 @@ export default function SingleKamer({match}) {
                         getDate(startDate.getHours()),
                         getDate(eindDate.getHours()),
                     ]);
-                    getImagesFromDbAndFiles(res.data.naam, res.data.attachments, false)
+                    getImagesFromDbAndFiles(res.data.naam, res.data.attachments, false, token)
                         .then((res) => {
                             setImages(res[0]);
                             console.log(res, "kek");
@@ -148,11 +148,10 @@ export default function SingleKamer({match}) {
         if (!isEmpty(kamer)) {
             if (!reservationSending) {
                 if (!loading) {
-                 
                     setReservationSending(true);
                     getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
                         kamer.naam,
-                        timeRangeSliderDate.toLocaleDateString().split("/").join("-")
+                        timeRangeSliderDate.toLocaleDateString().split("/").join("-"), token
                     )
                         .then((res, err) => {
                             if (err) {
@@ -310,7 +309,8 @@ export default function SingleKamer({match}) {
                 maakNieuweReservatie(
                     kamer.naam,
                     startReservationDate,
-                    eindReservationDate
+                    eindReservationDate,
+                    token
                 )
                     .then((res, err) => {
                         if (err) {
