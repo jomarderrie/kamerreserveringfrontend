@@ -1,7 +1,7 @@
 import axios from "axios";
 
-export const getAllReservatiesForUser = async(email, token) =>
-  await axios.get(`http://localhost:8080/reservaties/${email}/alles`,  {
+export const getAllReservatiesPaginatedForUser = async(email,huidgePagina, pageSize, sortBy, token) =>
+  await axios.get(`http://localhost:8080/reservaties/${email}/alles?pageNo=${huidgePagina}&pageSize=${pageSize}`,  {
         headers: {
             authorization:
                 "Basic " + token,

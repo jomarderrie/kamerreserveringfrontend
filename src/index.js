@@ -2,21 +2,27 @@ import React from "react";
 import ReactDOM from "react-dom";
 
 import App from "./App";
-import { AuthProvider } from "./context/AuthContext";
-import { BrowserRouter as Router } from "react-router-dom";
+import {AuthProvider} from "./context/AuthContext";
+import {BrowserRouter as Router} from "react-router-dom";
 import KamerProvider from "./context/KamersContext";
-import { GlobalsStyle } from "./styled/GlobalStyle";
+import ReservatiesProvider from "./context/ReservatiesContext";
+import {GlobalsStyle} from "./styled/GlobalStyle";
 
 ReactDOM.render(
-  <Router>
-    <KamerProvider>
-      <AuthProvider>
-        <GlobalsStyle></GlobalsStyle>
-        <App />
-      </AuthProvider>
-    </KamerProvider>
-  </Router>,
-document.getElementById("root")
+    <Router>
+
+        <KamerProvider>
+            <AuthProvider>
+                <ReservatiesProvider>
+                    <GlobalsStyle>
+
+                    </GlobalsStyle>
+                        <App/>
+                </ReservatiesProvider>
+            </AuthProvider>
+        </KamerProvider>
+    </Router>,
+    document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
