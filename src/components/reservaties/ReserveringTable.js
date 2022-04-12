@@ -1,6 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react'
 import styled from 'styled-components'
 import { useTable, usePagination } from 'react-table'
+import {ReservatiesContext} from "../../context/ReservatiesContext";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -41,6 +42,7 @@ function Table({
                    fetchData,
                    loading,
                    pageCount: controlledPageCount,
+                    email, token
                }) {
     const {
         getTableProps,
@@ -57,7 +59,7 @@ function Table({
         previousPage,
         setPageSize,
         // Get the state from the instance
-        state: { pageIndex, pageSize },
+        state: { pageIndex, pageSize = 5 },
     } = useTable(
         {
             columns,
@@ -71,11 +73,15 @@ function Table({
         },
         usePagination
     )
+    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123 } = useContext(ReservatiesContext)
 
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
-        fetchData({ pageIndex, pageSize })
-    }, [fetchData, pageIndex, pageSize])
+        console.log("test123")
+        getPaginatedReservaties(email,0, 5, "", token).then(() => {
+            console.log("okay")})
+
+    }, [])
 
     // Render the UI for your table
     return (
@@ -192,7 +198,7 @@ function Table({
 
 const ReserveringTable = (props) => {
     const [propsLoading, setPropsLoading] = useState(true);
-    const[loading, setLoading] = useState(true)
+
     useEffect(() => {
         return () => {
             console.log(props, "props123")
@@ -223,9 +229,15 @@ const ReserveringTable = (props) => {
 
 
     return (
-        <div>
-            {(propsLoading && loading) && <Table columns={columns} data={props.reservaties} fetchData={props.getPaginatedReservaties} loading={loading} pageCount={props.pageCount} />}
-        </div>
+        <Styles>
+            { <Table
+                columns={columns}
+                data={props.reservaties}
+
+                loading={props.loading123}
+                pageCount={props.pageCount}
+                email={props.email} token={props.token} />}
+        </Styles>
     )
 }
 

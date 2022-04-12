@@ -12,11 +12,14 @@ export default function ReservatiesProvider({children}){
         totalPages: 0,
         totalElements: 0,
     })
+    const [loading123, setLoading123] = useState(true)
 
 
 
-    const getPaginatedReservaties= async (huidgePagina, pageSize, sortBy, email, token) => {
-        getAllReservatiesPaginatedForUser(email,huidgePagina, pageSize, sortBy, email, token).then((res,err) =>{
+    const getPaginatedReservaties= async (email,huidgePagina, pageSize, sortBy, token) => {
+        console.log(token, "args")
+        setLoading123(true)
+        getAllReservatiesPaginatedForUser(email,huidgePagina, pageSize, sortBy, token).then((res,err) =>{
             if(err){
 
             }else{
@@ -28,6 +31,7 @@ export default function ReservatiesProvider({children}){
                     pageSize: res.data.size,
                     content: res.data.content
                 })
+                setLoading123(false)
             }
         })
     }
@@ -38,7 +42,7 @@ export default function ReservatiesProvider({children}){
             setReservaties,
             pageReservatieInfo,
             setPageReservatieInfo,
-            getPaginatedReservaties,}}>
+            getPaginatedReservaties, loading123}}>
             {children}
         </ReservatiesContext.Provider>
     )

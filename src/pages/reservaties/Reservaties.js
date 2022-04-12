@@ -11,28 +11,28 @@ export default function Reservaties(props) {
     const [state, setState] = useState('idle')
     const {user, token} = useContext(AuthContext);
     const [loading,setLoading] = useState(true)
-    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, } = useContext(ReservatiesContext)
+    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123 } = useContext(ReservatiesContext)
 
-    useEffect(() => {
-        if(props.location.search){
-            const urlSearchParams = new URLSearchParams(props.location.search);
-            getPaginatedReservaties(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize"), "", user.email, token).catch(err => toast.error(err.message))
-        }else{
-            getPaginatedReservaties(
-                pageReservatieInfo.pageNo,
-                pageReservatieInfo.pageSize,
-                "",
-                token
-            ).then(() => {
-                setLoading(false);
-            }).catch(err => toast.error(err.message));
-        }
-    }, [user, token]);
+    // useEffect(() => {
+    //     if(props.location.search){
+    //         const urlSearchParams = new URLSearchParams(props.location.search);
+    //         getPaginatedReservaties(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize"), "", user.email, token).catch(err => toast.error(err.message))
+    //     }else{
+    //         getPaginatedReservaties(
+    //             pageReservatieInfo.pageNo,
+    //             pageReservatieInfo.pageSize,
+    //             "",
+    //             token
+    //         ).then(() => {
+    //             setLoading(false);
+    //         }).catch(err => toast.error(err.message));
+    //     }
+    // }, [user, token]);
 
 
     return (
         <div>
-            <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={1}/>
+            <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123}/>
             Reservaties
         </div>
     )
