@@ -20,7 +20,7 @@ import setAuthToken from "./helpers/setAuthToken";
 import {KamersContext} from "./context/KamersContext";
 import {AuthContext} from "./context/AuthContext";
 import {getHuidigeGebruikerMetToken} from "./functions/user";
-import AdminReservaties from "./pages/admin/Reservaties";
+import AdminReservaties from "./pages/reservaties/AdminReservaties";
 import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 import UserRoleRoute from "./components/routes/UserRoleRoute";

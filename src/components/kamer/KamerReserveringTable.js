@@ -33,11 +33,10 @@ table {
 `
 
 
-const TableView = (props) => {
+const KamerReserveringTable = (props) => {
     const [propsLoading, setPropsLoading] = useState(true);
     useEffect(() => {
         return () => {
-            console.log(props,"macdonalds")
             setPropsLoading(false)
         };
     }, [props]);
@@ -109,12 +108,7 @@ const TableView = (props) => {
                 <TableStyles>
                  <Table columns={columns} data={props.reservaties} />
                 </TableStyles>
-                {/* {propsLoading ? <div>Table window is loading...</div> : 
-                <TableStyles>
-                 <Table columns={columns} data={props.reservaties} />
-                </TableStyles>
-                } */}
             </div>
         );
     }
-                export default TableView;
+                export default KamerReserveringTable;

@@ -4,6 +4,8 @@ import {AuthContext} from "../../context/AuthContext";
 import {toast} from "react-toastify";
 import {ReservatiesContext} from "../../context/ReservatiesContext";
 import {useSortBy} from "react-table";
+import KamerReserveringTable from "../../components/kamer/KamerReserveringTable";
+import ReserveringTable from "../../components/reservaties/ReserveringTable";
 
 export default function Reservaties(props) {
     const [state, setState] = useState('idle')
@@ -12,33 +14,25 @@ export default function Reservaties(props) {
     const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, } = useContext(ReservatiesContext)
 
     useEffect(() => {
-        console.log("kek");
         if(props.location.search){
             const urlSearchParams = new URLSearchParams(props.location.search);
+            getPaginatedReservaties(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize"), "", user.email, token).catch(err => toast.error(err.message))
         }else{
             getPaginatedReservaties(
                 pageReservatieInfo.pageNo,
                 pageReservatieInfo.pageSize,
-                pageReservatieInfo.sortBy,
+                "",
                 token
             ).then(() => {
                 setLoading(false);
-            });
+            }).catch(err => toast.error(err.message));
         }
-        getPaginatedReservaties(pageReservatieInfo.pageNo, pageReservatieInfo.pageSize, pageReservatieInfo.sortBy, user.email, token).then((res, err) => {
-            if (err) {
-                toast.error(err.message)
-            } else {
-                console.log(res, "hey")
-            }
-        })
-
     }, [user, token]);
 
 
     return (
         <div>
-
+            <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={1}/>
             Reservaties
         </div>
     )

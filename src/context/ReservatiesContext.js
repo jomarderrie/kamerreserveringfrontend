@@ -20,7 +20,14 @@ export default function ReservatiesProvider({children}){
             if(err){
 
             }else{
-                console.log(reservaties, "reservaties")
+                setReservaties(res.data.content)
+                setPageReservatieInfo({
+                    totalPages: res.data.totalPages,
+                    totalElements: res.data.totalElements,
+                    pageNo: res.data.number,
+                    pageSize: res.data.size,
+                    content: res.data.content
+                })
             }
         })
     }

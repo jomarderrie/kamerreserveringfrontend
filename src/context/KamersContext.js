@@ -63,7 +63,6 @@ export default function KamerProvider({children}) {
     }
 
     const getPaginatedKamersContext = async (currentPage, pageSize, sortBy = "naam", token) => {
-        console.log(token, "token123")
         await getPaginatedKamers(currentPage, pageSize, sortBy, token).then((res, err) => {
             if (err){
                 toast.error(err.message)

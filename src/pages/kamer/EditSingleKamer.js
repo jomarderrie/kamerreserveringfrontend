@@ -13,13 +13,9 @@ export default function EditSingleKamer(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log(props, "prop123")
-    console.log(props.match.params, "params")
-    console.log(token, user, "kek123")
-    console.log(token, "token123")
 
     setLoading(true);
-    getSingleKamer(naam).then((res, err) => {
+    getSingleKamer(naam, token).then((res, err) => {
       if (err) {
         setLoading(false);
         setError(err);

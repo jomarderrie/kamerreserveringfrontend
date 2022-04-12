@@ -14,17 +14,17 @@ import {toast} from "react-toastify";
 import {isEmpty} from "../../helpers/IsEmpty";
 import addMonths from "date-fns/addMonths";
 import DatePicker, {ReactDatePicker} from "react-datepicker";
-import {getImagesFromDbAndFiles} from "./../../helpers/getImagesFromDb";
+import {getImagesFromDbAndFiles} from "../../helpers/getImagesFromDb";
 import styled from "styled-components";
 import {
     StyledButtonLink,
     StyledButtonDelete,
-} from "./../../styled/globals/StyledRouterLink";
+} from "../../styled/globals/StyledRouterLink";
 import Carousel from "../../components/carousel/Carousel";
 import {FlexBoxUpDown} from "../../styled/globals/StyledFlexBoxContainer";
 import {KamersContext} from "../../context/KamersContext";
 import {useHistory} from "react-router-dom";
-import TableView from "../../components/kamer/TableView";
+import KamerReserveringTable from "../../components/kamer/KamerReserveringTable";
 import {AuthContext} from "../../context/AuthContext";
 
 export default function SingleKamer({match}) {
@@ -466,7 +466,7 @@ export default function SingleKamer({match}) {
                                 submit reservatie
                             </button>
                         </form>
-                            {(tableView) ? <TimeRangeSlider/> : <TableView reservaties={reservations} tableView={tableView}/>}
+                            {(tableView) ? <TimeRangeSlider/> : <KamerReserveringTable reservaties={reservations} tableView={tableView}/>}
 
                     </FlexBox>
                 </FlexBoxUpDown>
