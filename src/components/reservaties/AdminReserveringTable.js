@@ -75,9 +75,9 @@ function Table({
 
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
-        fetchData(email, pageIndex, pageSize, "", token)
+        fetchData(pageIndex, pageSize, "", token)
 
-        }, [])
+    }, [])
 
     // React.useEffect(() => {
     //     console.log("test123")
@@ -202,12 +202,16 @@ function Table({
     )
 }
 
-const ReserveringTable = (props) => {
+const ReserveringAdminTable = (props) => {
     const columns = React.useMemo(
         () => [{
             Header: "Kamernaam",
             accessor: "naam"
         },
+            {
+              Header: "email",
+              accessor: "email"
+            },
             {
                 Header: "Start tijd",
                 accessor: "start"
@@ -234,4 +238,4 @@ const ReserveringTable = (props) => {
     )
 }
 
-export default ReserveringTable
+export default ReserveringAdminTable

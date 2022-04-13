@@ -63,7 +63,7 @@ function App() {
                 <AdminRoute exact path="/kamer/:naam/edit" component={EditSingleKamer}/>
                 <AdminRoute exact path="/gebruikers" component={Gebruikers}/>
                 <UserRoute exact path="/reservaties" component={Reservaties}/>
-                <AdminRoute exact path="admin/reservaties" component={AdminReservaties}/>
+                <AdminRoute exact path="/admin/reservaties" component={AdminReservaties}/>
                 <UserRoleRoute exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker}/>
                 <UserRoleRoute exact path="/profiel/:naam/:achterNaam" component={Profiel}/>
             </Switch>

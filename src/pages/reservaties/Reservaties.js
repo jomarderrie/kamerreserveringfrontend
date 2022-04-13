@@ -7,7 +7,7 @@ import {useSortBy} from "react-table";
 import KamerReserveringTable from "../../components/kamer/KamerReserveringTable";
 import ReserveringTable from "../../components/reservaties/ReserveringTable";
 
-export default function Reservaties(props) {
+export default function Reservaties() {
     const [state, setState] = useState('idle')
     const {user, token} = useContext(AuthContext);
     const [loading,setLoading] = useState(true)
@@ -32,8 +32,8 @@ export default function Reservaties(props) {
 
     return (
         <div>
+            <h1>Je eigen reservaties</h1>
             <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123}/>
-            Reservaties
         </div>
     )
 }
