@@ -49,10 +49,16 @@ const KamerCard = ({ kamer, image, key, admin, token }) => {
   }, []);
 
   const handleOnClickTest = (e, naam) => {
-    console.log(e.target.innerText) 
-    if (!(e.target.innerText === "Edit" || e.target.innerText === "Delete") || !(e.target.outerText === "Edit" || e.target.outerText === "Delete")) {
+    console.log(naam, "jelsrejw")
+    console.log(e.target.className, "deeznuts")
+    console.log(e.target.className[0] !== "f", "trash123")
+    if (naam !=="test123"){
       history.push(`/kamer/${naam}`);
     }
+    // if ((!(e.target.innerText === "Edit" || e.target.innerText === "Delete") )|| (!(e.target.outerText === "Edit" || e.target.outerText === "Delete")) || (e.target.className[0]  !== "f") || (e.target.className[0] !== "s")) {
+    //   console.log(e.target, "etarget")
+    //
+    // }
   };
 
   return (
@@ -103,23 +109,27 @@ const KamerCard = ({ kamer, image, key, admin, token }) => {
               <div>...Loading</div>
             )}
           </FlexBox>
-          {admin &&  < FlexBoxUpDown x="space-evenly" width="100%" upDown="6">
-            <StyledButtonLink
-                value2="hey"
-                to2={`/kamer/${kamer.naam}/edit`}
-                className={"btn btn-pink"}
-                text={"Edit"}
-                icon={"fa-edit"}
-            />
-            <StyledButtonDelete
-                value2={kamer.naam}
-                action={deleteKamerOnClick}
-                text="Delete"
-                icon={"fa-trash"}
-                naam={kamer.naam}
-                token={token}
-            />
-          </ FlexBoxUpDown>}
+          {/*{admin &&*/}
+
+
+          {/*  < FlexBoxUpDown x="space-evenly" width="100%" upDown="6">*/}
+          {/*  <StyledButtonLink*/}
+          {/*      value2="hey"*/}
+          {/*      to2={`/kamer/${kamer.naam}/edit`}*/}
+          {/*      className={"btn btn-pink"}*/}
+          {/*      text={"Edit"}*/}
+          {/*      icon={"fa-edit"}*/}
+          {/*  />*/}
+          {/*  <StyledButtonDelete*/}
+          {/*      value2={kamer.naam}*/}
+          {/*      action={deleteKamerOnClick}*/}
+          {/*      text="Delete"*/}
+          {/*      icon={"fa-trash"}*/}
+          {/*      naam={kamer.naam}*/}
+          {/*      token={token}*/}
+          {/*  />*/}
+          {/*</ FlexBoxUpDown>*/}
+          {/*  }*/}
 
         </ContainerKamerInfo>
       </div>

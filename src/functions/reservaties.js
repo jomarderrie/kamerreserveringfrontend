@@ -21,7 +21,18 @@ export const getAllReservaties = async(huidgePagina, pageSize, sortBy, token) =>
     })
 
 export const deleteReservatie = async (id, token) =>{
-    await axios.get(`http://localhost:8080/reservaties/delete/${id}`, {
+    await axios.delete(`http://localhost:8080/reservaties/delete/${id}`, {
+        headers: {
+            authorization:
+                "Basic " + token,
+            "Access-Control-Allow-Origin": "*",
+        }
+    })
+}
+
+export const deleteReservatieByNaam = async (kamerNaam,id, token) =>{
+    console.log(kamerNaam, "lelelel")
+    await axios.delete(`http://localhost:8080/kamer/${kamerNaam}/delete/reservatie/${id}`, {
         headers: {
             authorization:
                 "Basic " + token,

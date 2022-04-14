@@ -35,7 +35,7 @@ export default function ReservatiesProvider({children}){
         })
     }
 
-    const deleteReservatieContext= (id, token) =>{
+    const deleteReservatieContext= ( id, token) =>{
         deleteReservatie(id, token).then(() =>{
             getPaginatedReservatiesAdmin(pageReservatieInfo.pageNo,
                 pageReservatieInfo.pageSize, pageReservatieInfo.sortBy, token)

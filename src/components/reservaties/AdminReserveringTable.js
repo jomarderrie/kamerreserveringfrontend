@@ -75,9 +75,9 @@ function Table({
 
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
-        fetchData(pageIndex, pageSize, "", token)
-
-    }, [])
+        fetchData(pageIndex, 5, "", token)
+    //onSort, sortBy, fetchData, pageIndex, pageSize
+    }, [  pageIndex, pageSize])
 
     // React.useEffect(() => {
     //     console.log("test123")
@@ -188,6 +188,10 @@ function Table({
 }
 
 const ReserveringAdminTable = (props) => {
+    useEffect(() => {
+        console.log(props)
+    }, []);
+
     const columns = React.useMemo(
         () => [{
             Header: "Kamernaam",
@@ -206,12 +210,11 @@ const ReserveringAdminTable = (props) => {
                 accessor: "end"
             },
             {
-                Header: 'Action',
+                Header: '',
                 accessor: (originalRow, rowIndex) => (
                     <div>
                         <button onClick={() => console.log(rowIndex)}>Edit</button>
-
-                        <button onClick={() => console.log(rowIndex, "roe", originalRow, "org123")}>Delete</button>
+                        <button onClick={() => props.deleteReservatie(originalRow.id, props.token)}>Delete</button>
                     </div>
                 ),
                 id: 'action',
