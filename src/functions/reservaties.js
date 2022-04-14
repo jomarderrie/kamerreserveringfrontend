@@ -19,3 +19,13 @@ export const getAllReservaties = async(huidgePagina, pageSize, sortBy, token) =>
             "Access-Control-Allow-Origin": "*",
         },
     })
+
+export const deleteReservatie = async (id, token) =>{
+    await axios.get(`http://localhost:8080/reservaties/delete/${id}`, {
+        headers: {
+            authorization:
+                "Basic " + token,
+            "Access-Control-Allow-Origin": "*",
+        }
+    })
+}

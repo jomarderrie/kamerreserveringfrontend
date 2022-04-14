@@ -8,7 +8,7 @@ const Styles = styled.div`
   table {
     border-spacing: 0;
     border: 1px solid black;
-
+    width: 90vw;
     tr {
       :last-child {
         td {
@@ -88,21 +88,6 @@ function Table({
     // Render the UI for your table
     return (
         <>
-      <pre>
-        <code>
-          {JSON.stringify(
-              {
-                  pageIndex,
-                  pageSize,
-                  pageCount,
-                  canNextPage,
-                  canPreviousPage,
-              },
-              null,
-              2
-          )}
-        </code>
-      </pre>
             <table {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
@@ -220,7 +205,17 @@ const ReserveringAdminTable = (props) => {
                 Header: "Eind tijd",
                 accessor: "end"
             },
+            {
+                Header: 'Action',
+                accessor: (originalRow, rowIndex) => (
+                    <div>
+                        <button onClick={() => console.log(rowIndex)}>Edit</button>
 
+                        <button onClick={() => console.log(rowIndex, "roe", originalRow, "org123")}>Delete</button>
+                    </div>
+                ),
+                id: 'action',
+            },
         ],
         []
     );
@@ -233,7 +228,9 @@ const ReserveringAdminTable = (props) => {
                 loading={props.loading123}
                 pageCount={props.pageCount}
                 fetchData={props.getPaginatedReservaties}
-                email={props.email} token={props.token}/>
+                email={props.email} token={props.token}
+
+            />
         </Styles>
     )
 }

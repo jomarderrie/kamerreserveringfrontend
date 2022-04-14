@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {getAllReservaties, getAllReservatiesPaginatedForUser} from "../functions/reservaties";
+import {deleteReservatie, getAllReservaties, getAllReservatiesPaginatedForUser} from "../functions/reservaties";
 export const ReservatiesContext = React.createContext();
 
 export default function ReservatiesProvider({children}){
@@ -17,7 +17,6 @@ export default function ReservatiesProvider({children}){
 
 
     const getPaginatedReservaties= async (email,huidgePagina, pageSize, sortBy, token) => {
-        console.log(token, "args")
         setLoading123(true)
         getAllReservatiesPaginatedForUser(email,huidgePagina, pageSize, sortBy, token).then((res,err) =>{
             if(err){
@@ -33,6 +32,13 @@ export default function ReservatiesProvider({children}){
                 })
                 setLoading123(false)
             }
+        })
+    }
+
+    const deleteReservatieContext= (id, token) =>{
+        deleteReservatie(id, token).then(() =>{
+            getPaginatedReservatiesAdmin(pageReservatieInfo.pageNo,
+                pageReservatieInfo.pageSize, pageReservatieInfo.sortBy, token)
         })
     }
 
@@ -61,7 +67,7 @@ export default function ReservatiesProvider({children}){
             pageReservatieInfo,
             setPageReservatieInfo,
             getPaginatedReservaties, loading123,
-        getPaginatedReservatiesAdmin}}>
+        getPaginatedReservatiesAdmin, deleteReservatieContext}}>
             {children}
         </ReservatiesContext.Provider>
     )

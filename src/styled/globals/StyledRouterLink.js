@@ -74,7 +74,6 @@ export const ButtonWithIcon = (props) => {
     onClick={() =>props.action&&props?.action(props.naam, props.token)}>
       < FlexBoxUpDown x="space-between" leftRight="15">
         <span className={`fa ${props.icon} fa-2x button-icon`}/>
-
         {props.text}
       </ FlexBoxUpDown>
     </button>
@@ -86,7 +85,6 @@ export const StyledButtonLink = styled(ButtonLink)`
     text-decoration: none;
     color: black;
   }
-  
   padding: 8px 0px;
   border-radius: 5px;
   outline: 0;
