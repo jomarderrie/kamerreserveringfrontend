@@ -75,9 +75,8 @@ function Table({
 
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
-        fetchData(email, pageIndex, pageSize, "", token)
-
-        }, [])
+        fetchData(email, pageIndex, 5, "", token)
+        }, [ pageIndex, pageSize])
 
     // React.useEffect(() => {
     //     console.log("test123")
@@ -88,21 +87,6 @@ function Table({
     // Render the UI for your table
     return (
         <>
-      <pre>
-        <code>
-          {JSON.stringify(
-              {
-                  pageIndex,
-                  pageSize,
-                  pageCount,
-                  canNextPage,
-                  canPreviousPage,
-              },
-              null,
-              2
-          )}
-        </code>
-      </pre>
             <table {...getTableProps()}>
                 <thead>
                 {headerGroups.map(headerGroup => (
@@ -216,7 +200,16 @@ const ReserveringTable = (props) => {
                 Header: "Eind tijd",
                 accessor: "end"
             },
-
+            {
+                Header: '',
+                accessor: (originalRow, rowIndex) => (
+                    <div>
+                        <button onClick={() => console.log(rowIndex)}>Edit</button>
+                        <button onClick={() => props.deleteReservatie(originalRow.id, props.token, props.email)}>Delete</button>
+                    </div>
+                ),
+                id: 'action',
+            },
         ],
         []
     );

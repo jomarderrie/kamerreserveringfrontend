@@ -109,27 +109,6 @@ const KamerCard = ({ kamer, image, key, admin, token }) => {
               <div>...Loading</div>
             )}
           </FlexBox>
-          {/*{admin &&*/}
-
-
-          {/*  < FlexBoxUpDown x="space-evenly" width="100%" upDown="6">*/}
-          {/*  <StyledButtonLink*/}
-          {/*      value2="hey"*/}
-          {/*      to2={`/kamer/${kamer.naam}/edit`}*/}
-          {/*      className={"btn btn-pink"}*/}
-          {/*      text={"Edit"}*/}
-          {/*      icon={"fa-edit"}*/}
-          {/*  />*/}
-          {/*  <StyledButtonDelete*/}
-          {/*      value2={kamer.naam}*/}
-          {/*      action={deleteKamerOnClick}*/}
-          {/*      text="Delete"*/}
-          {/*      icon={"fa-trash"}*/}
-          {/*      naam={kamer.naam}*/}
-          {/*      token={token}*/}
-          {/*  />*/}
-          {/*</ FlexBoxUpDown>*/}
-          {/*  }*/}
 
         </ContainerKamerInfo>
       </div>

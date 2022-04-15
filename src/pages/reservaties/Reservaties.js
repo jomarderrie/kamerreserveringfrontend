@@ -6,34 +6,21 @@ import {ReservatiesContext} from "../../context/ReservatiesContext";
 import {useSortBy} from "react-table";
 import KamerReserveringTable from "../../components/kamer/KamerReserveringTable";
 import ReserveringTable from "../../components/reservaties/ReserveringTable";
+import {FlexBoxUpDown} from "../../styled/globals/StyledFlexBoxContainer";
+import {getAllReservatiesPaginatedForUser} from "../../functions/reservaties";
 
 export default function Reservaties() {
     const [state, setState] = useState('idle')
     const {user, token} = useContext(AuthContext);
     const [loading,setLoading] = useState(true)
-    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123 } = useContext(ReservatiesContext)
+    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123, deleteReservatieContext  } = useContext(ReservatiesContext)
 
-    // useEffect(() => {
-    //     if(props.location.search){
-    //         const urlSearchParams = new URLSearchParams(props.location.search);
-    //         getPaginatedReservaties(urlSearchParams.get("pageNo"), urlSearchParams.get("pageSize"), "", user.email, token).catch(err => toast.error(err.message))
-    //     }else{
-    //         getPaginatedReservaties(
-    //             pageReservatieInfo.pageNo,
-    //             pageReservatieInfo.pageSize,
-    //             "",
-    //             token
-    //         ).then(() => {
-    //             setLoading(false);
-    //         }).catch(err => toast.error(err.message));
-    //     }
-    // }, [user, token]);
 
 
     return (
-        <div>
+        <FlexBoxUpDown z={"column"} upDown={20}>
             <h1>Je eigen reservaties</h1>
-            <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123}/>
-        </div>
+            <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
+        </FlexBoxUpDown>
     )
 }

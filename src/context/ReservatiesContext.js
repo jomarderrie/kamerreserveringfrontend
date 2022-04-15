@@ -35,14 +35,21 @@ export default function ReservatiesProvider({children}){
         })
     }
 
-    const deleteReservatieContext= ( id, token) =>{
+    const deleteReservatieContext= ( id, token, email ) =>{
         deleteReservatie(id, token).then(() =>{
-            getPaginatedReservatiesAdmin(pageReservatieInfo.pageNo,
-                pageReservatieInfo.pageSize, pageReservatieInfo.sortBy, token)
+            if (email){
+                getPaginatedReservaties(email, pageReservatieInfo.pageNo,
+                    pageReservatieInfo.pageSize, "", token).then((res) => {
+                    console.log(res, "res", reservaties)})
+            }else{
+                getPaginatedReservatiesAdmin(pageReservatieInfo.pageNo,
+                    pageReservatieInfo.pageSize, "", token).then()
+            }
         })
     }
 
     const getPaginatedReservatiesAdmin = async (huidgePagina, pageSize, sortBy, token) =>{
+        setLoading123(true)
         getAllReservaties(huidgePagina, pageSize, sortBy, token ).then((res,err) =>{
             if (err){
 

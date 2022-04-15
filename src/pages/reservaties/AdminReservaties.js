@@ -20,7 +20,7 @@ export default function AdminReservaties(){
         <FlexBoxUpDown z={"column"} upDown={20}>
             <h1>All gebruikers reservaties</h1>
             <AdminReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservatiesAdmin} pageCount={pageReservatieInfo.totalPages} email={user.email} token={token} loading123={loading123}
-            deleteReservatie={deleteReservatieContext}
+                                   deleteReservatie={deleteReservatieContext}
             />
         </FlexBoxUpDown>
     )
