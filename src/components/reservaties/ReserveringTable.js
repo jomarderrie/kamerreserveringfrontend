@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react'
 import styled from 'styled-components'
 import {useTable, usePagination} from 'react-table'
+import DatePicker from "react-datepicker";
+import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay} from "../../functions/kamers";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -42,7 +44,7 @@ function Table({
                    fetchData,
                    loading,
                    pageCount: controlledPageCount,
-                   email, token
+                   email, token, EditAndDeleteButton
                }) {
     const {
         getTableProps,
@@ -87,7 +89,31 @@ function Table({
     //     getPaginatedReservaties(pageIndex, pageSize, "", email, token)
     //     // fetchData(pageIndex, pageSize, "", email, token)
     // }, [fetchData, pageIndex, pageSize])
+    const [startDate, setStartDate] = useState(
+      new Date()
+    );
+    const [endDate, setEndDate] = useState(
+        new Date()
+    );
 
+    const [kamerReserveringen, setKamerReserveringen] = useState([]);
+
+    const testClick = (items, data) => {
+        // console.log(data, "index")
+        // console.log(    data[0], "loollolo")
+        // console.log( items.start.toLocaleString().split("T")[0], "ekek")
+        getAllKamerByNaamAndGetAllReserverationsOnCertainDay(items.naam,
+            (new Date(items.start).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                setKamerReserveringen(res.data)
+                // console.log(res.data, "oekzilla")
+            }
+        )
+        // timeRangeSliderDate.toLocaleDateString().split("/").join("-")
+
+        // console.log(items.start.split("/").join("-"))
+        //
+        // console.log(new Date(items.start).getHours(), "hours")
+    }
     // Render the UI for your table
     return (
         <>
@@ -114,14 +140,46 @@ function Table({
                 {page.map((row, i) => {
                     prepareRow(row)
                     // {row.values.isEditing}
-                    return row.values.isEditing ? <div>hey</div> :
+                    console.log(row.values, "row123")
+                    return row.values.isEditing ? <tr>
+                            <td>{row.values.naam}</td>
+                            <td onClick={() => testClick(row.values, i)}>
+                                <DatePicker
+                                    selected={startDate}
+                                    onChange={(date) => setStartDate(date)}
+                                    showTimeSelect
+                                    minTime={new Date(row.values.start)}
+                                    maxTime={new Date(row.values.end)}
+                                    // minDate={subMonths(new Date(), 6)}
+                                    // maxDate={addMonths(new Date(), 6)}
+                                    timeIntervals={60}
+                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                    excludeTimes={[kamerReserveringen]}
+                                />
+                            </td>
+                            <td onClick={() => testClick(row.values, i)}>
+                                <DatePicker
+                                    selected={endDate}
+                                    onChange={(date) => setEndDate(date)}
+                                    showTimeSelect
+                                    minTime={new Date(row.values.start)}
+                                    maxTime={new Date(row.values.end)}
+                                    timeIntervals={60}
+                                    dateFormat="MMMM d, yyyy h:mm aa"
+                                />
+                            </td>
+                            <td></td>
+                            <td>
+                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i}/>
+                            </td>
+                        </tr> :
                         (
                             <tr {...row.getRowProps()}>
                                 {row.cells.map(cell => {
                                     // {...cell.getCellProps().map(item => {console.log(item)})}
                                     // console.log(...cell.getCellProps(), "props dog")
                                     return <td {...cell.getCellProps()}
-                                           >{cell.render('Cell')}</td>
+                                    >{cell.render('Cell')}</td>
                                 })}
                             </tr>
                         )
@@ -217,15 +275,7 @@ const ReserveringTable = (props) => {
             {
                 Header: 'Acties',
                 accessor: (originalRow, rowIndex) => (
-                    <div>
-
-                        <button
-                            onClick={() => handleClickEditRow(originalRow, rowIndex)}> {originalRow.isEditing ? "Save" : "Edit"}</button>
-
-                        <button
-                            onClick={() => props.deleteReservatie(originalRow.id, props.token, props.email)}>Delete
-                        </button>
-                    </div>
+                    <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex}/>
                 ),
                 id: 'action',
             },
@@ -233,16 +283,30 @@ const ReserveringTable = (props) => {
         []
     );
 
+    const EditAndDeleteButton = ({originalRow, rowIndex}) => {
+        console.log(originalRow, " kek")
+        // console.log(rowIndex, "oekoek")
+        // props.reservaties[rowIndex]
+        // props.reservaties[rowIndex]
+        return <div>
+            <button
+                onClick={() => handleClickEditRow(originalRow, rowIndex)}> {originalRow.isEditing ? "Save" : "Edit"}
+            </button>
+
+            <button
+                onClick={() => props.deleteReservatie(originalRow.naam, originalRow.id, props.token, props.email)}>
+                Delete
+            </button>
+        </div>
+    }
+
     const handleClickEditRow = (originalRow, rowIndex) => {
         if (originalRow.isEditing) {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: !rowIndex === index})))
-
         } else {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: rowIndex === index})))
             console.log(props.reservaties, "test123")
         }
-
-
     }
 
     return (
@@ -253,7 +317,9 @@ const ReserveringTable = (props) => {
                 loading={props.loading123}
                 pageCount={props.pageCount}
                 fetchData={props.getPaginatedReservaties}
-                email={props.email} token={props.token}/>
+                email={props.email} token={props.token}
+                EditAndDeleteButton={EditAndDeleteButton}
+            />
         </Styles>
     )
 }

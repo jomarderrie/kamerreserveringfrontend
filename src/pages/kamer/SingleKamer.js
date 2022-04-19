@@ -151,7 +151,8 @@ export default function SingleKamer({match}) {
                     setReservationSending(true);
                     getAllKamerByNaamAndGetAllReserverationsOnCertainDay(
                         kamer.naam,
-                        timeRangeSliderDate.toLocaleDateString().split("/").join("-"), token
+                        timeRangeSliderDate.toLocaleDateString().split("/").join("-"),
+                        token
                     )
                         .then((res, err) => {
                             if (err) {

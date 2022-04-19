@@ -1,5 +1,6 @@
 import React, {useContext, useState} from "react";
 import {deleteReservatie, getAllReservaties, getAllReservatiesPaginatedForUser} from "../functions/reservaties";
+import {toast} from "react-toastify";
 export const ReservatiesContext = React.createContext();
 
 export default function ReservatiesProvider({children}){
@@ -35,7 +36,8 @@ export default function ReservatiesProvider({children}){
         })
     }
 
-    const deleteReservatieContext= ( id, token, email ) =>{
+    const deleteReservatieContext= ( kamerNaam,id, token, email ) =>{
+        console.log(id, "test12333")
         deleteReservatie(id, token).then(() =>{
             if (email){
                 getPaginatedReservaties(email, pageReservatieInfo.pageNo,
@@ -46,6 +48,7 @@ export default function ReservatiesProvider({children}){
                     pageReservatieInfo.pageSize, "", token).then()
             }
         })
+        toast.success(`Succesvol reservatie verwijderd`)
     }
 
     const getPaginatedReservatiesAdmin = async (huidgePagina, pageSize, sortBy, token) =>{

@@ -19,7 +19,7 @@ export default function Reservaties() {
 
     return (
         <FlexBoxUpDown z={"column"} upDown={20}>
-            <h1>Je eigen reservaties</h1>
+            <h1>Jouw reservaties</h1>
             <ReserveringTable reservaties={reservaties} setReservaties={setReservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
         </FlexBoxUpDown>
     )
