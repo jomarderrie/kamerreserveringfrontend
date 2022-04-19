@@ -9,6 +9,7 @@ const Styles = styled.div`
     border-spacing: 0;
     border: 1px solid black;
     width: 90vw;
+
     tr {
       :last-child {
         td {
@@ -48,6 +49,7 @@ function Table({
         getTableBodyProps,
         headerGroups,
         prepareRow,
+        row,
         page,
         canPreviousPage,
         canNextPage,
@@ -57,6 +59,8 @@ function Table({
         nextPage,
         previousPage,
         setPageSize,
+        editableRowIndex,
+        setEditableRowIndex,
         // Get the state from the instance
         state: {pageIndex, pageSize = 5},
     } = useTable(
@@ -76,7 +80,7 @@ function Table({
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
         fetchData(email, pageIndex, 5, "", token)
-        }, [ pageIndex, pageSize])
+    }, [pageIndex, pageSize])
 
     // React.useEffect(() => {
     //     console.log("test123")
@@ -109,14 +113,21 @@ function Table({
                 <tbody {...getTableBodyProps()}>
                 {page.map((row, i) => {
                     prepareRow(row)
-                    return (
-                        <tr {...row.getRowProps()}>
-                            {row.cells.map(cell => {
-                                return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                            })}
-                        </tr>
-                    )
+                    // {row.values.isEditing}
+                    return row.values.isEditing ? <div>hey</div> :
+                        (
+                            <tr {...row.getRowProps()}>
+                                {row.cells.map(cell => {
+                                    // {...cell.getCellProps().map(item => {console.log(item)})}
+                                    // console.log(...cell.getCellProps(), "props dog")
+                                    return <td {...cell.getCellProps()}
+                                           >{cell.render('Cell')}</td>
+                                })}
+                            </tr>
+                        )
                 })}
+
+
                 <tr>
                     {loading ? (
                         // Use our custom loading state to show a loading indicator
@@ -201,11 +212,19 @@ const ReserveringTable = (props) => {
                 accessor: "end"
             },
             {
-                Header: '',
+                accessor: "isEditing"
+            },
+            {
+                Header: 'Acties',
                 accessor: (originalRow, rowIndex) => (
                     <div>
-                        <button onClick={() => console.log(rowIndex)}>Edit</button>
-                        <button onClick={() => props.deleteReservatie(originalRow.id, props.token, props.email)}>Delete</button>
+
+                        <button
+                            onClick={() => handleClickEditRow(originalRow, rowIndex)}> {originalRow.isEditing ? "Save" : "Edit"}</button>
+
+                        <button
+                            onClick={() => props.deleteReservatie(originalRow.id, props.token, props.email)}>Delete
+                        </button>
                     </div>
                 ),
                 id: 'action',
@@ -213,6 +232,18 @@ const ReserveringTable = (props) => {
         ],
         []
     );
+
+    const handleClickEditRow = (originalRow, rowIndex) => {
+        if (originalRow.isEditing) {
+            props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: !rowIndex === index})))
+
+        } else {
+            props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: rowIndex === index})))
+            console.log(props.reservaties, "test123")
+        }
+
+
+    }
 
     return (
         <Styles>

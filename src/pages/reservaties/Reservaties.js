@@ -13,14 +13,14 @@ export default function Reservaties() {
     const [state, setState] = useState('idle')
     const {user, token} = useContext(AuthContext);
     const [loading,setLoading] = useState(true)
-    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123, deleteReservatieContext  } = useContext(ReservatiesContext)
+    const {reservaties, pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123, deleteReservatieContext, setReservaties  } = useContext(ReservatiesContext)
 
 
 
     return (
         <FlexBoxUpDown z={"column"} upDown={20}>
             <h1>Je eigen reservaties</h1>
-            <ReserveringTable reservaties={reservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
+            <ReserveringTable reservaties={reservaties} setReservaties={setReservaties} getPaginatedReservaties={getPaginatedReservaties} pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
         </FlexBoxUpDown>
     )
 }
