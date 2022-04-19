@@ -44,7 +44,7 @@ function Table({
                    fetchData,
                    loading,
                    pageCount: controlledPageCount,
-                   email, token, EditAndDeleteButton
+                   email, token, EditAndDeleteButton, startDate, endDate, setStartDate, setEndDate
                }) {
     const {
         getTableProps,
@@ -89,25 +89,32 @@ function Table({
     //     getPaginatedReservaties(pageIndex, pageSize, "", email, token)
     //     // fetchData(pageIndex, pageSize, "", email, token)
     // }, [fetchData, pageIndex, pageSize])
-    const [startDate, setStartDate] = useState(
-      new Date()
-    );
-    const [endDate, setEndDate] = useState(
-        new Date()
-    );
+
 
     const [kamerReserveringen, setKamerReserveringen] = useState([]);
 
-    const testClick = (items, data) => {
+    const testClick = (items, index) => {
         // console.log(data, "index")
         // console.log(    data[0], "loollolo")
         // console.log( items.start.toLocaleString().split("T")[0], "ekek")
+        console.log(data[index].startTijd, "test")
+        setStartDate(new Date(items.start))
+        setEndDate(new Date(items.end))
+        console.log(items, "items")
+        let arr = []
         getAllKamerByNaamAndGetAllReserverationsOnCertainDay(items.naam,
             (new Date(items.start).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
-                setKamerReserveringen(res.data)
+                res.data.map((item, index) => {
+                    arr.push(new Date(item.start))
+                    arr.push(new Date(item.end))
+                })
                 // console.log(res.data, "oekzilla")
+                console.log(arr, "arr")
+            setKamerReserveringen(arr)
+            // setStartDate(new Date(items.))
             }
         )
+
         // timeRangeSliderDate.toLocaleDateString().split("/").join("-")
 
         // console.log(items.start.split("/").join("-"))
@@ -148,13 +155,13 @@ function Table({
                                     selected={startDate}
                                     onChange={(date) => setStartDate(date)}
                                     showTimeSelect
-                                    minTime={new Date(row.values.start)}
-                                    maxTime={new Date(row.values.end)}
-                                    // minDate={subMonths(new Date(), 6)}
-                                    // maxDate={addMonths(new Date(), 6)}
+                                    minTime={new Date(data[i].startTijd)}
+                                    maxTime={new Date(data[i].sluitTijd)}
+                                    minDate={new Date(data[i].startTijd)}
+                                    maxDate={new Date(data[i].sluitTijd)}
                                     timeIntervals={60}
                                     dateFormat="MMMM d, yyyy h:mm aa"
-                                    excludeTimes={[kamerReserveringen]}
+                                    excludeTimes={kamerReserveringen}
                                 />
                             </td>
                             <td onClick={() => testClick(row.values, i)}>
@@ -162,10 +169,13 @@ function Table({
                                     selected={endDate}
                                     onChange={(date) => setEndDate(date)}
                                     showTimeSelect
-                                    minTime={new Date(row.values.start)}
-                                    maxTime={new Date(row.values.end)}
+                                    minTime={new Date(data[i].startTijd)}
+                                    maxTime={new Date(data[i].sluitTijd)}
+                                    minDate={new Date(data[i].startTijd)}
+                                    maxDate={new Date(data[i].sluitTijd)}
                                     timeIntervals={60}
                                     dateFormat="MMMM d, yyyy h:mm aa"
+                                    excludeTimes={kamerReserveringen}
                                 />
                             </td>
                             <td></td>
@@ -256,6 +266,14 @@ function Table({
 }
 
 const ReserveringTable = (props) => {
+    const [startDate, setStartDate] = useState(
+        new Date()
+    );
+
+    const [endDate, setEndDate] = useState(
+        new Date()
+    );
+
     const columns = React.useMemo(
         () => [{
             Header: "Kamernaam",
@@ -284,13 +302,14 @@ const ReserveringTable = (props) => {
     );
 
     const EditAndDeleteButton = ({originalRow, rowIndex}) => {
-        console.log(originalRow, " kek")
+        // console.log(originalRow, " kek")
         // console.log(rowIndex, "oekoek")
         // props.reservaties[rowIndex]
         // props.reservaties[rowIndex]
         return <div>
             <button
-                onClick={() => handleClickEditRow(originalRow, rowIndex)}> {originalRow.isEditing ? "Save" : "Edit"}
+                onClick={() => handleClickEditRow(originalRow, rowIndex)}>
+                {originalRow.isEditing ? "Save" : "Edit"}
             </button>
 
             <button
@@ -305,7 +324,8 @@ const ReserveringTable = (props) => {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: !rowIndex === index})))
         } else {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: rowIndex === index})))
-            console.log(props.reservaties, "test123")
+            setStartDate(new Date(originalRow.start))
+            setEndDate(new Date(originalRow.end))
         }
     }
 
@@ -319,6 +339,10 @@ const ReserveringTable = (props) => {
                 fetchData={props.getPaginatedReservaties}
                 email={props.email} token={props.token}
                 EditAndDeleteButton={EditAndDeleteButton}
+                endDate={endDate}
+                startDate={startDate}
+                setStartDate={setStartDate}
+                setEndDate={setEndDate}
             />
         </Styles>
     )
