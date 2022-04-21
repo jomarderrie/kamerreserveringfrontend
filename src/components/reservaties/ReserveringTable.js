@@ -91,27 +91,46 @@ function Table({
     // }, [fetchData, pageIndex, pageSize])
 
 
-    const [kamerReserveringen, setKamerReserveringen] = useState([]);
+    const [kamerStartReserveringen, setKamerReserveringenStart] = useState([]);
+
+    const [kamerEindReserveringen, setKamerReserveringenEind] = useState([]);
 
     const testClick = (items, index) => {
         // console.log(data, "index")
         // console.log(    data[0], "loollolo")
         // console.log( items.start.toLocaleString().split("T")[0], "ekek")
-        console.log(data[index].startTijd, "test")
-        setStartDate(new Date(items.start))
-        setEndDate(new Date(items.end))
+        // console.log(data[index].startTijd, "test")
+
         console.log(items, "items")
-        let arr = []
+        let eindArr = []
+        let startArr =[]
+        console.log(startDate, "hek")
         getAllKamerByNaamAndGetAllReserverationsOnCertainDay(items.naam,
             (new Date(items.start).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
                 res.data.map((item, index) => {
-                    arr.push(new Date(item.start))
-                    arr.push(new Date(item.end))
+                    console.log(item, "item123")
+                    // start dates should not include
+                    // all end dates time and selected end time
+                    //
+                    // that are selected by start date
+                    // if ()
+                    if ((new Date(startDate)) !== new Date(item.start)){
+                        startArr.push(new Date(item.start))
+                    }
+                    if ((new Date(endDate)) !== new Date(item.end)){
+                        eindArr.push(new Date(item.end))
+                    }
+
+                    // arr.push(new Date(item.start))
                 })
                 // console.log(res.data, "oekzilla")
-                console.log(arr, "arr")
-            setKamerReserveringen(arr)
-            // setStartDate(new Date(items.))
+            console.log(startArr, "startarr")
+            console.log(eindArr, "eindarr")
+            startArr.push(new Date(endDate))
+            eindArr.push(new Date(startDate))
+                setKamerReserveringenStart(startArr)
+            setKamerReserveringenEind(eindArr)
+                // setStartDate(new Date(items.))
             }
         )
 
@@ -147,8 +166,7 @@ function Table({
                 {page.map((row, i) => {
                     prepareRow(row)
                     // {row.values.isEditing}
-                    console.log(row.values, "row123")
-                    return row.values.isEditing ? <tr>
+                    return row.values.isEditing ? <tr key={row.values.key}>
                             <td>{row.values.naam}</td>
                             <td onClick={() => testClick(row.values, i)}>
                                 <DatePicker
@@ -161,7 +179,7 @@ function Table({
                                     maxDate={new Date(data[i].sluitTijd)}
                                     timeIntervals={60}
                                     dateFormat="MMMM d, yyyy h:mm aa"
-                                    excludeTimes={kamerReserveringen}
+                                    excludeTimes={kamerStartReserveringen}
                                 />
                             </td>
                             <td onClick={() => testClick(row.values, i)}>
@@ -175,7 +193,7 @@ function Table({
                                     maxDate={new Date(data[i].sluitTijd)}
                                     timeIntervals={60}
                                     dateFormat="MMMM d, yyyy h:mm aa"
-                                    excludeTimes={kamerReserveringen}
+                                    excludeTimes={kamerEindReserveringen}
                                 />
                             </td>
                             <td></td>
@@ -322,10 +340,17 @@ const ReserveringTable = (props) => {
     const handleClickEditRow = (originalRow, rowIndex) => {
         if (originalRow.isEditing) {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: !rowIndex === index})))
+            // check if start is before end
+            console.log(originalRow, "org 123")
+            // new Date(originalRow.startDate).isBefore(originalRow)
+            // send async request
+            // if good setstart and enddate
+            // else keep date and send error
         } else {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: rowIndex === index})))
             setStartDate(new Date(originalRow.start))
             setEndDate(new Date(originalRow.end))
+
         }
     }
 
