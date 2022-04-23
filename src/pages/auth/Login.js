@@ -14,7 +14,6 @@ export default function Login() {
           <StyledRouterLink
             activeClassName={"none"}
             to={"/register"}
-
           > Geen account? Maak een account aan!{" "}Klik hier</StyledRouterLink>
         </p>
       </div>

@@ -25,6 +25,7 @@ import UserRoute from "./components/routes/UserRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 import UserRoleRoute from "./components/routes/UserRoleRoute";
 import LoginRoute from "./components/routes/LoginRoute";
+import ErrorPage from "./pages/ErrorPage";
 
 function App() {
     const {
@@ -66,6 +67,7 @@ function App() {
                 <AdminRoute exact path="/admin/reservaties" component={AdminReservaties}/>
                 <UserRoleRoute exact path="/gebruiker/:voornaam/:achternaam" component={SingleGebruiker}/>
                 <UserRoleRoute exact path="/profiel/:naam/:achterNaam" component={Profiel}/>
+                <Route path="/*" component={ErrorPage} />
             </Switch>
 
         </Suspense>

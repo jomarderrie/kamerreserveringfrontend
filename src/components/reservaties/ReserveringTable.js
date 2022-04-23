@@ -2,7 +2,8 @@ import React, {useContext, useEffect, useState} from 'react'
 import styled from 'styled-components'
 import {useTable, usePagination} from 'react-table'
 import DatePicker from "react-datepicker";
-import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay} from "../../functions/kamers";
+import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay, maakNieuweReservatie} from "../../functions/kamers";
+import {toast} from "react-toastify";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -108,37 +109,19 @@ function Table({
         getAllKamerByNaamAndGetAllReserverationsOnCertainDay(items.naam,
             (new Date(items.start).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
                 res.data.map((item, index) => {
-                    console.log(item, "item123")
-                    // start dates should not include
-                    // all end dates time and selected end time
-                    //
-                    // that are selected by start date
-                    // if ()
                     if ((new Date(startDate)) !== new Date(item.start)){
                         startArr.push(new Date(item.start))
                     }
                     if ((new Date(endDate)) !== new Date(item.end)){
                         eindArr.push(new Date(item.end))
                     }
-
-                    // arr.push(new Date(item.start))
                 })
-                // console.log(res.data, "oekzilla")
-            console.log(startArr, "startarr")
-            console.log(eindArr, "eindarr")
             startArr.push(new Date(endDate))
             eindArr.push(new Date(startDate))
                 setKamerReserveringenStart(startArr)
             setKamerReserveringenEind(eindArr)
-                // setStartDate(new Date(items.))
             }
         )
-
-        // timeRangeSliderDate.toLocaleDateString().split("/").join("-")
-
-        // console.log(items.start.split("/").join("-"))
-        //
-        // console.log(new Date(items.start).getHours(), "hours")
     }
     // Render the UI for your table
     return (
@@ -165,8 +148,7 @@ function Table({
                 <tbody {...getTableBodyProps()}>
                 {page.map((row, i) => {
                     prepareRow(row)
-                    // {row.values.isEditing}
-                    return row.values.isEditing ? <tr key={row.values.key}>
+                    return data[i].isEditing ? <tr key={row.values.key}>
                             <td>{row.values.naam}</td>
                             <td onClick={() => testClick(row.values, i)}>
                                 <DatePicker
@@ -196,9 +178,15 @@ function Table({
                                     excludeTimes={kamerEindReserveringen}
                                 />
                             </td>
-                            <td></td>
+                        <td>
+                            <select>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                            </select>
+                        </td>
                             <td>
-                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i}/>
+                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i} startDate={startDate} endDate={endDate}/>
                             </td>
                         </tr> :
                         (
@@ -305,8 +293,14 @@ const ReserveringTable = (props) => {
                 Header: "Eind tijd",
                 accessor: "end"
             },
-            {
-                accessor: "isEditing"
+            {   Header:"Verleng de kamer",
+                accessor: (originalRow, rowIndex) => (
+                    <select>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                )
             },
             {
                 Header: 'Acties',
@@ -319,14 +313,14 @@ const ReserveringTable = (props) => {
         []
     );
 
-    const EditAndDeleteButton = ({originalRow, rowIndex}) => {
+    const EditAndDeleteButton = ({originalRow, rowIndex, startDate, endDate}) => {
         // console.log(originalRow, " kek")
         // console.log(rowIndex, "oekoek")
         // props.reservaties[rowIndex]
         // props.reservaties[rowIndex]
         return <div>
             <button
-                onClick={() => handleClickEditRow(originalRow, rowIndex)}>
+                onClick={() => handleClickEditRow(originalRow, rowIndex, startDate, endDate)}>
                 {originalRow.isEditing ? "Save" : "Edit"}
             </button>
 
@@ -337,14 +331,29 @@ const ReserveringTable = (props) => {
         </div>
     }
 
-    const handleClickEditRow = (originalRow, rowIndex) => {
+    const handleClickEditRow = (originalRow, rowIndex, startDate, endDate) => {
         if (originalRow.isEditing) {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: !rowIndex === index})))
             // check if start is before end
+
             console.log(originalRow, "org 123")
+            console.log(startDate, "start")
+            console.log(endDate, "end ")
             // new Date(originalRow.startDate).isBefore(originalRow)
             // send async request
             // if good setstart and enddate
+            console.log(props.reservaties, "res123")
+            maakNieuweReservatie(originalRow.naam, startDate, endDate
+                , props.token).then ( (res,err)=>{
+                    if (err){
+
+                    }else{
+
+                    }
+
+            } ).catch(err =>{
+                toast.error()
+            })
             // else keep date and send error
         } else {
             props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: rowIndex === index})))

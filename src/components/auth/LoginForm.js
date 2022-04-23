@@ -22,7 +22,6 @@ const LoginForm = () => {
   const [serverErrors, setServerErrors] = useState([]);
 
   const roleBasedRedirect = () => {
-    console.log(history);
     let intended = history.location.state;
     if (intended) {
       history.push(intended.from);
