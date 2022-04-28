@@ -1,7 +1,6 @@
 import React, { Component, useContext } from "react";
 import { FlexBox } from "../../styled/styles";
 import LoginForm from "../../components/auth/LoginForm";
-import SignUpForm from "../../components/auth/SignUpForm";
 import { StyledRouterLink } from "../../styled/globals/StyledRouterLink";
 
 export default function Login() {

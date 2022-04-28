@@ -135,7 +135,7 @@ function Kamers(props) {
             </div>
             <FlexBoxUpDown width="85%" z="column">
                 <FlexBoxUpDown z="column">
-                    {kamers.length <= 0 || !kamerFound ? (
+                    {kamers !== undefined && kamers.length <= 0 || !kamerFound ? (
                         <div>No kamers found</div>
                     ) : (
                         <GridImages width="70vw" display={"grid"} gridSize="500px">

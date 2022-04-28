@@ -3,16 +3,15 @@ import styled from 'styled-components'
 import {useTable, usePagination} from 'react-table'
 import DatePicker from "react-datepicker";
 import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay, maakNieuweReservatie} from "../../functions/kamers";
-import {toast} from "react-toastify";
 
+import EditAndDeleteButton from "../kamer/EditAndDeleteButton";
 const Styles = styled.div`
   padding: 1rem;
-
   table {
     border-spacing: 0;
     border: 1px solid black;
-    width: 90vw;
-
+    width: ${props =>
+            props.width? '50vw': '90vw'};
     tr {
       :last-child {
         td {
@@ -45,7 +44,7 @@ function Table({
                    fetchData,
                    loading,
                    pageCount: controlledPageCount,
-                   email, token, EditAndDeleteButton, startDate, endDate, setStartDate, setEndDate
+                   email, token, EditAndDeleteButton, startDate, endDate, setStartDate, setEndDate, setReservaties, singleRoom, user
                }) {
     const {
         getTableProps,
@@ -178,15 +177,8 @@ function Table({
                                     excludeTimes={kamerEindReserveringen}
                                 />
                             </td>
-                        <td>
-                            <select>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                            </select>
-                        </td>
                             <td>
-                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i} startDate={startDate} endDate={endDate}/>
+                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i} startDate={startDate} endDate={endDate} token={token} email={email} setReservaties={setReservaties} user={user}/>
                             </td>
                         </tr> :
                         (
@@ -201,8 +193,8 @@ function Table({
                         )
                 })}
 
+                {!singleRoom && <tr>
 
-                <tr>
                     {loading ? (
                         // Use our custom loading state to show a loading indicator
                         <td colSpan="10000">Loading...</td>
@@ -212,61 +204,60 @@ function Table({
                             results
                         </td>
                     )}
-                </tr>
+                </tr>}
+
                 </tbody>
             </table>
-            {/*
-        Pagination can be built however you'd like.
-        This is just a very basic UI implementation:
-      */}
-            <div className="pagination">
-                <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-                    {'<<'}
-                </button>
-                {' '}
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-                    {'<'}
-                </button>
-                {' '}
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
-                    {'>'}
-                </button>
-                {' '}
-                <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-                    {'>>'}
-                </button>
-                {' '}
-                <span>
+            {!singleRoom &&
+                <div className="pagination">
+                    <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+                        {'<<'}
+                    </button>
+                    {' '}
+                    <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                        {'<'}
+                    </button>
+                    {' '}
+                    <button onClick={() => nextPage()} disabled={!canNextPage}>
+                        {'>'}
+                    </button>
+                    {' '}
+                    <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+                        {'>>'}
+                    </button>
+                    {' '}
+                    <span>
           Page{' '}
-                    <strong>
+                        <strong>
             {pageIndex + 1} of {pageOptions.length}
           </strong>{' '}
         </span>
-                <span>
+                    <span>
           | Go to page:{' '}
-                    <input
-                        type="number"
-                        defaultValue={pageIndex + 1}
-                        onChange={e => {
-                            const page = e.target.value ? Number(e.target.value) - 1 : 0
-                            gotoPage(page)
-                        }}
-                        style={{width: '100px'}}
-                    />
+                        <input
+                            type="number"
+                            defaultValue={pageIndex + 1}
+                            onChange={e => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                                gotoPage(page)
+                            }}
+                            style={{width: '100px'}}
+                        />
         </span>{' '}
-                <select
-                    value={pageSize}
-                    onChange={e => {
-                        setPageSize(Number(e.target.value))
-                    }}
-                >
-                    {[10, 20, 30, 40, 50].map(pageSize => (
-                        <option key={pageSize} value={pageSize}>
-                            Show {pageSize}
-                        </option>
-                    ))}
-                </select>
-            </div>
+                    <select
+                        value={pageSize}
+                        onChange={e => {
+                            setPageSize(Number(e.target.value))
+                        }}
+                    >
+                        {[10, 20, 30, 40, 50].map(pageSize => (
+                            <option key={pageSize} value={pageSize}>
+                                Show {pageSize}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            }
         </>
     )
 }
@@ -293,19 +284,14 @@ const ReserveringTable = (props) => {
                 Header: "Eind tijd",
                 accessor: "end"
             },
-            {   Header:"Verleng de kamer",
-                accessor: (originalRow, rowIndex) => (
-                    <select>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                    </select>
-                )
-            },
             {
                 Header: 'Acties',
                 accessor: (originalRow, rowIndex) => (
-                    <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex}/>
+                    // {(originalRow[rowIndex].naam === props.user.naam && originalRow[rowIndex].achterNaam === props.user.achterNaam && props.singleRoom) ?
+
+                    <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex} token={props.token}
+                                         email={props.email} setReservaties={props.setReservaties} user={props.user}
+                                         setStartDate={setStartDate} setEndDate={setEndDate} singleRoom={props.singleRoom}/>
                 ),
                 id: 'action',
             },
@@ -313,71 +299,71 @@ const ReserveringTable = (props) => {
         []
     );
 
-    const EditAndDeleteButton = ({originalRow, rowIndex, startDate, endDate}) => {
-        // console.log(originalRow, " kek")
-        // console.log(rowIndex, "oekoek")
-        // props.reservaties[rowIndex]
-        // props.reservaties[rowIndex]
-        return <div>
-            <button
-                onClick={() => handleClickEditRow(originalRow, rowIndex, startDate, endDate)}>
-                {originalRow.isEditing ? "Save" : "Edit"}
-            </button>
+    const columns1 = React.useMemo(
+        () => [{
+            Header: "Kamernaam",
+            accessor: "naam"
+        },
+            {
+                Header: "Start tijd",
+                accessor: "start"
+            },
+            {
+                Header: "Eind tijd",
+                accessor: "end"
+            },
+            {
+                Header: 'Acties',
+                accessor: (originalRow, rowIndex) => (
+                    // {(originalRow[rowIndex].naam === props.user.naam && originalRow[rowIndex].achterNaam === props.user.achterNaam && props.singleRoom) ?
 
-            <button
-                onClick={() => props.deleteReservatie(originalRow.naam, originalRow.id, props.token, props.email)}>
-                Delete
-            </button>
-        </div>
-    }
-
-    const handleClickEditRow = (originalRow, rowIndex, startDate, endDate) => {
-        if (originalRow.isEditing) {
-            props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: !rowIndex === index})))
-            // check if start is before end
-
-            console.log(originalRow, "org 123")
-            console.log(startDate, "start")
-            console.log(endDate, "end ")
-            // new Date(originalRow.startDate).isBefore(originalRow)
-            // send async request
-            // if good setstart and enddate
-            console.log(props.reservaties, "res123")
-            maakNieuweReservatie(originalRow.naam, startDate, endDate
-                , props.token).then ( (res,err)=>{
-                    if (err){
-
-                    }else{
-
-                    }
-
-            } ).catch(err =>{
-                toast.error()
-            })
-            // else keep date and send error
-        } else {
-            props.setReservaties(prev => prev.map((r, index) => ({...r, isEditing: rowIndex === index})))
-            setStartDate(new Date(originalRow.start))
-            setEndDate(new Date(originalRow.end))
-
-        }
-    }
+                    <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex} token={props.token}
+                                         email={props.email} setReservaties={props.setReservaties} user={props.user}
+                                         setStartDate={setStartDate} setEndDate={setEndDate} singleRoom={props.singleRoom}/>
+                ),
+                id: 'action',
+            },
+        ],
+        []
+    );
 
     return (
-        <Styles>
-            <Table
+        <Styles width={props.singleRoom}>
+            {props.singleRoom?          <Table
                 columns={columns}
                 data={props.reservaties}
+                singleRoom={props.singleRoom}
+                user={props.user}
                 loading={props.loading123}
                 pageCount={props.pageCount}
                 fetchData={props.getPaginatedReservaties}
-                email={props.email} token={props.token}
+                email={props.email}
+                token={props.token}
+                setReservaties={props.setReservaties}
                 EditAndDeleteButton={EditAndDeleteButton}
                 endDate={endDate}
                 startDate={startDate}
                 setStartDate={setStartDate}
                 setEndDate={setEndDate}
-            />
+            /> :
+                <Table
+                    columns={columns1}
+                    data={props.reservaties}
+                    singleRoom={props.singleRoom}
+                    user={props.user}
+                    loading={props.loading123}
+                    pageCount={props.pageCount}
+                    fetchData={props.getPaginatedReservaties}
+                    email={props.email}
+                    token={props.token}
+                    setReservaties={props.setReservaties}
+                    EditAndDeleteButton={EditAndDeleteButton}
+                    endDate={endDate}
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    setEndDate={setEndDate}
+                /> }
+
         </Styles>
     )
 }

@@ -5,6 +5,7 @@ import LoadingToRedirect from "./LoadingRedirect";
 import Login from "../../pages/auth/Login";
 import Register from "../../pages/auth/Register";
 import Home from "../../pages/Home";
+import ErrorPage from "../../pages/ErrorPage";
 
 const LoginRoute = ({children, ...rest}) => {
     const {
@@ -43,8 +44,8 @@ const LoginComponentBasedOnRoute = () => {
             return <Login/>
         case "/":
             return <Home/>
-        // default:
-
+        default:
+         return <ErrorPage/>
     }
 }
 

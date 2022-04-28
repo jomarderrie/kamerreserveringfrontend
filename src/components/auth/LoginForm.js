@@ -39,7 +39,6 @@ const LoginForm = () => {
       onSubmit={handleSubmit(async (data) => {
         setSubmitting(true);
         if (!(!data || !data.wachtwoord || !data.email)) {
-          console.log(data, "data");
           await loginUser(data.email, data.wachtwoord)
             .then((resp, err) => {
               if (err) {
@@ -58,7 +57,6 @@ const LoginForm = () => {
               }
             })
             .catch((err) => {
-              console.log(err);
               toast.error("Error met het inloggen");
               // toast.error("error")
               // console.log(err.response);

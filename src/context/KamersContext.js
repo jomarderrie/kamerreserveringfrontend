@@ -36,7 +36,6 @@ export default function KamerProvider({children}) {
                 if (err) {
                     toast.error("Error met het toevoegen van een kamer");
                 } else {
-
                     setKamers((prevKamer) => {
                         return prevKamer.filter((kamer) => {
                             return kamer.naam !== naam;
@@ -82,8 +81,8 @@ export default function KamerProvider({children}) {
         });
     }
 
-    const getPaginatedKamersSortables= async (pageKamerInfo) =>{
-        await getAllkamersByNaamEnSortables(pageKamerInfo).then((res, err) => {
+    const getPaginatedKamersSortables= async (pageKamerInfo, token) =>{
+        await getAllkamersByNaamEnSortables(pageKamerInfo, token).then((res, err) => {
             setKamers(res.data.content);
             console.log(res.data.content, "test123")
             setPageKamerInfo(

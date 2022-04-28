@@ -223,8 +223,11 @@ const ReserveringAdminTable = (props) => {
         []
     );
 
+
+
     return (
         <Styles>
+
             <Table
                 columns={columns}
                 data={props.reservaties}
@@ -232,7 +235,6 @@ const ReserveringAdminTable = (props) => {
                 pageCount={props.pageCount}
                 fetchData={props.getPaginatedReservaties}
                 email={props.email} token={props.token}
-
             />
         </Styles>
     )

@@ -35,6 +35,9 @@ export default function ReservatiesProvider({children}){
             }
         })
     }
+    const getReservatiesForASingleDay= ()=>{
+
+    }
 
     const deleteReservatieContext= ( kamerNaam,id, token, email ) =>{
         console.log(id, "test12333")

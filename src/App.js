@@ -33,15 +33,14 @@ function App() {
     } = useContext(AuthContext);
 
     useEffect(() => {
-        console.log(user, "user");
         if (localStorage.token) {
-            console.log("gangster testrap")
             getHuidigeGebruikerMetToken(localStorage.token).then((res, err) => {
                 if (res.data) {
-                    console.log(res.data, "user");
                     setAuthToken(localStorage.token)
                     setToken(localStorage.token)
                     setUser(res.data)
+                }else{
+                    localStorage.removeItem("token")
                 }
             })
         } else {

@@ -17,12 +17,11 @@ export default function EditSingleKamer(props) {
     setLoading(true);
     getSingleKamer(naam, token).then((res, err) => {
       if (err) {
-        setLoading(false);
+        setLoading( false);
         setError(err);
       } else {
         setLoading(false);
         setKamer(res.data);
-        console.log(res.data);
       }
     });
   }, []);

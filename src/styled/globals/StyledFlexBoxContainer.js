@@ -18,7 +18,7 @@ export const GridImages = styled( FlexBoxUpDown)`
   margin: 0 auto;
   display: grid;
   grid-template-columns: ${(props) =>
-    `repeat(auto-fit, minmax(${props.gridSize}, 1fr));`};
+    `repeat(auto-fill, minmax(${props.gridSize}, 1fr));`};
   grid-row-gap: 1rem;
   grid-column-gap: 1rem;
   img {

@@ -12,22 +12,6 @@ function CarouselController(props) {
   let { images } = props;
   const [sliderImages, setSliderImages] = useState([]);
 
-  useEffect(() => {
-    props.images.map((item) =>{
-      console.log(item);
-    })
-    console.log(props);
-    // if (images.length > 3) {
-    //   handleFirstImages();
-    // } else {
-    //   let sliderImg = [];
-    //   for (let index = 1; index < images?.length; index++) {
-    //     sliderImg.push(images[index]);
-    //   }
-    //   setSliderImages(sliderImg);
-    // }
-  }, []);
-
   const handleFirstImages = () => {
     let sliderImages2 = [];
     let index = sliderIndex;

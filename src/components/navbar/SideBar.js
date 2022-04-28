@@ -7,10 +7,14 @@ import {KamersContext} from "../../context/KamersContext";
 import DatePicker, {ReactDatePicker} from "react-datepicker";
 import {getAllkamersByNaamEnSortables} from "../../functions/kamers";
 import {toast} from "react-toastify";
+import {AuthContext} from "../../context/AuthContext";
 
 const SideBar = () => {
     const [submitting, setSubmitting] = useState(false);
     const {pageKamerFilters, setPageKamerFilters, filterRooms, getPaginatedKamersSortables} = useContext(KamersContext);
+    const {
+        token, user
+    } = useContext(AuthContext);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(null);
     const onChange = (dates) => {
@@ -57,7 +61,7 @@ const SideBar = () => {
         let a = new URLSearchParams(pageKamerFilters)
         console.log(pageKamerFilters)
 
-        getPaginatedKamersSortables(pageKamerFilters)
+        getPaginatedKamersSortables(pageKamerFilters,  token)
 
 
     }
@@ -87,7 +91,7 @@ const SideBar = () => {
                             checked={pageKamerFilters.alGereserveerde}
                             onChange={(e) => handleOnSearchChange(e)}
                         />
-                        <label htmlFor="Al gereserveerd">Al gereserveerd</label>
+                        <label htmlFor="Al gereserveerd">Al gereserveerd(todo)</label>
                     </div>
                 </div>
                 <input type={"submit"} value={"zoek"}/>
@@ -99,23 +103,3 @@ const SideBar = () => {
 export const SideBarBox = styled(FlexBoxUpDown)``;
 
 export default SideBar;
-{/*<DatePicker*/
-}
-{/*    selected={startDate}*/
-}
-{/*    onChange={onChange}*/
-}
-{/*    startDate={startDate}*/
-}
-{/*    endDate={endDate}*/
-}
-{/*    excludeDates={[addDays(new Date(), 1), addDays(new Date(), 5)]}*/
-}
-{/*    selectsRange*/
-}
-{/*    selectsDisabledDaysInRange*/
-}
-{/*    inline*/
-}
-{/*/>*/
-}

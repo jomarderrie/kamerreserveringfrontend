@@ -2,6 +2,8 @@ import React, {Component, useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import styled from "styled-components";
 import { useTable } from 'react-table'
+import {endOfToday, set} from "date-fns";
+import EditAndDeleteButton from "./EditAndDeleteButton";
 
 const TableStyles = styled.div`
 padding: 1rem;
@@ -95,13 +97,18 @@ const KamerReserveringTable = (props) => {
       {
         Header: "Achternaam",
         accessor: "achterNaam"
-      }
+      },
+        {
+            Header: 'Acties',
+            accessor: (originalRow, rowIndex) => (
+
+                <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex}/>
+            ),
+            id: 'action',
+        },
     ],
     []
   );
-
-
-
 
         return (
             <div>
