@@ -5,13 +5,16 @@ import DatePicker from "react-datepicker";
 import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay, maakNieuweReservatie} from "../../functions/kamers";
 
 import EditAndDeleteButton from "../kamer/EditAndDeleteButton";
+
 const Styles = styled.div`
   padding: 1rem;
+
   table {
     border-spacing: 0;
     border: 1px solid black;
     width: ${props =>
-            props.width? '50vw': '90vw'};
+            props.width ? '50vw' : '90vw'};
+
     tr {
       :last-child {
         td {
@@ -44,7 +47,17 @@ function Table({
                    fetchData,
                    loading,
                    pageCount: controlledPageCount,
-                   email, token, EditAndDeleteButton, startDate, endDate, setStartDate, setEndDate, setReservaties, singleRoom, user
+                   email,
+                   token,
+                   EditAndDeleteButton,
+                   startDate,
+                   endDate,
+                   setStartDate,
+                   setEndDate,
+                   setReservaties,
+                   singleRoom,
+                   user,
+                   room
                }) {
     const {
         getTableProps,
@@ -95,32 +108,51 @@ function Table({
 
     const [kamerEindReserveringen, setKamerReserveringenEind] = useState([]);
 
-    const testClick = (items, index) => {
-        // console.log(data, "index")
-        // console.log(    data[0], "loollolo")
-        // console.log( items.start.toLocaleString().split("T")[0], "ekek")
-        // console.log(data[index].startTijd, "test")
+    useEffect(() => {
+        if (singleRoom && room) {
 
-        console.log(items, "items")
-        let eindArr = []
-        let startArr =[]
-        console.log(startDate, "hek")
+            console.log(data, "data123")
+        }
+    }, [room])
+
+
+    const onEditButtonClick = (items, index) => {
+
         getAllKamerByNaamAndGetAllReserverationsOnCertainDay(items.naam,
             (new Date(items.start).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
-                res.data.map((item, index) => {
-                    if ((new Date(startDate)) !== new Date(item.start)){
-                        startArr.push(new Date(item.start))
-                    }
-                    if ((new Date(endDate)) !== new Date(item.end)){
-                        eindArr.push(new Date(item.end))
-                    }
-                })
-            startArr.push(new Date(endDate))
-            eindArr.push(new Date(startDate))
-                setKamerReserveringenStart(startArr)
-            setKamerReserveringenEind(eindArr)
+                let excludeDates = calcaluteExcludingDates(res.data)
+                setKamerReserveringenStart(excludeDates[0])
+                setKamerReserveringenEind(excludeDates[1])
+                // res.data.map((item, index) => {
+                //     if ((new Date(startDate)) !== new Date(item.start)) {
+                //         startArr.push(new Date(item.start))
+                //     }
+                //     if ((new Date(endDate)) !== new Date(item.end)) {
+                //         eindArr.push(new Date(item.end))
+                //     }
+                // })
+                // startArr.push(new Date(endDate))
+                // eindArr.push(new Date(startDate))
+                setKamerReserveringenStart(excludeDates[0])
+                setKamerReserveringenEind(excludeDates[1])
             }
         )
+    }
+
+    const calcaluteExcludingDates = (items) =>{
+        let eindArr = []
+        let startArr = []
+        items.data.map((item, index) => {
+            if ((new Date(startDate)) !== new Date(item.start)) {
+                startArr.push(new Date(item.start))
+            }
+            if ((new Date(endDate)) !== new Date(item.end)) {
+                eindArr.push(new Date(item.end))
+            }
+        })
+        startArr.push(new Date(endDate))
+        eindArr.push(new Date(startDate))
+        return [startArr, eindArr]
     }
     // Render the UI for your table
     return (
@@ -149,7 +181,7 @@ function Table({
                     prepareRow(row)
                     return data[i].isEditing ? <tr key={row.values.key}>
                             <td>{row.values.naam}</td>
-                            <td onClick={() => testClick(row.values, i)}>
+                            <td onClick={() => onEditButtonClick(row.values, i)}>
                                 <DatePicker
                                     selected={startDate}
                                     onChange={(date) => setStartDate(date)}
@@ -159,11 +191,10 @@ function Table({
                                     minDate={new Date(data[i].startTijd)}
                                     maxDate={new Date(data[i].sluitTijd)}
                                     timeIntervals={60}
-                                    dateFormat="MMMM d, yyyy h:mm aa"
-                                    excludeTimes={kamerStartReserveringen}
+                                    dateFormat="MMMM d, yyyy h:mm aa" excludeTimes={kamerStartReserveringen}
                                 />
                             </td>
-                            <td onClick={() => testClick(row.values, i)}>
+                            <td onClick={() => onEditButtonClick(row.values, i)}>
                                 <DatePicker
                                     selected={endDate}
                                     onChange={(date) => setEndDate(date)}
@@ -178,23 +209,61 @@ function Table({
                                 />
                             </td>
                             <td>
-                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i} startDate={startDate} endDate={endDate} token={token} email={email} setReservaties={setReservaties} user={user}/>
+                                <EditAndDeleteButton originalRow={data[i]} rowIndex={i} startDate={startDate}
+                                                     endDate={endDate} token={token} email={email}
+                                                     setReservaties={setReservaties} user={user}/>
                             </td>
                         </tr> :
                         (
                             <tr {...row.getRowProps()}>
                                 {row.cells.map(cell => {
-                                    // {...cell.getCellProps().map(item => {console.log(item)})}
-                                    // console.log(...cell.getCellProps(), "props dog")
                                     return <td {...cell.getCellProps()}
                                     >{cell.render('Cell')}</td>
                                 })}
                             </tr>
                         )
                 })}
-
+                {
+                    (singleRoom && room) &&
+                    <tr>
+                        <td>
+                            <td>
+                                Voeg nieuwe reservering toe
+                            </td>
+                        </td>
+                        <td>
+                            <DatePicker
+                                selected={startDate}
+                                onChange={(date) => setStartDate(date)}
+                                showTimeSelect
+                                minTime={new Date(room.startTijd)}
+                                maxTime={new Date(room.sluitTijd)}
+                                minDate={new Date(room.startTijd)}
+                                maxDate={new Date(room.sluitTijd)}
+                                timeIntervals={60}
+                                dateFormat="MMMM d, yyyy h:mm aa" excludeTimes={kamerStartReserveringen}
+                            />
+                        </td>
+                        <td>
+                            <DatePicker
+                                selected={endDate}
+                                onChange={(date) => setEndDate(date)}
+                                showTimeSelect
+                                // minTime={new Date(data[i].startTijd)}
+                                // maxTime={new Date(data[i].sluitTijd)}
+                                // minDate={new Date(data[i].startTijd)}
+                                // maxDate={new Date(data[i].sluitTijd)}
+                                timeIntervals={60}
+                                dateFormat="MMMM d, yyyy h:mm aa"
+                                excludeTimes={kamerEindReserveringen}
+                            />
+                        </td>
+                        <td>
+                            <button onClick={(e) => console.log(e)}>Reserveer</button>
+                        </td>
+                    </tr>
+                }
                 {!singleRoom && <tr>
-
                     {loading ? (
                         // Use our custom loading state to show a loading indicator
                         <td colSpan="10000">Loading...</td>
@@ -287,11 +356,10 @@ const ReserveringTable = (props) => {
             {
                 Header: 'Acties',
                 accessor: (originalRow, rowIndex) => (
-                    // {(originalRow[rowIndex].naam === props.user.naam && originalRow[rowIndex].achterNaam === props.user.achterNaam && props.singleRoom) ?
-
                     <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex} token={props.token}
                                          email={props.email} setReservaties={props.setReservaties} user={props.user}
-                                         setStartDate={setStartDate} setEndDate={setEndDate} singleRoom={props.singleRoom}/>
+                                         setStartDate={setStartDate} setEndDate={setEndDate}
+                                         singleRoom={props.singleRoom}/>
                 ),
                 id: 'action',
             },
@@ -301,7 +369,7 @@ const ReserveringTable = (props) => {
 
     const columns1 = React.useMemo(
         () => [{
-            Header: "Kamernaam",
+            Header: "Kamernaam2",
             accessor: "naam"
         },
             {
@@ -319,9 +387,10 @@ const ReserveringTable = (props) => {
 
                     <EditAndDeleteButton originalRow={originalRow} rowIndex={rowIndex} token={props.token}
                                          email={props.email} setReservaties={props.setReservaties} user={props.user}
-                                         setStartDate={setStartDate} setEndDate={setEndDate} singleRoom={props.singleRoom}/>
+                                         setStartDate={setStartDate} setEndDate={setEndDate}
+                                         singleRoom={props.singleRoom}/>
                 ),
-                id: 'action',
+                id: 'action2',
             },
         ],
         []
@@ -329,23 +398,24 @@ const ReserveringTable = (props) => {
 
     return (
         <Styles width={props.singleRoom}>
-            {props.singleRoom?          <Table
-                columns={columns}
-                data={props.reservaties}
-                singleRoom={props.singleRoom}
-                user={props.user}
-                loading={props.loading123}
-                pageCount={props.pageCount}
-                fetchData={props.getPaginatedReservaties}
-                email={props.email}
-                token={props.token}
-                setReservaties={props.setReservaties}
-                EditAndDeleteButton={EditAndDeleteButton}
-                endDate={endDate}
-                startDate={startDate}
-                setStartDate={setStartDate}
-                setEndDate={setEndDate}
-            /> :
+            {props.singleRoom ? <Table
+                    columns={columns}
+                    data={props.reservaties}
+                    singleRoom={props.singleRoom}
+                    user={props.user}
+                    loading={props.loading123}
+                    pageCount={props.pageCount}
+                    fetchData={props.getPaginatedReservaties}
+                    email={props.email}
+                    token={props.token}
+                    setReservaties={props.setReservaties}
+                    EditAndDeleteButton={EditAndDeleteButton}
+                    endDate={endDate}
+                    startDate={startDate}
+                    setStartDate={setStartDate}
+                    setEndDate={setEndDate}
+                    room={props.room}
+                /> :
                 <Table
                     columns={columns1}
                     data={props.reservaties}
@@ -362,7 +432,8 @@ const ReserveringTable = (props) => {
                     startDate={startDate}
                     setStartDate={setStartDate}
                     setEndDate={setEndDate}
-                /> }
+
+                />}
 
         </Styles>
     )

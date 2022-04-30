@@ -79,13 +79,6 @@ function Table({
     //onSort, sortBy, fetchData, pageIndex, pageSize
     }, [  pageIndex, pageSize])
 
-    // React.useEffect(() => {
-    //     console.log("test123")
-    //     getPaginatedReservaties(pageIndex, pageSize, "", email, token)
-    //     // fetchData(pageIndex, pageSize, "", email, token)
-    // }, [fetchData, pageIndex, pageSize])
-
-    // Render the UI for your table
     return (
         <>
             <table {...getTableProps()}>

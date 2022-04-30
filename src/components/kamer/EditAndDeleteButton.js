@@ -19,15 +19,24 @@ const EditAndDeleteButton = ({originalRow, rowIndex, startDate, endDate, token, 
         }
         // console.log((originalRow.naam === user.naam))
     }, [])
-    return <div>
+    return singleRoom ? <div>
         <button
-            // disabled={!(originalRow.naam === user.naam && originalRow.achterNaam === user.achternaam && singleRoom) }
+            disabled={!(originalRow.naam === user.naam && originalRow.achterNaam === user.achternaam ) }
             onClick={() => handleClickEditRow(originalRow, rowIndex, startDate, endDate, token, setReservaties, setStartDate, setEndDate, user)}>
             {originalRow.isEditing ? "Save" : "Edit"}
         </button>
-
         <button
-            // disabled={!(originalRow.naam === user.naam && originalRow.achterNaam === user.achternaam && singleRoom) }
+            disabled={!(originalRow.naam === user.naam && originalRow.achterNaam === user.achternaam ) }
+            onClick={() => deleteReservatie(originalRow.naam, originalRow.id, token, email)}>
+            Delete
+        </button>
+    </div> : <div>
+        <button
+
+            onClick={() => handleClickEditRow(originalRow, rowIndex, startDate, endDate, token, setReservaties, setStartDate, setEndDate, user)}>
+            {originalRow.isEditing ? "Save" : "Edit"}
+        </button>
+        <button
 
             onClick={() => deleteReservatie(originalRow.naam, originalRow.id, token, email)}>
             Delete

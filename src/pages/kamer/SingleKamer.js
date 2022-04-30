@@ -55,8 +55,6 @@ export default function SingleKamer({match}) {
     const { pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123, deleteReservatieContext,   } = useContext(ReservatiesContext)
     const {deleteKamerOnClick} = useContext(KamersContext);
 
-
-
     useEffect(() => {
         setLoading(true);
         getSingleKamer(naam, token)
@@ -159,7 +157,6 @@ export default function SingleKamer({match}) {
                                 console.log(err);
                                 setReservationSending(false);
                             } else {
-                                console.log(res.data, "reservations");
                                 setReservaties(res.data);
                                 setLimite2([
                                     getDate(startEindTijd[0]),
@@ -177,7 +174,7 @@ export default function SingleKamer({match}) {
                 }
             }
         }
-    }, [kamer, timeRangeSliderDate, reservaties, loading]);
+    }, [kamer, timeRangeSliderDate, loading]);
 
     const calculateDisabledIntervalsAndOpenInterval = (res) => {
         let reserveringListObj = [];
@@ -448,7 +445,8 @@ export default function SingleKamer({match}) {
                             </button>
                         </form>
                         {(tableView) ? <TimeRangeSlider/> : <FlexBox width={"50%"}> <ReserveringTable reservaties={reservaties}
-       user={user}                                                                                               setReservaties={setReservaties}
+       user={user}
+                    room={kamer}                                                                                  setReservaties={setReservaties}
                                                                                                       getPaginatedReservaties={getPaginatedReservaties}
                                                                                                       singleRoom={true}                                                                                               pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
                         </FlexBox>}
