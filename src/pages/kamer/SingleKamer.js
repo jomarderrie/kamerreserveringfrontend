@@ -196,9 +196,7 @@ export default function SingleKamer({match}) {
             setReservaties(true);
             setAm([null, null]);
         }
-        console.log(kamer, "kamer123")
-        // if ()
-        console.log(timeRangeSliderDate.toLocaleDateString(), "timerange")
+
         if (new Date().toLocaleDateString() === timeRangeSliderDate.toLocaleString()){
 
 

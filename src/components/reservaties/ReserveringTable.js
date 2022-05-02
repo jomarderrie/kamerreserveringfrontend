@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay, maakNieuweReservatie} from "../../functions/kamers";
 
 import EditAndDeleteButton from "../kamer/EditAndDeleteButton";
+import moment from "moment";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -108,41 +109,77 @@ function Table({
 
     const [kamerEindReserveringen, setKamerReserveringenEind] = useState([]);
 
-    useEffect(() => {
-        if (singleRoom && room) {
+    // useEffect(() => {
+    //     if (singleRoom && data.length !== 0) {
+    //         let excludeDates = calcaluteExcludingDates(data)
+    //         console.log(excludeDates, "data123")
+    //     }
+    // }, [singleRoom, data])
 
-            console.log(data, "data123")
-        }
-    }, [room])
+    const onEditButtonClickWithReservations = (items) => {
+        let excludeDates = calcaluteExcludingDates(items)
+        setKamerReserveringenStart(excludeDates[0])
+        setKamerReserveringenEind(excludeDates[1])
+    }
 
+    useEffect(()=>{
+        if (data!==undefined && data.length>0){
 
-    const onEditButtonClick = (items, index) => {
-
-        getAllKamerByNaamAndGetAllReserverationsOnCertainDay(items.naam,
-            (new Date(items.start).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+            console.log(startDate, "start")
+        getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+        (data[0].naam,
+            (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
                 let excludeDates = calcaluteExcludingDates(res.data)
                 setKamerReserveringenStart(excludeDates[0])
                 setKamerReserveringenEind(excludeDates[1])
-                // res.data.map((item, index) => {
-                //     if ((new Date(startDate)) !== new Date(item.start)) {
-                //         startArr.push(new Date(item.start))
-                //     }
-                //     if ((new Date(endDate)) !== new Date(item.end)) {
-                //         eindArr.push(new Date(item.end))
-                //     }
-                // })
-                // startArr.push(new Date(endDate))
-                // eindArr.push(new Date(startDate))
+            }
+        )   }
+    }, [startDate])
+
+    useEffect(()=>{
+        if (data!==undefined && data.length>0){
+
+            console.log(endDate, "enddate")
+            getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+            (data[0].naam,
+                (new Date(endDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                    let excludeDates = calcaluteExcludingDates(res.data)
+                    setKamerReserveringenStart(excludeDates[0])
+                    setKamerReserveringenEind(excludeDates[1])
+                }
+            ) }
+    }, [endDate])
+
+
+    const onEditButtonClick = (items, type) =>{
+    if(type === "start"){
+        getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+    (items.naam,
+            (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                let excludeDates = calcaluteExcludingDates(res.data)
+                setKamerReserveringenStart(excludeDates[0])
+                setKamerReserveringenEind(excludeDates[1])
+            }
+        )
+    }else{
+        getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+        (items.naam,
+            (new Date(items.end).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                let excludeDates = calcaluteExcludingDates(res.data)
                 setKamerReserveringenStart(excludeDates[0])
                 setKamerReserveringenEind(excludeDates[1])
             }
         )
     }
 
+    }
+
+
     const calcaluteExcludingDates = (items) =>{
         let eindArr = []
         let startArr = []
-        items.data.map((item, index) => {
+        console.log(items, "items")
+        items.map((item, index) => {
             if ((new Date(startDate)) !== new Date(item.start)) {
                 startArr.push(new Date(item.start))
             }
@@ -150,10 +187,41 @@ function Table({
                 eindArr.push(new Date(item.end))
             }
         })
-        startArr.push(new Date(endDate))
-        eindArr.push(new Date(startDate))
+        if (new Date().toLocaleDateString() === new Date(endDate).toLocaleDateString()){
+            startArr.push(new Date(endDate))
+        }
+        if (new Date().toLocaleDateString() ===  new Date(endDate).toLocaleDateString()){
+            eindArr.push(new Date(startDate))
+        }
+
+
+        //
+        // eindArr.push(new Date())
+        // startArr.push(new Date())
+        // console.log(start)
+        // if (new Date().toLocaleDateString() === setStartDate.toLocaleString()){
+        //     reserveringListObj.push({
+        //         start: moment(getDate(new Date(kamer.startTijd).getHours())).toDate(),
+        //         end: moment(getDate(new Date().getHours() +1)).toDate(),
+        //     });
+        // }
+
+
         return [startArr, eindArr]
     }
+
+    // const checkIfReservationIsFull = (reserveringList) => {
+    //     let totalHours = 0;
+    //     let timeLineInterval = limite2[1].getHours() - limite2[0].getHours();
+    //     if (reserveringList.length !== 0) {
+    //         reserveringList.map((item) => {
+    //             totalHours += item.end.getHours() - item.start.getHours();
+    //         });
+    //     }
+    //     console.log(totalHours, "total");
+    //     return totalHours >= timeLineInterval;
+    // };
+
     // Render the UI for your table
     return (
         <>
@@ -181,7 +249,7 @@ function Table({
                     prepareRow(row)
                     return data[i].isEditing ? <tr key={row.values.key}>
                             <td>{row.values.naam}</td>
-                            <td onClick={() => onEditButtonClick(row.values, i)}>
+                            <td >
                                 <DatePicker
                                     selected={startDate}
                                     onChange={(date) => setStartDate(date)}
@@ -194,7 +262,7 @@ function Table({
                                     dateFormat="MMMM d, yyyy h:mm aa" excludeTimes={kamerStartReserveringen}
                                 />
                             </td>
-                            <td onClick={() => onEditButtonClick(row.values, i)}>
+                            <td>
                                 <DatePicker
                                     selected={endDate}
                                     onChange={(date) => setEndDate(date)}
@@ -231,7 +299,7 @@ function Table({
                                 Voeg nieuwe reservering toe
                             </td>
                         </td>
-                        <td>
+                        <td onClick={() => onEditButtonClickWithReservations(data)}>
                             <DatePicker
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
@@ -246,13 +314,14 @@ function Table({
                         </td>
                         <td>
                             <DatePicker
+                                onClick={() => onEditButtonClickWithReservations(data)}
                                 selected={endDate}
                                 onChange={(date) => setEndDate(date)}
                                 showTimeSelect
-                                // minTime={new Date(data[i].startTijd)}
-                                // maxTime={new Date(data[i].sluitTijd)}
-                                // minDate={new Date(data[i].startTijd)}
-                                // maxDate={new Date(data[i].sluitTijd)}
+                                minTime={new Date(room.startTijd)}
+                                maxTime={new Date(room.sluitTijd)}
+                                minDate={new Date(room.startTijd)}
+                                maxDate={new Date(room.sluitTijd)}
                                 timeIntervals={60}
                                 dateFormat="MMMM d, yyyy h:mm aa"
                                 excludeTimes={kamerEindReserveringen}
