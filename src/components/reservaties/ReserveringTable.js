@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import {useTable, usePagination} from 'react-table'
 import DatePicker from "react-datepicker";
 import {getAllKamerByNaamAndGetAllReserverationsOnCertainDay, maakNieuweReservatie} from "../../functions/kamers";
-
+import {endOfToday, set} from "date-fns";
 import EditAndDeleteButton from "../kamer/EditAndDeleteButton";
 import moment from "moment";
+import {toast} from "react-toastify";
 
 const Styles = styled.div`
   padding: 1rem;
@@ -58,7 +59,8 @@ function Table({
                    setReservaties,
                    singleRoom,
                    user,
-                   room
+                   room,
+                   sliderDate
                }) {
     const {
         getTableProps,
@@ -75,10 +77,8 @@ function Table({
         nextPage,
         previousPage,
         setPageSize,
-        editableRowIndex,
-        setEditableRowIndex,
         // Get the state from the instance
-        state: {pageIndex, pageSize = 5},
+        state: {pageIndex, pageSize = 5, tableData},
     } = useTable(
         {
             columns,
@@ -95,50 +95,72 @@ function Table({
 
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
-        fetchData(email, pageIndex, 5, "", token)
-    }, [pageIndex, pageSize])
+        if (singleRoom!==true){
 
-    // React.useEffect(() => {
-    //     console.log("test123")
-    //     getPaginatedReservaties(pageIndex, pageSize, "", email, token)
-    //     // fetchData(pageIndex, pageSize, "", email, token)
-    // }, [fetchData, pageIndex, pageSize])
+        fetchData(email, pageIndex, 5, "", token)
+        }else{
+            // setReservaties((prev) => { prev.push({"naam":"jan"})})
+        }
+    }, [pageIndex, pageSize])
 
 
     const [kamerStartReserveringen, setKamerReserveringenStart] = useState([]);
 
     const [kamerEindReserveringen, setKamerReserveringenEind] = useState([]);
 
-    // useEffect(() => {
-    //     if (singleRoom && data.length !== 0) {
-    //         let excludeDates = calcaluteExcludingDates(data)
-    //         console.log(excludeDates, "data123")
-    //     }
-    // }, [singleRoom, data])
-
-    const onEditButtonClickWithReservations = (items) => {
-        let excludeDates = calcaluteExcludingDates(items)
-        setKamerReserveringenStart(excludeDates[0])
-        setKamerReserveringenEind(excludeDates[1])
-    }
-
-    useEffect(()=>{
-        if (data!==undefined && data.length>0){
-
+    useEffect(() => {
+        if (data !== undefined && data.length > 0 && !singleRoom) {
             console.log(startDate, "start")
-        getAllKamerByNaamAndGetAllReserverationsOnCertainDay
-        (data[0].naam,
-            (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
-                let excludeDates = calcaluteExcludingDates(res.data)
-                setKamerReserveringenStart(excludeDates[0])
-                setKamerReserveringenEind(excludeDates[1])
-            }
-        )   }
+            getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+            (data[0].naam,
+                (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                    let excludeDates = calcaluteExcludingDates(res.data)
+                    setKamerReserveringenStart(excludeDates[0])
+                    setKamerReserveringenEind(excludeDates[1])
+                }
+            )
+        }else{
+            getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+            (room.naam,
+                (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                    let excludeDates = calcaluteExcludingDates(res.data)
+                    setKamerReserveringenStart(excludeDates[0])
+                    setKamerReserveringenEind(excludeDates[1])
+                }
+            )
+        }
     }, [startDate])
 
-    useEffect(()=>{
-        if (data!==undefined && data.length>0){
+    const handleNieuweReservation = (naam, startDate, endDate) =>{
 
+
+        maakNieuweReservatie(naam, set(new Date(startDate), {hours: new Date(startDate).getHours() +2}), set(new Date(endDate), {hours: new Date(endDate).getHours() +2})
+            , token).then ( (res,err)=>{
+            if (err){
+                // data.push({"name": "oek"})
+                // console.log(data)
+                toast.error(err.response)
+            }else{
+                // setData(prev => {prev.push({"naam":"oek"})})
+                // data.push({"naam": "oek"})
+                // console.log(data)
+                // setReservaties(data)
+                // fetchData()
+                fetchData(   room.naam,
+                    (new Date(sliderDate).toLocaleDateString()).split("/").join("-"), token)
+                toast.success("succesvol reservatie")
+            }
+        } ).catch(err =>{
+            // data.push({"naam": "oek"})
+            // console.log(data)
+            // fetchData((room.naam,
+            //     (new Date(startDate).toLocaleDateString()).split("/").join("-"), token))
+            toast.error(err.response.data.message)
+        })
+    }
+
+    useEffect(() => {
+        if (data !== undefined && data.length > 0 && !singleRoom) {
             console.log(endDate, "enddate")
             getAllKamerByNaamAndGetAllReserverationsOnCertainDay
             (data[0].naam,
@@ -147,35 +169,26 @@ function Table({
                     setKamerReserveringenStart(excludeDates[0])
                     setKamerReserveringenEind(excludeDates[1])
                 }
-            ) }
+            )
+        }else{
+            getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+            (room.naam,
+                (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                    let excludeDates = calcaluteExcludingDates(res.data)
+                    setKamerReserveringenStart(excludeDates[0])
+                    setKamerReserveringenEind(excludeDates[1])
+                }
+            )
+        }
     }, [endDate])
 
-
-    const onEditButtonClick = (items, type) =>{
-    if(type === "start"){
-        getAllKamerByNaamAndGetAllReserverationsOnCertainDay
-    (items.naam,
-            (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
-                let excludeDates = calcaluteExcludingDates(res.data)
-                setKamerReserveringenStart(excludeDates[0])
-                setKamerReserveringenEind(excludeDates[1])
-            }
-        )
-    }else{
-        getAllKamerByNaamAndGetAllReserverationsOnCertainDay
-        (items.naam,
-            (new Date(items.end).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
-                let excludeDates = calcaluteExcludingDates(res.data)
-                setKamerReserveringenStart(excludeDates[0])
-                setKamerReserveringenEind(excludeDates[1])
-            }
-        )
-    }
-
-    }
+    useEffect(() =>{
+        console.log(tableData, "ta")
+    }, [tableData])
 
 
-    const calcaluteExcludingDates = (items) =>{
+
+    const calcaluteExcludingDates = (items) => {
         let eindArr = []
         let startArr = []
         console.log(items, "items")
@@ -187,42 +200,15 @@ function Table({
                 eindArr.push(new Date(item.end))
             }
         })
-        if (new Date().toLocaleDateString() === new Date(endDate).toLocaleDateString()){
+        if (new Date().toLocaleDateString() === new Date(endDate).toLocaleDateString()) {
             startArr.push(new Date(endDate))
         }
-        if (new Date().toLocaleDateString() ===  new Date(endDate).toLocaleDateString()){
+        if (new Date().toLocaleDateString() === new Date(endDate).toLocaleDateString()) {
             eindArr.push(new Date(startDate))
         }
-
-
-        //
-        // eindArr.push(new Date())
-        // startArr.push(new Date())
-        // console.log(start)
-        // if (new Date().toLocaleDateString() === setStartDate.toLocaleString()){
-        //     reserveringListObj.push({
-        //         start: moment(getDate(new Date(kamer.startTijd).getHours())).toDate(),
-        //         end: moment(getDate(new Date().getHours() +1)).toDate(),
-        //     });
-        // }
-
-
         return [startArr, eindArr]
     }
 
-    // const checkIfReservationIsFull = (reserveringList) => {
-    //     let totalHours = 0;
-    //     let timeLineInterval = limite2[1].getHours() - limite2[0].getHours();
-    //     if (reserveringList.length !== 0) {
-    //         reserveringList.map((item) => {
-    //             totalHours += item.end.getHours() - item.start.getHours();
-    //         });
-    //     }
-    //     console.log(totalHours, "total");
-    //     return totalHours >= timeLineInterval;
-    // };
-
-    // Render the UI for your table
     return (
         <>
             <table {...getTableProps()}>
@@ -249,7 +235,7 @@ function Table({
                     prepareRow(row)
                     return data[i].isEditing ? <tr key={row.values.key}>
                             <td>{row.values.naam}</td>
-                            <td >
+                            <td>
                                 <DatePicker
                                     selected={startDate}
                                     onChange={(date) => setStartDate(date)}
@@ -294,12 +280,17 @@ function Table({
                 {
                     (singleRoom && room) &&
                     <tr>
+
+                        <td></td>
+
                         <td>
-                            <td>
-                                Voeg nieuwe reservering toe
-                            </td>
+                        <td>
+                            Voeg nieuwe reservering toe
                         </td>
-                        <td onClick={() => onEditButtonClickWithReservations(data)}>
+                    </td>
+                        <td
+                            // onClick={() => onEditButtonClickWithReservations(data)}
+                        >
                             <DatePicker
                                 selected={startDate}
                                 onChange={(date) => setStartDate(date)}
@@ -309,12 +300,13 @@ function Table({
                                 minDate={new Date(room.startTijd)}
                                 maxDate={new Date(room.sluitTijd)}
                                 timeIntervals={60}
-                                dateFormat="MMMM d, yyyy h:mm aa" excludeTimes={kamerStartReserveringen}
+                                dateFormat="MMMM d, yyyy h:mm aa"
+                                excludeTimes={kamerStartReserveringen}
                             />
                         </td>
                         <td>
                             <DatePicker
-                                onClick={() => onEditButtonClickWithReservations(data)}
+                                // onClick={() => onEditButtonClickWithReservations(data)}
                                 selected={endDate}
                                 onChange={(date) => setEndDate(date)}
                                 showTimeSelect
@@ -328,7 +320,7 @@ function Table({
                             />
                         </td>
                         <td>
-                            <button onClick={(e) => console.log(e)}>Reserveer</button>
+                            <button onClick={(e) => handleNieuweReservation(room.naam, startDate, endDate)}>Reserveer</button>
                         </td>
                     </tr>
                 }
@@ -402,11 +394,21 @@ function Table({
 
 const ReserveringTable = (props) => {
     const [startDate, setStartDate] = useState(
-        new Date()
+        set(new Date(), {
+            seconds: 0,
+            hours: new Date().getHours(),
+            milliseconds: 0,
+            minutes: 0,
+        })
     );
 
     const [endDate, setEndDate] = useState(
-        new Date()
+        set(new Date(), {
+            seconds: 0,
+            hours: new Date().getHours()+1,
+            milliseconds: 0,
+            minutes: 0,
+        })
     );
 
     const columns = React.useMemo(
@@ -438,15 +440,19 @@ const ReserveringTable = (props) => {
 
     const columns1 = React.useMemo(
         () => [{
-            Header: "Kamernaam2",
+            Header: "naam",
             accessor: "naam"
         },
             {
-                Header: "Start tijd",
+                Header: "achternaam",
+                accessor: "achterNaam"
+            },
+            {
+                Header: "start tijd",
                 accessor: "start"
             },
             {
-                Header: "Eind tijd",
+                Header: "einde tijd",
                 accessor: "end"
             },
             {
@@ -465,10 +471,14 @@ const ReserveringTable = (props) => {
         []
     );
 
+    useEffect(() =>{
+        console.log(props, "props")
+    }, [props])
+
     return (
         <Styles width={props.singleRoom}>
             {props.singleRoom ? <Table
-                    columns={columns}
+                    columns={columns1}
                     data={props.reservaties}
                     singleRoom={props.singleRoom}
                     user={props.user}
@@ -484,9 +494,10 @@ const ReserveringTable = (props) => {
                     setStartDate={setStartDate}
                     setEndDate={setEndDate}
                     room={props.room}
+                    sliderDate={props.sliderDate}
                 /> :
                 <Table
-                    columns={columns1}
+                    columns={columns}
                     data={props.reservaties}
                     singleRoom={props.singleRoom}
                     user={props.user}

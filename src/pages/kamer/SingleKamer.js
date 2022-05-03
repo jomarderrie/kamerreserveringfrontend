@@ -51,8 +51,14 @@ export default function SingleKamer({match}) {
     const [reservationSending, setReservationSending] = useState(false);
     const [startEindTijd, setStartEindTijd] = useState([]);
     const {user, token} = useContext(AuthContext);
-    const [reservaties,setReservaties] = useState([])
-    const { pageReservatieInfo, setPageReservatieInfo,getPaginatedReservaties, loading123, deleteReservatieContext,   } = useContext(ReservatiesContext)
+    const [reservaties, setReservaties] = useState([])
+    const {
+        pageReservatieInfo,
+        setPageReservatieInfo,
+        getPaginatedReservaties,
+        loading123,
+        deleteReservatieContext,
+    } = useContext(ReservatiesContext)
     const {deleteKamerOnClick} = useContext(KamersContext);
 
     useEffect(() => {
@@ -197,14 +203,14 @@ export default function SingleKamer({match}) {
             setAm([null, null]);
         }
 
-        if (new Date().toLocaleDateString() === timeRangeSliderDate.toLocaleString()){
+        if (new Date().toLocaleDateString() === timeRangeSliderDate.toLocaleString()) {
 
 
-        reserveringListObj.push({
-            start: moment(getDate(new Date(kamer.startTijd).getHours())).toDate(),
-            end: moment(getDate(new Date().getHours() +1)).toDate(),
-        });
-    }
+            reserveringListObj.push({
+                start: moment(getDate(new Date(kamer.startTijd).getHours())).toDate(),
+                end: moment(getDate(new Date().getHours() + 1)).toDate(),
+            });
+        }
         setDisabledIntervals2(reserveringListObj);
     };
 
@@ -333,6 +339,24 @@ export default function SingleKamer({match}) {
         }
     };
 
+    const getALlKamer = (kamerNaam,
+                         datum, token) => {
+        console.log(kamerNaam)
+        getAllKamerByNaamAndGetAllReserverationsOnCertainDay(kamerNaam,
+            datum, token).then((res, err) => {
+            if (res) {
+
+                setReservaties(res.data)
+            }
+            console.log(res, "res")
+            // setReservaties((prev) => { prev.push({"naam":"jan"})})
+        })
+
+        // setReservaties((prev) => {
+        //     prev.push(startReservationDate, eindReservationDate);
+        // });
+    }
+
     const kamerLoaded = (kamer) => {
         return (
             <SingleKamerStyled width="100vw">
@@ -358,7 +382,7 @@ export default function SingleKamer({match}) {
                         naam={kamer.naam}
                         action={deleteKamerOnClick}
                     />
-                </FlexBoxUpDown> }
+                </FlexBoxUpDown>}
 
                 <FlexBoxUpDown z="row" width="100vw" leftRight="24">
 
@@ -442,12 +466,18 @@ export default function SingleKamer({match}) {
                                 submit reservatie
                             </button>
                         </form>
-                        {(tableView) ? <TimeRangeSlider/> : <FlexBox width={"50%"}> <ReserveringTable reservaties={reservaties}
-       user={user}
-                    room={kamer}                                                                                  setReservaties={setReservaties}
-                                                                                                      getPaginatedReservaties={getPaginatedReservaties}
-                                                                                                      singleRoom={true}                                                                                               pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
-                        </FlexBox>}
+                        {(tableView) ? <TimeRangeSlider/> :
+                            <FlexBox width={"50%"}> <ReserveringTable reservaties={reservaties}
+                                                                      user={user}
+                                                                      room={kamer} setReservaties={setReservaties}
+                                                                      sliderDate={timeRangeSliderDate}
+                                                                      getPaginatedReservaties={getALlKamer}
+                                                                      singleRoom={true}
+                                                                      pageCount={pageReservatieInfo.pageNo}
+                                                                      email={user.email} token={token}
+                                                                      loading123={loading123}
+                                                                      deleteReservatie={deleteReservatieContext}/>
+                            </FlexBox>}
                     </FlexBox>
                 </FlexBoxUpDown>
             </SingleKamerStyled>
