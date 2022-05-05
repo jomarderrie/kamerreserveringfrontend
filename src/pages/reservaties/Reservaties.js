@@ -15,7 +15,8 @@ export default function Reservaties() {
             <ReserveringTable reservaties={reservaties}
                               user={user} setReservaties={setReservaties}
                               getPaginatedReservaties={getPaginatedReservaties}
-                              singleRoom={false}                                   pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123} deleteReservatie={deleteReservatieContext}/>
+                              singleRoom={false}                                   pageCount={pageReservatieInfo.pageNo} email={user.email} token={token} loading123={loading123}
+                              deleteReservatie={deleteReservatieContext}/>
         </FlexBoxUpDown>
     )
 }

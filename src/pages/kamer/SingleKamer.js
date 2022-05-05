@@ -339,22 +339,15 @@ export default function SingleKamer({match}) {
         }
     };
 
-    const getALlKamer = (kamerNaam,
+    const getAllKamerReservaties = (kamerNaam,
                          datum, token) => {
         console.log(kamerNaam)
         getAllKamerByNaamAndGetAllReserverationsOnCertainDay(kamerNaam,
             datum, token).then((res, err) => {
             if (res) {
-
                 setReservaties(res.data)
             }
-            console.log(res, "res")
-            // setReservaties((prev) => { prev.push({"naam":"jan"})})
         })
-
-        // setReservaties((prev) => {
-        //     prev.push(startReservationDate, eindReservationDate);
-        // });
     }
 
     const kamerLoaded = (kamer) => {
@@ -459,19 +452,21 @@ export default function SingleKamer({match}) {
                                 </div>
                                 <span className={`fa-arrow-left fa-2x button-icon`}/>
                             </FlexBox>
+                            {tableView &&
                             <button
                                 type="submit"
                                 disabled={reservationSending || loading}
                             >
                                 submit reservatie
                             </button>
+                            }
                         </form>
                         {(tableView) ? <TimeRangeSlider/> :
                             <FlexBox width={"50%"}> <ReserveringTable reservaties={reservaties}
                                                                       user={user}
                                                                       room={kamer} setReservaties={setReservaties}
                                                                       sliderDate={timeRangeSliderDate}
-                                                                      getPaginatedReservaties={getALlKamer}
+                                                                      getPaginatedReservaties={getAllKamerReservaties}
                                                                       singleRoom={true}
                                                                       pageCount={pageReservatieInfo.pageNo}
                                                                       email={user.email} token={token}

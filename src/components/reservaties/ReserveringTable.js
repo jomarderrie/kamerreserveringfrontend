@@ -95,11 +95,9 @@ function Table({
 
     // Listen for changes in pagination and use the state to fetch our new data
     React.useEffect(() => {
-        if (singleRoom!==true){
+        if (singleRoom===false){
 
         fetchData(email, pageIndex, 5, "", token)
-        }else{
-            // setReservaties((prev) => { prev.push({"naam":"jan"})})
         }
     }, [pageIndex, pageSize])
 
@@ -109,57 +107,54 @@ function Table({
     const [kamerEindReserveringen, setKamerReserveringenEind] = useState([]);
 
     useEffect(() => {
+        console.log(singleRoom, "singleroom")
         if (data !== undefined && data.length > 0 && !singleRoom) {
             console.log(startDate, "start")
             getAllKamerByNaamAndGetAllReserverationsOnCertainDay
             (data[0].naam,
-                (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                (new Date(sliderDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
                     let excludeDates = calcaluteExcludingDates(res.data)
                     setKamerReserveringenStart(excludeDates[0])
                     setKamerReserveringenEind(excludeDates[1])
                 }
             )
         }else{
-            getAllKamerByNaamAndGetAllReserverationsOnCertainDay
-            (room.naam,
-                (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
-                    let excludeDates = calcaluteExcludingDates(res.data)
-                    setKamerReserveringenStart(excludeDates[0])
-                    setKamerReserveringenEind(excludeDates[1])
-                }
-            )
+            console.log(room, "rom123")
+            if (room!==undefined) {
+
+
+                getAllKamerByNaamAndGetAllReserverationsOnCertainDay
+                (room.naam,
+                    (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
+                        let excludeDates = calcaluteExcludingDates(res.data)
+                        setKamerReserveringenStart(excludeDates[0])
+                        setKamerReserveringenEind(excludeDates[1])
+                    }
+                )
+            }
         }
     }, [startDate])
 
     const handleNieuweReservation = (naam, startDate, endDate) =>{
-
-
         maakNieuweReservatie(naam, set(new Date(startDate), {hours: new Date(startDate).getHours() +2}), set(new Date(endDate), {hours: new Date(endDate).getHours() +2})
             , token).then ( (res,err)=>{
             if (err){
-                // data.push({"name": "oek"})
-                // console.log(data)
                 toast.error(err.response)
             }else{
-                // setData(prev => {prev.push({"naam":"oek"})})
-                // data.push({"naam": "oek"})
-                // console.log(data)
-                // setReservaties(data)
-                // fetchData()
+                if (room!==undefined){
                 fetchData(   room.naam,
                     (new Date(sliderDate).toLocaleDateString()).split("/").join("-"), token)
                 toast.success("succesvol reservatie")
             }
+            }
         } ).catch(err =>{
-            // data.push({"naam": "oek"})
-            // console.log(data)
-            // fetchData((room.naam,
-            //     (new Date(startDate).toLocaleDateString()).split("/").join("-"), token))
             toast.error(err.response.data.message)
         })
     }
 
     useEffect(() => {
+        console.log(data.length >0, "data")
+        console.log(data !== undefined && data.length > 0 && !singleRoom, "ok")
         if (data !== undefined && data.length > 0 && !singleRoom) {
             console.log(endDate, "enddate")
             getAllKamerByNaamAndGetAllReserverationsOnCertainDay
@@ -171,6 +166,8 @@ function Table({
                 }
             )
         }else{
+            if (room !== undefined){
+
             getAllKamerByNaamAndGetAllReserverationsOnCertainDay
             (room.naam,
                 (new Date(startDate).toLocaleDateString()).split("/").join("-"), token).then((res, err) => {
@@ -179,14 +176,9 @@ function Table({
                     setKamerReserveringenEind(excludeDates[1])
                 }
             )
+            }
         }
     }, [endDate])
-
-    useEffect(() =>{
-        console.log(tableData, "ta")
-    }, [tableData])
-
-
 
     const calcaluteExcludingDates = (items) => {
         let eindArr = []
