@@ -4,7 +4,6 @@ const SideBar = () => {
     return (
         <div>
               <InputWithImage placeHolderName="Naam, locatie, sterren" icon="fa-search" />
-                
         </div>
     )
 }
