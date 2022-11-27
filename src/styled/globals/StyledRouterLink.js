@@ -64,7 +64,6 @@ export const ButtonWithIcon = (props) => {
     onClick={() =>props.action&&props?.action(props.naam)}>
       <FlexBoxUpDown x="space-between" leftRight="15">
         <span className={`fa ${props.icon} fa-2x button-icon`}></span>
-
         {props.text}
       </FlexBoxUpDown>
     </button>
